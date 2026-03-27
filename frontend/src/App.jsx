@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 function App() {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -9,7 +11,7 @@ function App() {
     const res = await fetch('http://localhost:3000/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email: "test@mail.com", password: "123456" })
+      body: JSON.stringify({ name, email, password })
     });
 
     const data = await res.json();
@@ -25,6 +27,18 @@ function App() {
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+        <input 
+          type="email" 
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input 
+          type="password" 
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Submit</button>
       </form>
