@@ -29,6 +29,31 @@ const addUsers =  async (req, res) => {
     }
 }
 
+const login = async (req, res) => {
+    try{
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    if (user.password !== password) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    res.status(200).json(user);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
-    addUsers
+    addUsers,
+    login
 }
