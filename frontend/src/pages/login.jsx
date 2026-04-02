@@ -10,10 +10,24 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if (!email || !password) {
+                alert("Please fill in all the fields");
+                return;
+            }
+            if (!email.includes('@')) {
+                alert("Please enter a valid email");
+                return;
+            }
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long");
+                return;
+            }   
             const user = await loginUser(email, password);
             console.log(user);
+            alert("Login successful");
             navigate("/"); // Redirect to Dashboard
         } catch (err) {
+            alert(err.message);
             console.log(err);
         }
     };

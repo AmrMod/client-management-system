@@ -9,9 +9,27 @@ function Register() {
   const handleSubmit = async (e) => {
           e.preventDefault();
           try {
+            if (!name || !email || !password) {
+              alert("Please fill in all the fields");
+              return;
+            }
+            if (password.length < 6) {
+              alert("Password must be at least 6 characters long");
+              return;
+            }
+            if (!email.includes('@')) {
+              alert("Please enter a valid email");
+              return;
+            }
+            if (!name.includes(' ')) {
+              alert("Please enter a valid name");
+              return;
+            }
               const user = await registerUser(name, email, password);
+              alert("User registered successfully");
               console.log(user);
           } catch (err) {
+              alert(err.message);
               console.log(err);
           }
       };

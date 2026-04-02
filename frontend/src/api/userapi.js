@@ -15,6 +15,7 @@ export const loginUser = async (email, password) => {
 };
 
 export const registerUser = async (name, email, password) => {
+ 
     try {
         const res = await fetch('http://localhost:3000/register', {
             method: 'POST',
@@ -24,6 +25,7 @@ export const registerUser = async (name, email, password) => {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Registration failed');
         return data; // user info or token
+        
     } catch (err) {
         throw err;
     }
