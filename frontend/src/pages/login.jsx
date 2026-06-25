@@ -17,6 +17,7 @@ import { LogIn } from "lucide-react";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [role, setRole] = useState("CLIENT");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -40,9 +41,13 @@ const Login = () => {
 
         setLoading(true);
         try {
-            const user = await loginUser(email, password);
+            const user = await loginUser(email, password, role);
             console.log(user);
-            navigate("/dashboard");
+            if (user.role === "ADMIN"){
+                navigate("/AdminDashboard");
+            }else{
+                navigate("/dashboard");
+            }
         } catch (err) {
             setError(err.message);
             console.log(err);
