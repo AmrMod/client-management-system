@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,8 +8,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Users, LayoutDashboard, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [profileName, setProfileName] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+        navigate("/login");
+    } else {
+        setUser(JSON.parse(storedUser));
+    }
+  }, [navigate]);
+
+
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
@@ -39,7 +56,7 @@ export default function Dashboard() {
             Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
-            Welcome back! Here&apos;s an overview of your workspace.
+            Welcome {user?.name} Here&apos;s an overview of your workspace.
           </p>
         </div>
 

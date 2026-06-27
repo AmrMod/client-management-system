@@ -42,7 +42,10 @@ const Login = () => {
         setLoading(true);
         try {
             const user = await loginUser(email, password, role);
+
+            localStorage.setItem("user", JSON.stringify(user));
             console.log(user);
+            
             if (user.role === "ADMIN"){
                 navigate("/AdminDashboard");
             }else{
