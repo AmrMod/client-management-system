@@ -59,3 +59,17 @@ export const createUser = async (name, email, password, role) => {
     }
 };
 
+export const deleteUser = async (id) => {
+    try {
+        //fetch("http://localhost:3000/users/" + id);
+        const res = await fetch(`http://localhost:3000/users/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to delete user');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}

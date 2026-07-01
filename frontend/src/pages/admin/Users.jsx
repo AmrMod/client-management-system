@@ -5,7 +5,8 @@
 // =========================
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { getAllUsers } from "@/api/userapi";
+import { getAllUsers } from "@/api/userapi";    
+import { deleteUser } from "@/api/userapi";
 
 import {
     Table,
@@ -48,7 +49,12 @@ export default function Users() {
     // =====================
     // Delete User
     // =====================
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
+        const deleteUsers = await deleteUser(id);
+        if (deleteUsers) {
+            setUsers(users.filter((user) => user.id !== id));
+        }
+
 
     };
 
