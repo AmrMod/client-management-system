@@ -10,7 +10,7 @@ const AdminDashboard = () => {
                 
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Link to="/admin/create-user">
+                    <Link to="/CreateUserByAdmin">
                         <button className="w-full">
                             <Users className="h-4 w-4" />
                             Create User

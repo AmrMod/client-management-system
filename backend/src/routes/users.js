@@ -11,5 +11,9 @@ router.post("/register", usersController.addUsers);
 
 router.post("/login", usersController.login);
 
+router.get("/users", usersController.getAllUsers);
+
+router.post("/createUserByAdmin", usersController.createUserByAdmin)
+
 module.exports = router;
 
