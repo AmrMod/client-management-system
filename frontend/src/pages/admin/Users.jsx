@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { getAllUsers } from "@/api/userapi";    
 import { deleteUser } from "@/api/userapi";
+import { useNavigate, Link } from "react-router-dom";
 
 import {
     Table,
@@ -16,6 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import EditUser from "./EditUsers";
 
 // =========================
 // Component
@@ -28,6 +30,7 @@ export default function Users() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     // =====================
     // Fetch Users
@@ -62,6 +65,7 @@ export default function Users() {
     // Edit User
     // =====================
     const handleEdit = (id) => {
+        navigate(`/${id}/EditUsers`);  
 
     };
 

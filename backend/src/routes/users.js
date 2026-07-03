@@ -15,7 +15,11 @@ router.get("/users", usersController.getAllUsers);
 
 router.post("/createUserByAdmin", usersController.createUserByAdmin)
 
+router.get("/getupdateUser/:id", usersController.getupdateUser)
+
 router.delete("/users/:id", usersController.deleteUser)
+
+router.put("/updateuserbyadmin/:id", usersController.updateuserbyadmin)
 
 module.exports = router;
 

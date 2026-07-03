@@ -7,6 +7,7 @@ import Register from './pages/register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Users from "./pages/admin/Users";
 import CreateUserByAdmin from "./pages/admin/CreateUserByAdmin";
+import EditUsers from './pages/admin/EditUsers';
 
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
         <Route path="/Users" element={<Users />} />
         <Route path="/CreateuserByAdmin" element={<CreateUserByAdmin />} />
+        <Route path="/:id/EditUsers" element={<EditUsers />} />
+
         
 
         

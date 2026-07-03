@@ -137,11 +137,60 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const getupdateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
+const updateuserbyadmin = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, password, role } = req.body;
+
+        const user = await prisma.user.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                name,
+                email,
+                password,
+                role
+            }
+        });
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
 
 module.exports = {
     addUsers,
     login,
     getAllUsers,
     createUserByAdmin,
-    deleteUser
+    deleteUser,
+    getupdateUser,
+    updateuserbyadmin
 }

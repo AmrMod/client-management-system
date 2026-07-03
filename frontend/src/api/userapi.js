@@ -73,3 +73,34 @@ export const deleteUser = async (id) => {
         throw err;
     }
 }
+
+export const getupdateUser = async (id) => {
+    try {
+        const res = await fetch(`http://localhost:3000/getupdateUser/${id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch user');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const updateuserbyadmin = async (id, name, email, password, role) => {
+    try {
+        const res = await fetch(`http://localhost:3000/updateuserbyadmin/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, role }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to update user');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}
+
+
