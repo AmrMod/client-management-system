@@ -34,6 +34,7 @@ import {
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+  
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -91,6 +92,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
 
     if (!storedUser) {
       navigate("/login");

@@ -184,6 +184,44 @@ const updateuserbyadmin = async (req, res) => {
     }
 }
 
+const updateclientprofile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {userId, name, email, Phone, company, Status } = req.body;
+
+
+        const user = await prisma.user.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                name,
+                email
+            }
+        });
+
+        const clientProfile = await prisma.clientprofile.update({
+            where: {
+                userId: Number(userId)
+            },
+            data: {
+                Phone,
+                company,
+                Status
+            }
+        });
+
+        res.status(200).json(user, clientProfile);
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
 
 module.exports = {
     addUsers,
@@ -192,5 +230,6 @@ module.exports = {
     createUserByAdmin,
     deleteUser,
     getupdateUser,
-    updateuserbyadmin
+    updateuserbyadmin,
+    updateclientprofile
 }

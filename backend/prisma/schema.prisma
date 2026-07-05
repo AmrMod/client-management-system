@@ -20,9 +20,26 @@ model User {
   password  String
   createdAt DateTime @default(now())
   role      Role @default(CLIENT)
+  clientProfile Clientprofile?
 }
 
 enum Role {
   CLIENT
   ADMIN
 } 
+
+model Clientprofile{
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  Phone     String
+  company   String
+  status    Status @default(Active)
+  createdAt DateTime @default(now())
+
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+enum Status{
+  Active
+  Inactive
+}
