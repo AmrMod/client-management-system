@@ -69,6 +69,8 @@ function EditUsers() {
       const user = await updateuserbyadmin(params.id, name, email, password, role);
       console.log(user);
       alert("User successfully updated");
+      navigate("/Users");
+  
     } catch (err) {
       setError(err.message);
       console.log(err);
