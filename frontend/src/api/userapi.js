@@ -103,4 +103,19 @@ export const updateuserbyadmin = async (id, name, email, password, role) => {
     }
 }
 
+export const updateclientProfile = async (id, userId, name, email, Phone, company, status) => {
+    try {
+        const res = await fetch(`http://localhost:3000/updateclientprofile/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, userId, name, email, Phone, company, status }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to update user');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}
+
 

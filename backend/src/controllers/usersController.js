@@ -187,7 +187,7 @@ const updateuserbyadmin = async (req, res) => {
 const updateclientprofile = async (req, res) => {
     try {
         const { id } = req.params;
-        const {userId, name, email, Phone, company, Status } = req.body;
+        const {userId, name, email, Phone, company, status } = req.body;
 
 
         const user = await prisma.user.update({
@@ -200,14 +200,14 @@ const updateclientprofile = async (req, res) => {
             }
         });
 
-        const clientProfile = await prisma.clientprofile.update({
+        const clientProfile = await prisma.Clientprofile.update({
             where: {
                 userId: Number(userId)
             },
             data: {
                 Phone,
                 company,
-                Status
+                status
             }
         });
 

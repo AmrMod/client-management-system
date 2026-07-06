@@ -1,7 +1,9 @@
+import { updateclientProfile } from "@/api/userapi";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
 import {
   Card,
   CardContent,
@@ -33,6 +35,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+
 export default function Dashboard() {
   
   const navigate = useNavigate();
@@ -46,6 +49,9 @@ export default function Dashboard() {
   const [profileEmail, setProfileEmail] = useState("client@example.com");
   const [profilePhone, setProfilePhone] = useState("+1 (555) 019-2834");
   const [profileCompany, setProfileCompany] = useState("Acme Corp");
+  const [status, setStatus] = useState("Active");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Requests state
   const [requests, setRequests] = useState([
@@ -101,6 +107,8 @@ export default function Dashboard() {
       setUser(parsed);
       setProfileName(parsed.name || "Client");
       setProfileEmail(parsed.email || "client@example.com");
+      setProfilePhone(parsed.phone || "");
+      setProfileCompany(parsed.company || "");
     }
 
     // Theme initialization
@@ -131,12 +139,46 @@ export default function Dashboard() {
     setNotifications(prev => [newNotification, ...prev]);
   };
 
-  const handleUpdateProfile = (e) => {
-    e.preventDefault();
-    const updatedUser = { ...user, name: profileName, email: profileEmail };
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    addSystemNotification("Profile Updated", "Your profile details have been successfully saved.");
+  const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+
+        setError("");
+    
+        
+        if (!profileName.includes(" ")) {
+          setError("Please enter your full name (first and last)");
+          return;
+        }
+        if (!profileEmail.includes("@")) {
+          setError("Please enter a valid email");
+          return;
+        }
+    
+        setLoading(true);
+        try {
+          const storedUser = localStorage.getItem("user");
+          const parsed = JSON.parse(storedUser);
+          const id = parsed.id;
+          const userId =id;
+          console.log(id);
+          const user = await updateclientProfile(id,userId, profileName, profileEmail, profilePhone, profileCompany, status);
+          console.log(user);
+          const updatedUser = { ...user, name: profileName, email: profileEmail, phone: profilePhone, company: profileCompany };
+          setUser(updatedUser);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          alert("Profile Updated Successfully");
+          addSystemNotification("Profile Updated", "Your profile details have been successfully saved.");
+          
+      
+        } catch (err) {
+          setError(err.message);
+          console.log(err);
+        } finally {
+          setLoading(false);
+        }
+
+
+  
   };
 
   const handleNewRequestSubmit = (e) => {
