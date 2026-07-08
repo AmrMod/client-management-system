@@ -118,4 +118,19 @@ export const updateclientProfile = async (id, userId, name, email, Phone, compan
     }
 }
 
+export const updatePassword = async (id, currentPassword, password) => {
+    try {
+        const res = await fetch(`http://localhost:3000/updatePassword/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({currentPassword, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to update user');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}
+
 

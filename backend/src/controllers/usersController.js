@@ -222,6 +222,46 @@ const updateclientprofile = async (req, res) => {
     }
 }
 
+const updatePassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { currentPassword, password } = req.body;
+
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+
+        if (existingUser.password != currentPassword) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        if (!password) {
+            return res.status(400).json({ error: 'Password is required' });
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                password
+            }
+        });
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
+
+
 
 module.exports = {
     addUsers,
@@ -231,5 +271,6 @@ module.exports = {
     deleteUser,
     getupdateUser,
     updateuserbyadmin,
-    updateclientprofile
+    updateclientprofile,
+    updatePassword
 }

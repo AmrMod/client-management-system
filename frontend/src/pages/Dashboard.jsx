@@ -1,4 +1,5 @@
 import { updateclientProfile } from "@/api/userapi";
+import { updatePassword, getupdateUser } from "@/api/userapi";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +32,8 @@ import {
   Folder,
   Settings,
   Menu,
-  X
+  X,
+  Lock
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -52,6 +54,14 @@ export default function Dashboard() {
   const [status, setStatus] = useState("Active");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Change Password states
+  const [existingPassword, setExistingPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   // Requests state
   const [requests, setRequests] = useState([
@@ -161,6 +171,9 @@ export default function Dashboard() {
           const id = parsed.id;
           const userId =id;
           console.log(id);
+          
+
+          
           const user = await updateclientProfile(id,userId, profileName, profileEmail, profilePhone, profileCompany, status);
           console.log(user);
           const updatedUser = { ...user, name: profileName, email: profileEmail, phone: profilePhone, company: profileCompany };
@@ -179,6 +192,37 @@ export default function Dashboard() {
 
 
   
+  };
+
+  const handlePasswordChange = async (e) => {
+         e.preventDefault();
+
+        if (newPassword !== confirmPassword) {
+            setPasswordError("Passwords do not match");
+            return;
+        }
+
+        
+
+        const storedUser = localStorage.getItem("user");
+        const parsed = JSON.parse(storedUser);
+        const id = parsed.id;
+
+
+        try{
+
+        const user = await updatePassword(id, currentPassword, confirmPassword);
+        const updatedPassword = { ...user, password: confirmPassword };
+        setUser(updatedPassword);
+        localStorage.setItem("user", JSON.stringify(updatedPassword));
+        alert("Password Updated Successfully");
+        }
+        catch(err){
+          setPasswordError(err.message);
+          console.log(err);
+        } 
+
+
   };
 
   const handleNewRequestSubmit = (e) => {
@@ -831,6 +875,66 @@ export default function Dashboard() {
                       Configure
                     </Button>
                   </div>
+                </CardContent>
+              </Card>
+
+              <Card className="md:col-span-3">
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                    <Lock className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <CardTitle>Change Password</CardTitle>
+                    <CardDescription>Update your account password to keep your account secure.</CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {passwordError && (
+                    <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm font-medium">
+                      {passwordError}
+                    </div>
+                  )}
+                  <form
+                    onSubmit={handlePasswordChange}
+                    className="space-y-4 max-w-md"
+                  >
+                    <div className="space-y-2">
+                      <Label htmlFor="current-password">Current Password</Label>
+                      <Input
+                        id="current-password"
+                        type="password"
+                        placeholder="Enter current password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-password">New Password</Label>
+                      <Input
+                        id="new-password"
+                        type="password"
+                        placeholder="Enter new password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password">Confirm New Password</Label>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        placeholder="Re-enter new password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" disabled={passwordLoading} className="mt-2">
+                      {passwordLoading ? "Updating..." : "Update Password"}
+                    </Button>
+                  </form>
                 </CardContent>
               </Card>
             </div>

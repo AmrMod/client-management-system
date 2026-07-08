@@ -23,5 +23,7 @@ router.put("/updateuserbyadmin/:id", usersController.updateuserbyadmin)
 
 router.put("/updateclientprofile/:id", usersController.updateclientprofile)
 
+router.put("/updatePassword/:id", usersController.updatePassword)
+
 module.exports = router;
 
