@@ -176,6 +176,8 @@ export default function Dashboard() {
           
           const user = await updateclientProfile(id,userId, profileName, profileEmail, profilePhone, profileCompany, status);
           console.log(user);
+
+          //...user - shallow copy
           const updatedUser = { ...user, name: profileName, email: profileEmail, phone: profilePhone, company: profileCompany };
           setUser(updatedUser);
           localStorage.setItem("user", JSON.stringify(updatedUser));
