@@ -1,7 +1,9 @@
 // src/api/userApi.js
+const API_BASE = 'http://localhost:3000';
+
 export const loginUser = async (email, password, role) => {
     try {
-        const res = await fetch('http://localhost:3000/login', {
+        const res = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, role }),
@@ -17,7 +19,7 @@ export const loginUser = async (email, password, role) => {
 export const registerUser = async (name, email, password) => {
  
     try {
-        const res = await fetch('http://localhost:3000/register', {
+        const res = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password }),
@@ -33,7 +35,7 @@ export const registerUser = async (name, email, password) => {
 
 export const getAllUsers = async () => {
     try {
-        const res = await fetch('http://localhost:3000/users');
+        const res = await fetch(`${API_BASE}/users`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
         return data;
@@ -45,7 +47,7 @@ export const getAllUsers = async () => {
 export const createUser = async (name, email, password, role) => {
  
     try {
-        const res = await fetch('http://localhost:3000/createUserByAdmin', {
+        const res = await fetch(`${API_BASE}/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password, role }),
@@ -61,8 +63,7 @@ export const createUser = async (name, email, password, role) => {
 
 export const deleteUser = async (id) => {
     try {
-        //fetch("http://localhost:3000/users/" + id);
-        const res = await fetch(`http://localhost:3000/users/${id}`, {
+        const res = await fetch(`${API_BASE}/users/${id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
         });
@@ -74,9 +75,9 @@ export const deleteUser = async (id) => {
     }
 }
 
-export const getupdateUser = async (id) => {
+export const getUserById = async (id) => {
     try {
-        const res = await fetch(`http://localhost:3000/getupdateUser/${id}`, {
+        const res = await fetch(`${API_BASE}/users/${id}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
@@ -90,7 +91,7 @@ export const getupdateUser = async (id) => {
 
 export const updateuserbyadmin = async (id, name, email, password, role) => {
     try {
-        const res = await fetch(`http://localhost:3000/updateuserbyadmin/${id}`, {
+        const res = await fetch(`${API_BASE}/users/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password, role }),
@@ -105,7 +106,7 @@ export const updateuserbyadmin = async (id, name, email, password, role) => {
 
 export const updateclientProfile = async (id, userId, name, email, Phone, company, status) => {
     try {
-        const res = await fetch(`http://localhost:3000/updateclientprofile/${id}`, {
+        const res = await fetch(`${API_BASE}/users/profile/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id, userId, name, email, Phone, company, status }),
@@ -120,7 +121,7 @@ export const updateclientProfile = async (id, userId, name, email, Phone, compan
 
 export const updatePassword = async (id, currentPassword, password) => {
     try {
-        const res = await fetch(`http://localhost:3000/updatePassword/${id}`, {
+        const res = await fetch(`${API_BASE}/users/password/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({currentPassword, password }),

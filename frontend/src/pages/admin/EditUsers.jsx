@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getupdateUser, createUser, updateuserbyadmin } from "../../api/userapi";
+import { getUserById, createUser, updateuserbyadmin } from "../../api/userapi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useParams } from "react-router";
@@ -26,7 +26,7 @@ function EditUsers() {
   useEffect(() => {
           const fetchUsers = async () => {
               try {
-                  const response = await getupdateUser(params.id);
+                  const response = await getUserById(params.id);
                   setName(response.name);
                   setEmail(response.email);
                   setPassword(response.password);

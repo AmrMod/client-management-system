@@ -69,6 +69,10 @@ export default function Users() {
 
     };
 
+    const handleNotes = (id) => {
+        navigate(`/${id}/ClientNotes`);
+    }
+
     // =====================
     // JSX
     // =====================
@@ -106,6 +110,7 @@ export default function Users() {
                             <TableCell>
                                 <Button onClick={() => handleEdit(user.id)}>Edit</Button>
                                 <Button onClick={() => handleDelete(user.id)}>Delete</Button>
+                                <Button onClick={() => handleNotes(user.id)}>Notes</Button>
                             </TableCell>
                         </TableRow>
                     ))}

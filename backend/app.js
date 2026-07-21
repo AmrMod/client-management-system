@@ -1,10 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
-
-
-let usersRouter = require('./src/routes/users');
-
+const authRoutes = require('./src/auth/auth.routes');
+const userRoutes = require('./src/users/user.routes');
+const noteRoutes = require('./src/notes/note.routes');
 
 const app = express();
 
@@ -14,7 +13,10 @@ app.use(cors({
   credentials: true, // Allow cookies
 }));
 app.use(express.json());
-app.use("/", usersRouter);
 
+// Routes
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/notes', noteRoutes);
 
 module.exports = app;

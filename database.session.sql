@@ -2,4 +2,9 @@
 
 --INSERT INTO Clientprofile(UserId, Phone, Company) VALUES('1', '09094343344', 'Google')
 
-SELECT * FROM User
+--SELECT * FROM User
+
+--SELECT * FROM Clientprofile
+
+SELECT * FROM UserNote
+

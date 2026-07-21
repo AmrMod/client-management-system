@@ -21,6 +21,7 @@ model User {
   createdAt DateTime @default(now())
   role      Role @default(CLIENT)
   clientProfile Clientprofile?
+  notes UserNote[]
 }
 
 enum Role {
@@ -42,4 +43,13 @@ model Clientprofile{
 enum Status{
   Active
   Inactive
+}
+
+model UserNote{
+  id        Int     @id @default(autoincrement())
+  userId    Int     
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  user      User    @relation(fields: [userId], references: [id])
 }
