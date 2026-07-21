@@ -3,7 +3,7 @@
 // =========================
 // Imports
 // =========================
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getNotesByUserId, createNote, updateNote, deleteNote } from "@/api/noteapi";
 import { getUserById } from "@/api/userapi";
@@ -54,28 +54,33 @@ export default function ClientNotes() {
   // =====================
   // Data Fetching
   // =====================
-  const fetchClient = useCallback(async () => {
-    try {
-      const data = await getUserById(params.id);
-      setClient(data);
-    } catch (err) {
-      console.error("Failed to fetch client:", err);
-    }
-  }, [params.id]);
-
-  const fetchNotes = useCallback(async () => {
+  const fetchNotes = async () => {
     try {
       const data = await getNotesByUserId(params.id);
       setNotes(data);
     } catch (err) {
       console.error("Failed to fetch notes:", err);
     }
-  }, [params.id]);
+  };
 
+  //promise.all for faster initial page load. Promise.all starts both requests in parallel and waits until both finish.
   useEffect(() => {
-    fetchClient();
-    fetchNotes();
-  }, [fetchClient, fetchNotes]);
+  async function loadPage() {
+    try {
+      const [clientData, notesData] = await Promise.all([
+        getUserById(params.id),
+        getNotesByUserId(params.id),
+      ]);
+
+      setClient(clientData);
+      setNotes(notesData);
+    } catch (err) {
+      console.error("Failed to load page:", err);
+    }
+  }
+
+  loadPage();
+  }, [params.id]);
 
   // =====================
   // Handlers

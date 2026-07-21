@@ -1,5 +1,6 @@
 import { updateclientProfile } from "@/api/userapi";
-import { updatePassword, getupdateUser } from "@/api/userapi";
+import { updatePassword, getUserById
+ } from "@/api/userapi";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
