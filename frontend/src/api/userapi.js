@@ -134,4 +134,15 @@ export const updatePassword = async (id, currentPassword, password) => {
     }
 }
 
+export const getTotalUsers = async () => {
+    try {
+        const res = await fetch(`${API_BASE}/users/totalUsers`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}
+
 

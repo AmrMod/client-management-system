@@ -6,5 +6,7 @@
 
 --SELECT * FROM Clientprofile
 
-SELECT * FROM UserNote
+--SELECT * FROM UserNote
+
+SELECT COUNT(*) FROM User
 

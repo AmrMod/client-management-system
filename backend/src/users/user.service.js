@@ -139,6 +139,12 @@ const updatePassword = async (id, { currentPassword, password }) => {
     return user;
 };
 
+
+const getTotalUsers = async () => {
+    return await prisma.user.count();
+};
+
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -146,5 +152,6 @@ module.exports = {
     deleteUser,
     updateUserByAdmin,
     updateClientProfile,
-    updatePassword
+    updatePassword,
+    getTotalUsers
 };

@@ -85,6 +85,17 @@ const updatePassword = async (req, res) => {
     }
 };
 
+const getTotalUsers = async (req, res) => {
+    try {
+        const users = await userService.getTotalUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -92,5 +103,6 @@ module.exports = {
     deleteUser,
     updateUserByAdmin,
     updateClientProfile,
-    updatePassword
+    updatePassword,
+    getTotalUsers
 };

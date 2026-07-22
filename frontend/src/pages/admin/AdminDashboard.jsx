@@ -49,6 +49,8 @@ import { useEffect, useState } from "react";
 import UsersList from "./Users";
 import CreateUserByAdmin from "./createUserByAdmin";
 
+import { getTotalUsers } from "@/api/userapi";
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [adminUser, setAdminUser] = useState(null);
@@ -56,6 +58,8 @@ export default function AdminDashboard() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [openSections, setOpenSections] = useState({ "User Management": true });
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [error, setError] = useState("");
 
   // Mock roles state
   const [roles] = useState([
@@ -120,6 +124,18 @@ export default function AdminDashboard() {
       document.documentElement.classList.remove("dark");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const getTotalUsersByAdmin = async () => {
+                try {
+                    const response = await getTotalUsers();
+                    setTotalUsers(response);
+                } catch (error) {
+                    setError(error.message);
+                } 
+            };
+    getTotalUsersByAdmin();
+  }, [adminUser])
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -189,7 +205,7 @@ export default function AdminDashboard() {
                   <UsersIcon className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">136</div>
+                  <div className="text-2xl font-bold">{totalUsers}</div>
                   <p className="text-xs text-muted-foreground mt-1">+12% this month</p>
                 </CardContent>
               </Card>
