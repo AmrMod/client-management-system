@@ -85,15 +85,48 @@ const updatePassword = async (req, res) => {
     }
 };
 
-const getTotalUsers = async (req, res) => {
+// const getTotalUsers = async (req, res) => {
+//     try {
+//         const users = await userService.getTotalUsers();
+//         res.status(200).json(users);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+// const getUsersThisMonth = async (req, res) => {
+//     try {
+//         const users = await userService.getUsersThisMonth();
+//         res.status(200).json(users);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+const getDashboardStats = async (req, res) => {
     try {
-        const users = await userService.getTotalUsers();
+        const stats = await userService.getDashboardStats();
+        res.status(200).json(stats);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+//route get all users or search name
+const searchUsers = async (req, res) => {
+    try {
+        const {query} = req.query;
+        const users = await userService.searchUsers(query);
         res.status(200).json(users);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 
 module.exports = {
@@ -104,5 +137,8 @@ module.exports = {
     updateUserByAdmin,
     updateClientProfile,
     updatePassword,
-    getTotalUsers
+    // getTotalUsers,
+    // getUsersThisMonth,
+    getDashboardStats,
+    searchUsers
 };

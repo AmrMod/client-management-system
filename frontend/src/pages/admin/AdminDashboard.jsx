@@ -49,7 +49,8 @@ import { useEffect, useState } from "react";
 import UsersList from "./Users";
 import CreateUserByAdmin from "./createUserByAdmin";
 
-import { getTotalUsers } from "@/api/userapi";
+// import { getTotalUsers } from "@/api/userapi";
+import { getDashboardStats } from "@/api/userapi";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -59,6 +60,9 @@ export default function AdminDashboard() {
   const [isDark, setIsDark] = useState(false);
   const [openSections, setOpenSections] = useState({ "User Management": true });
   const [totalUsers, setTotalUsers] = useState(0);
+  const [usersThisMonth, setUsersThisMonth] = useState(0);
+  const [usersLastMonth, setUsersLastMonth] = useState(0);
+  const [growthRate, setGrowthRate] = useState(0);
   const [error, setError] = useState("");
 
   // Mock roles state
@@ -126,15 +130,28 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   useEffect(() => {
-    const getTotalUsersByAdmin = async () => {
-                try {
-                    const response = await getTotalUsers();
-                    setTotalUsers(response);
-                } catch (error) {
-                    setError(error.message);
-                } 
-            };
-    getTotalUsersByAdmin();
+    // const getTotalUsersByAdmin = async () => {
+    //             try {
+    //                 const response = await getTotalUsers();
+    //                 setTotalUsers(response);
+    //             } catch (error) {
+    //                 setError(error.message);
+    //             } 
+    //         };
+    // getTotalUsersByAdmin();
+
+    const getDashboardStatsByAdmin = async () => {
+        try {
+            const response = await getDashboardStats();
+            setTotalUsers(response.totalUsers);
+            setUsersThisMonth(response.usersThisMonth);
+            setUsersLastMonth(response.usersLastMonth);
+            setGrowthRate(response.growthRate);
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+    getDashboardStatsByAdmin();
   }, [adminUser])
 
   const handleLogout = () => {
@@ -206,7 +223,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalUsers}</div>
-                  <p className="text-xs text-muted-foreground mt-1">+12% this month</p>
+                  <p className="text-xs text-muted-foreground mt-1">{growthRate}% this month</p>
                 </CardContent>
               </Card>
 

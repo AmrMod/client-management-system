@@ -134,11 +134,47 @@ export const updatePassword = async (id, currentPassword, password) => {
     }
 }
 
-export const getTotalUsers = async () => {
+// export const getTotalUsers = async () => {
+//     try {
+//         const res = await fetch(`${API_BASE}/users/totalUsers`);
+//         const data = await res.json();
+//         if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
+//         return data;
+//     } catch (err) {
+//         throw err;
+//     }
+// }
+
+// export const getUsersThisMonth = async () => {
+//     try {
+//         const res = await fetch(`${API_BASE}/users/users-this-month`);
+//         const data = await res.json();
+//         if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
+//         return data;
+//     } catch (err) {
+//         throw err;
+//     }
+// }
+
+export const getDashboardStats = async () => {
     try {
-        const res = await fetch(`${API_BASE}/users/totalUsers`);
+        const res = await fetch(`${API_BASE}/users/dashboard/stats`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
+        return data;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const searchUsers = async (id) => {
+    try {
+        const res = await fetch(`${API_BASE}/users/search?query=${search}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch user');
         return data;
     } catch (err) {
         throw err;

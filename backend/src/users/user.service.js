@@ -144,6 +144,69 @@ const getTotalUsers = async () => {
     return await prisma.user.count();
 };
 
+const getUsersThisMonth = async () => {
+    return await prisma.user.count({
+        where: {
+            createdAt: {
+                gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            }
+        }
+    });
+};
+
+const getUsersLastMonth = async () => {
+    return await prisma.user.count({
+        where: {
+            createdAt: {
+                gte: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+                lt: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            }
+        }
+    });
+};
+
+const getDashboardStats = async () => {
+    const [
+        totalUsers,
+        usersThisMonth,
+        usersLastMonth,
+    ] = await Promise.all([
+        getTotalUsers(),
+        getUsersThisMonth(),
+        getUsersLastMonth(),
+    ]);
+
+    const growthRate = Math.trunc(
+        ((usersThisMonth - usersLastMonth) / usersLastMonth) * 100
+    );
+
+    return {
+        totalUsers,
+        usersThisMonth,
+        usersLastMonth,
+        growthRate,
+    };
+};
+
+const searchUsers = async (query) => {
+    return await prisma.user.findMany({
+        where: {
+            OR: [
+                {
+                    name: {
+                        contains: query,
+                    },
+                },
+                {
+                    email: {
+                        contains: query,
+                    },
+                },
+            ],
+        },
+    });
+};
+
 
 module.exports = {
     getAllUsers,
@@ -153,5 +216,8 @@ module.exports = {
     updateUserByAdmin,
     updateClientProfile,
     updatePassword,
-    getTotalUsers
+    getTotalUsers,
+    getUsersThisMonth,
+    getDashboardStats,
+    searchUsers
 };

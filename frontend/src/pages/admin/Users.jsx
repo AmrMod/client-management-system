@@ -39,6 +39,7 @@ export default function Users() {
         const fetchUsers = async () => {
             try {
                 const response = await getAllUsers();
+                console.log(response);
                 setUsers(response);
             } catch (error) {
                 setError(error.message);

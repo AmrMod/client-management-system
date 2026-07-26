@@ -8,5 +8,16 @@
 
 --SELECT * FROM UserNote
 
-SELECT COUNT(*) FROM User
+--SELECT COUNT(*) FROM User
+
+--SELECT name, createdAt FROM User
+
+--SELECT
+--    name,
+--    datetime(createdAt / 1000, 'unixepoch')
+--FROM User;
+
+
+--for search box
+SELECT * FROM User WHERE name LIKE 'A%' 
 
