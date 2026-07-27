@@ -7,11 +7,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { getAllUsers } from "@/api/userapi";    
 import { deleteUser } from "@/api/userapi";
+import { searchUsers } from "@/api/userapi";
 import { useNavigate, Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -28,6 +31,7 @@ export default function Users() {
     // State
     // =====================
     const [users, setUsers] = useState([]);
+    const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -49,6 +53,18 @@ export default function Users() {
         };
         fetchUsers();
     }, []);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+        const filteredUsers = await searchUsers(search);
+        setUsers(filteredUsers);
+    };
+
+    fetchUsers();
+    }, [users, search]);
+
+
+
 
     // =====================
     // Delete User
@@ -84,9 +100,26 @@ export default function Users() {
                 Users
             </h1>
 
+            <div className="mb-4 w-full max-w-xl">
+                <Input
+                    type="text"
+                    placeholder="Search users.."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full h-11"
+                    />
+            </div>
+
             <Table>
+            
 
                 <TableHeader>
+                    
+                        
+                        
+
+
+                    
 
                     <TableRow>
                         <TableHead>ID</TableHead>

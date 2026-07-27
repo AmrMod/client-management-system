@@ -167,7 +167,7 @@ export const getDashboardStats = async () => {
     }
 }
 
-export const searchUsers = async (id) => {
+export const searchUsers = async (search) => {
     try {
         const res = await fetch(`${API_BASE}/users/search?query=${search}`, {
             method: 'GET',
