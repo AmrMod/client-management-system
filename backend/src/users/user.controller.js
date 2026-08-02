@@ -127,6 +127,20 @@ const searchUsers = async (req, res) => {
     }
 };
 
+//route get all users with pagination
+const getAllUsersWithPagination = async (req, res) => {
+    try {
+        const {page, limit} = req.query;
+        const parsedPage = parseInt(page, 10);
+        const parsedLimit = parseInt(limit, 10);
+        const users = await userService.getAllUsersWithPagination(parsedPage, parsedLimit);
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 module.exports = {
@@ -140,5 +154,6 @@ module.exports = {
     // getTotalUsers,
     // getUsersThisMonth,
     getDashboardStats,
-    searchUsers
+    searchUsers,
+    getAllUsersWithPagination
 };

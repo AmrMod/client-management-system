@@ -5,6 +5,7 @@ const userController = require('./user.controller');
 router.get('/', userController.getAllUsers);
 //router.get('/totalUsers/', userController.getTotalUsers);
 //router.get('/users-this-month', userController.getUsersThisMonth);
+router.get('/pagination', userController.getAllUsersWithPagination);
 router.get('/dashboard/stats', userController.getDashboardStats);
 router.get('/search', userController.searchUsers );
 router.get('/:id', userController.getUserById);

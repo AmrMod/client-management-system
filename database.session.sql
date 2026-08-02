@@ -19,5 +19,30 @@
 
 
 --for search box
-SELECT * FROM User WHERE name LIKE 'A%' 
+--SELECT * FROM User WHERE name LIKE 'A%' 
+
+--OFFSET = (page - 1) × page_size
+
+
+--page 1
+--SELECT *
+--FROM User
+--ORDER BY id
+--LIMIT 10 OFFSET 0;
+
+
+--page 2
+--SELECT *
+--FROM User
+--ORDER BY id
+--LIMIT 10 OFFSET 10;   
+
+--page 3
+
+--SELECT *
+--FROM User
+--ORDER BY id
+--LIMIT 10 OFFSET 20;
+
+
 

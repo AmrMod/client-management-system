@@ -5,7 +5,7 @@
 // =========================
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { getAllUsers } from "@/api/userapi";    
+import { getAllUsers } from "@/api/userapi";
 import { deleteUser } from "@/api/userapi";
 import { searchUsers } from "@/api/userapi";
 import { useNavigate, Link } from "react-router-dom";
@@ -19,7 +19,10 @@ import {
     TableHead,
     TableHeader,
     TableRow,
+
 } from "@/components/ui/table";
+
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import EditUser from "./EditUsers";
 
 // =========================
@@ -34,6 +37,9 @@ export default function Users() {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
     const navigate = useNavigate();
 
     // =====================
@@ -56,11 +62,11 @@ export default function Users() {
 
     useEffect(() => {
         const fetchUsers = async () => {
-        const filteredUsers = await searchUsers(search);
-        setUsers(filteredUsers);
-    };
+            const filteredUsers = await searchUsers(search);
+            setUsers(filteredUsers);
+        };
 
-    fetchUsers();
+        fetchUsers();
     }, [users, search]);
 
 
@@ -82,7 +88,7 @@ export default function Users() {
     // Edit User
     // =====================
     const handleEdit = (id) => {
-        navigate(`/${id}/EditUsers`);  
+        navigate(`/${id}/EditUsers`);
 
     };
 
@@ -107,19 +113,19 @@ export default function Users() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="w-full h-11"
-                    />
+                />
             </div>
 
             <Table>
-            
+
 
                 <TableHeader>
-                    
-                        
-                        
 
 
-                    
+
+
+
+
 
                     <TableRow>
                         <TableHead>ID</TableHead>
@@ -152,6 +158,32 @@ export default function Users() {
                 </TableBody>
 
             </Table>
+
+
+
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink>1</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink>2</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink>3</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationNext />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
+
 
         </div>
     );

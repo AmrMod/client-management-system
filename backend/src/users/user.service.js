@@ -207,6 +207,13 @@ const searchUsers = async (query) => {
     });
 };
 
+const getAllUsersWithPagination = async (page, limit) => {
+    return await prisma.user.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+    });
+};
+
 
 module.exports = {
     getAllUsers,
@@ -219,5 +226,6 @@ module.exports = {
     getTotalUsers,
     getUsersThisMonth,
     getDashboardStats,
-    searchUsers
+    searchUsers,
+    getAllUsersWithPagination
 };
