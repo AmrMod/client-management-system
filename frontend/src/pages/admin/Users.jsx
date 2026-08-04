@@ -41,33 +41,94 @@ export default function Users() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const navigate = useNavigate();
+    const limit = 10;
 
     // =====================
     // Fetch Users
     // =====================
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await getAllUsers();
-                console.log(response);
-                setUsers(response);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUsers();
-    }, []);
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         try {
+    //             const response = await getAllUsers();
+    //             console.log(response);
+    //             setUsers(response);
+    //         } catch (error) {
+    //             setError(error.message);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchUsers();
+    // }, []);
+
+    //useeffect with pagination
+    // BUG FIX: response is { users, totalUsers, totalPages, currentPage, limit }
+    // was doing setUsers(response) which set the whole object as the array — now destructured
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         try {
+    //             const response = await getAllUsers(currentPage, limit);
+    //             setUsers(response);
+    //         } catch (error) {
+    //             setError(error.message);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchUsers();
+    // }, [currentPage]);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+    const fetchUsers = async () => {
+        try {
+            const response = await getAllUsers(currentPage, limit);
+            setUsers(response.users);
+            setTotalPages(response.totalPages);
+            setTotalItems(response.totalUsers);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchUsers();
+}, [currentPage]);
+
+    // BUG FIX: had [users, search] as dependency — since this sets users, it caused an infinite loop.
+    // Also need to skip search when search is empty (let pagination handle it)
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         const filteredUsers = await searchUsers(search);
+    //         setUsers(filteredUsers);
+    //     };
+    //     fetchUsers();
+    // }, [users, search]);
+
+    useEffect(() => {
+        if (!search.trim()) {
+            // When search is cleared, re-fetch paginated data
+            const refetch = async () => {
+                try {
+                    const response = await getAllUsers(currentPage, limit);
+                    setUsers(response.users);
+                    setTotalPages(response.totalPages);
+                    setTotalItems(response.totalUsers);
+                } catch (error) {
+                    setError(error.message);
+                }
+            };
+            refetch();
+            return;
+        }
+
+        const fetchFiltered = async () => {
             const filteredUsers = await searchUsers(search);
             setUsers(filteredUsers);
         };
 
-        fetchUsers();
-    }, [users, search]);
+        fetchFiltered();
+    }, [search, currentPage]);
 
 
 
@@ -164,22 +225,32 @@ export default function Users() {
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
-                        <PaginationPrevious />
+                        <PaginationPrevious
+                            onClick={() => {
+                                if (currentPage > 1) {
+                                    setCurrentPage(currentPage - 1);
+                                }
+                            }}
+                        />
                     </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <PaginationItem key={i}>
+                            <PaginationLink
+                                isActive={currentPage === i + 1}
+                                onClick={() => setCurrentPage(i + 1)}
+                            >
+                                {i + 1}
+                            </PaginationLink>
+                        </PaginationItem>
+                    ))}
                     <PaginationItem>
-                        <PaginationLink>1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink>2</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink>3</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationNext />
+                        <PaginationNext
+                            onClick={() => {
+                                if (currentPage < totalPages) {
+                                    setCurrentPage(currentPage + 1);
+                                }
+                            }}
+                        />
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>

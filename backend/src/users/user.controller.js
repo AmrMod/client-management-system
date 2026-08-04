@@ -128,16 +128,33 @@ const searchUsers = async (req, res) => {
 };
 
 //route get all users with pagination
+// const getAllUsersWithPagination = async (req, res) => {
+//     try {
+//         const {page, limit} = req.query;
+//         const parsedPage = parseInt(page, 10);
+//         const parsedLimit = parseInt(limit, 10);
+//         const users = await userService.getAllUsersWithPagination(parsedPage, parsedLimit);
+//         res.status(200).json(users);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+//pagination with metadata
 const getAllUsersWithPagination = async (req, res) => {
     try {
-        const {page, limit} = req.query;
-        const parsedPage = parseInt(page, 10);
-        const parsedLimit = parseInt(limit, 10);
-        const users = await userService.getAllUsersWithPagination(parsedPage, parsedLimit);
-        res.status(200).json(users);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        const result = await userService.getAllUsersWithPagination(page, limit);
+
+        res.status(200).json(result);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({
+            error: "Internal server error",
+        });
     }
 };
 

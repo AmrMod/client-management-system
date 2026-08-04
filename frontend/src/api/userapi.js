@@ -33,16 +33,54 @@ export const registerUser = async (name, email, password) => {
     }
 };
 
-export const getAllUsers = async () => {
+// export const getAllUsers = async () => {
+//     try {
+//         const res = await fetch(`${API_BASE}/users`);
+//         const data = await res.json();
+//         if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
+//         return data;
+//     } catch (err) {
+//         throw err;
+//     }
+// }
+
+//get all users with pagination
+// BUG FIX: was calling /users?page=&limit= which hits the getAllUsers route (no pagination).
+// The correct backend route for pagination is /users/pagination
+// export const getAllUsers = async (page = 1, limit = 10) => {
+//     try {
+//         const res = await fetch(
+//             `${API_BASE}/users?page=${page}&limit=${limit}`
+//         );
+//
+//         const data = await res.json();
+//
+//         if (!res.ok)
+//             throw new Error(data.error || "Failed to fetch users");
+//
+//         return data;
+//     } catch (err) {
+//         throw err;
+//     }
+// };
+
+export const getAllUsers = async (page = 1, limit = 10) => {
     try {
-        const res = await fetch(`${API_BASE}/users`);
+        const res = await fetch(
+            `${API_BASE}/users/pagination?page=${page}&limit=${limit}`
+        );
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to fetch users');
+
+        if (!res.ok)
+            throw new Error(data.error || "Failed to fetch users");
+
         return data;
     } catch (err) {
         throw err;
     }
-}
+};
+
 
 export const createUser = async (name, email, password, role) => {
  

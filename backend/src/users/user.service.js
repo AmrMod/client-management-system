@@ -207,11 +207,33 @@ const searchUsers = async (query) => {
     });
 };
 
+// const getAllUsersWithPagination = async (page, limit) => {
+//     return await prisma.user.findMany({
+//         skip: (page - 1) * limit,
+//         take: limit,
+//     });
+// };
+
+
+//pagination with metadata. 
 const getAllUsersWithPagination = async (page, limit) => {
-    return await prisma.user.findMany({
-        skip: (page - 1) * limit,
-        take: limit,
-    });
+    const skip = (page - 1) * limit;
+
+    const [users, totalUsers] = await prisma.$transaction([
+        prisma.user.findMany({
+            skip,
+            take: limit,
+        }),
+        prisma.user.count(),
+    ]);
+
+    return {
+        users,
+        totalUsers,
+        totalPages: Math.ceil(totalUsers / limit),
+        currentPage: page,
+        limit,
+    };
 };
 
 
