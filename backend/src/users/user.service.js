@@ -219,12 +219,12 @@ const searchUsers = async (query) => {
 const getAllUsersWithPagination = async (page, limit) => {
     const skip = (page - 1) * limit;
 
-    const [users, totalUsers] = await prisma.$transaction([
+    const [users, totalUsers] = await Promise.all([
         prisma.user.findMany({
             skip,
             take: limit,
         }),
-        prisma.user.count(),
+        getTotalUsers(),
     ]);
 
     return {

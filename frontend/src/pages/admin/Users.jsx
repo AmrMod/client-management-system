@@ -78,6 +78,8 @@ export default function Users() {
     //     fetchUsers();
     // }, [currentPage]);
 
+
+     //useeffect with pagination
     useEffect(() => {
     const fetchUsers = async () => {
         try {

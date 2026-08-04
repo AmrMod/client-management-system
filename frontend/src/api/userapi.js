@@ -64,7 +64,7 @@ export const registerUser = async (name, email, password) => {
 //     }
 // };
 
-export const getAllUsers = async (page = 1, limit = 10) => {
+export const getAllUsers = async (page , limit) => {
     try {
         const res = await fetch(
             `${API_BASE}/users/pagination?page=${page}&limit=${limit}`
