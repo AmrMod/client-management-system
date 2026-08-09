@@ -41,7 +41,8 @@ import {
   ChevronRight,
   Plus,
   Activity,
-  DollarSign
+  DollarSign,
+  Building2
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -80,12 +81,33 @@ export default function AdminDashboard() {
     { id: "CL-103", name: "Wayne Enterprises", contact: "Lucius Fox", email: "fox@wayne.com", status: "Pending" }
   ]);
 
+  const [supportUnits] = useState([
+      {
+        id: 1,
+        name: "IT Support",
+        requests: 12,
+        status: "Operational",
+      },
+      {
+        id: 2,
+        name: "Academic Support",
+        requests: 8,
+        status: "Operational",
+      },
+      {
+        id: 3,
+        name: "Finance Support",
+        requests: 5,
+        status: "Operational",
+      },
+    ]);
+
   // Mock projects state
-  const [projects] = useState([
-    { id: "PRJ-901", name: "E-Commerce Gateway", client: "Acme Corp", progress: 85, status: "In Progress" },
-    { id: "PRJ-902", name: "Arch Reactor Upgrade", client: "Stark Industries", progress: 40, status: "In Progress" },
-    { id: "PRJ-903", name: "Batcave Networking", client: "Wayne Enterprises", progress: 100, status: "Completed" }
-  ]);
+  // const [projects] = useState([
+  //   { id: "PRJ-901", name: "E-Commerce Gateway", client: "Acme Corp", progress: 85, status: "In Progress" },
+  //   { id: "PRJ-902", name: "Arch Reactor Upgrade", client: "Stark Industries", progress: 40, status: "In Progress" },
+  //   { id: "PRJ-903", name: "Batcave Networking", client: "Wayne Enterprises", progress: 100, status: "Completed" }
+  // ]);
 
   // Mock Tasks state
   const [tasks] = useState([
@@ -102,11 +124,11 @@ export default function AdminDashboard() {
   ]);
 
   // Mock Payments state
-  const [payments] = useState([
-    { id: "TXN-8820", client: "Wayne Enterprises", amount: "$15,200.00", date: "2026-07-04", status: "Succeeded" },
-    { id: "TXN-8819", client: "Acme Corp", amount: "$4,500.00", date: "2026-07-02", status: "Succeeded" },
-    { id: "TXN-8818", client: "Stark Industries", amount: "$8,000.00", date: "2026-06-30", status: "Pending" }
-  ]);
+  // const [payments] = useState([
+  //   { id: "TXN-8820", client: "Wayne Enterprises", amount: "$15,200.00", date: "2026-07-04", status: "Succeeded" },
+  //   { id: "TXN-8819", client: "Acme Corp", amount: "$4,500.00", date: "2026-07-02", status: "Succeeded" },
+  //   { id: "TXN-8818", client: "Stark Industries", amount: "$8,000.00", date: "2026-06-30", status: "Pending" }
+  // ]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -178,28 +200,34 @@ export default function AdminDashboard() {
     }
   };
 
+  // 
+  
   const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard },
-    {
-      name: "User Management",
-      icon: UsersIcon,
-      subItems: [
+{ name: "Dashboard", icon: LayoutDashboard },
+
+
+{
+    name: "User Management",
+    icon: UsersIcon,
+    subItems: [
         { name: "Users", icon: User },
         { name: "Roles", icon: ShieldCheck },
-      ]
-    },
-    { name: "Client Management", icon: Briefcase },
-    { name: "Projects", icon: FolderKanban },
-    { name: "Requests", icon: ClipboardList },
-    { name: "Tasks", icon: CheckSquare },
-    { name: "Documents", icon: FolderOpen },
-    { name: "Messages", icon: MessageSquare },
-    { name: "Notifications", icon: Bell },
-    { name: "Reports", icon: BarChart3 },
-    { name: "Payments", icon: CreditCard },
-    { name: "Activity Logs", icon: History },
-    { name: "Settings", icon: Settings },
-  ];
+    ]
+},
+
+{ name: "Support Staff", icon: UsersIcon },
+{ name: "Support Units", icon: Briefcase },
+
+{ name: "Requests", icon: ClipboardList },
+{ name: "Documents", icon: FolderOpen },
+{ name: "Messages", icon: MessageSquare },
+{ name: "Notifications", icon: Bell },
+{ name: "Activity Logs", icon: History },
+{ name: "Settings", icon: Settings },
+
+
+];
+
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -373,7 +401,7 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Client Management":
+      // case "Client Management":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div>
@@ -416,7 +444,7 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Projects":
+      // case "Projects":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div>
@@ -456,6 +484,63 @@ export default function AdminDashboard() {
           </div>
         );
 
+      case "Support Staff":
+return (
+<div className="space-y-6 animate-in fade-in duration-300">
+<div>
+<h1 className="text-3xl font-bold tracking-tight text-foreground">
+Support Staff
+</h1>
+<p className="text-muted-foreground mt-1">
+Manage staff members responsible for handling student support requests.
+</p>
+</div>
+
+        <Card className="p-6 text-center text-muted-foreground">
+            Support staff directory will appear here.
+        </Card>
+    </div>
+);
+
+      case "Support Units":
+        return (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                Support Units
+              </h1>
+
+              <p className="text-muted-foreground mt-1">
+                Support departments available to students.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {supportUnits.map((unit) => (
+                <Card key={unit.id}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <Building2 className="h-5 w-5 text-primary" />
+
+                      <span className="text-xs text-emerald-600 font-medium">
+                        {unit.status}
+                      </span>
+                    </div>
+
+                    <CardTitle className="text-base">
+                      {unit.name}
+                    </CardTitle>
+
+                    <CardDescription>
+                      {unit.requests} active requests
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+      
       case "Requests":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
@@ -469,7 +554,7 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Tasks":
+      // case "Tasks":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div>
@@ -550,7 +635,7 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Reports":
+      // case "Reports":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div>
@@ -563,7 +648,7 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Payments":
+      // case "Payments":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div>

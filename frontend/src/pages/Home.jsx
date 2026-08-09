@@ -8,8 +8,9 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import {
+    GraduationCap,
+    ClipboardList,
     Users,
-    BarChart3,
     Shield,
     Zap,
     ArrowRight,
@@ -19,36 +20,36 @@ import {
 
 const features = [
     {
-        icon: Users,
-        title: "Client Management",
+        icon: ClipboardList,
+        title: "Student Support Requests",
         description:
-            "Organize and manage all your client information in one centralized, easy-to-access platform.",
+            "Give students one place to submit academic, accommodation, IT, and general support requests.",
     },
     {
-        icon: BarChart3,
-        title: "Project Tracking",
+        icon: Users,
+        title: "Centralized Support",
         description:
-            "Monitor project progress, deadlines, and deliverables with real-time updates and insights.",
+            "Help managers and support staff organize, assign, and follow up on student requests efficiently.",
     },
     {
         icon: Shield,
-        title: "Secure & Reliable",
+        title: "Role-Based Access",
         description:
-            "Enterprise-grade security to keep your client data safe and your operations running smoothly.",
+            "Students, support staff, managers, and administrators see the information and actions relevant to their roles.",
     },
     {
         icon: Zap,
-        title: "Lightning Fast",
+        title: "Simple & Efficient",
         description:
-            "Built for speed — instant search, quick navigation, and a responsive interface you'll love.",
+            "Designed to make student support easier to track, faster to manage, and clearer for everyone involved.",
     },
 ];
 
 const highlights = [
-    "Unlimited clients & projects",
-    "Real-time collaboration",
-    "Detailed analytics & reports",
-    "Role-based access control",
+    "Centralized student support",
+    "Request tracking",
+    "Role-based access",
+    "Support team workflow",
 ];
 
 export default function Home() {
@@ -60,21 +61,18 @@ export default function Home() {
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-2">
                             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <Sparkles className="h-4 w-4 text-primary-foreground" />
+                                <GraduationCap className="h-4 w-4 text-primary-foreground" />
                             </div>
+
                             <span className="text-lg font-bold text-foreground">
-                                ClientFlow
+                                Student Support
                             </span>
                         </div>
+
                         <div className="flex items-center gap-3">
                             <Link to="/login">
-                                <Button variant="ghost" size="sm">
-                                    Sign In
-                                </Button>
-                            </Link>
-                            <Link to="/register">
                                 <Button size="sm" className="gap-1">
-                                    Get Started
+                                    Sign In
                                     <ArrowRight className="h-3.5 w-3.5" />
                                 </Button>
                             </Link>
@@ -85,10 +83,12 @@ export default function Home() {
 
             {/* Hero Section */}
             <section className="relative overflow-hidden">
-                {/* Gradient background decoration */}
+                {/* Background decoration */}
                 <div className="absolute inset-0 -z-10">
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-primary/5 via-primary/3 to-transparent rounded-full blur-3xl" />
+
                     <div className="absolute top-20 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-full blur-3xl" />
+
                     <div className="absolute top-40 right-1/4 w-[300px] h-[300px] bg-gradient-to-bl from-indigo-500/5 to-cyan-500/5 rounded-full blur-3xl" />
                 </div>
 
@@ -96,36 +96,31 @@ export default function Home() {
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-1.5 text-sm text-muted-foreground mb-8 shadow-sm">
                         <Sparkles className="h-3.5 w-3.5 text-primary" />
-                        <span>Streamline your client operations</span>
+                        <span>One place for student support</span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground max-w-3xl mx-auto leading-[1.1]">
-                        Manage Clients{" "}
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.1]">
+                        Student Support,{" "}
                         <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-                            Effortlessly
+                            Made Simple
                         </span>
                     </h1>
 
                     <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        The all-in-one platform to organize clients, track projects, and
-                        grow your business — beautifully designed and incredibly simple.
+                        A centralized platform for students to submit support
+                        requests and for university teams to manage, assign,
+                        track, and resolve them efficiently.
                     </p>
 
-                    {/* CTA Buttons */}
-                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link to="/register">
-                            <Button size="lg" className="gap-2 text-base px-8 h-12 shadow-lg shadow-primary/20">
-                                Start for Free
-                                <ArrowRight className="h-4 w-4" />
-                            </Button>
-                        </Link>
+                    {/* CTA */}
+                    <div className="mt-10 flex items-center justify-center">
                         <Link to="/login">
                             <Button
-                                variant="outline"
                                 size="lg"
-                                className="text-base px-8 h-12"
+                                className="gap-2 text-base px-8 h-12 shadow-lg shadow-primary/20"
                             >
                                 Sign In
+                                <ArrowRight className="h-4 w-4" />
                             </Button>
                         </Link>
                     </div>
@@ -147,11 +142,12 @@ export default function Home() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                     <div className="text-center mb-14">
                         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-                            Everything you need
+                            Everything in one place
                         </h2>
+
                         <p className="mt-3 text-lg text-muted-foreground max-w-xl mx-auto">
-                            Powerful features to help you manage clients and projects with
-                            confidence.
+                            A simple workflow connecting students with the
+                            people responsible for helping them.
                         </p>
                     </div>
 
@@ -165,8 +161,12 @@ export default function Home() {
                                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/15 transition-colors">
                                         <feature.icon className="h-5 w-5 text-primary" />
                                     </div>
-                                    <CardTitle className="text-lg">{feature.title}</CardTitle>
+
+                                    <CardTitle className="text-lg">
+                                        {feature.title}
+                                    </CardTitle>
                                 </CardHeader>
+
                                 <CardContent>
                                     <CardDescription className="text-base leading-relaxed">
                                         {feature.description}
@@ -185,25 +185,28 @@ export default function Home() {
                         {/* Decorative elements */}
                         <div className="absolute inset-0 -z-0">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+
                             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
                         </div>
 
                         <div className="relative z-10">
                             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-primary-foreground">
-                                Ready to get started?
+                                Need student support?
                             </h2>
+
                             <p className="mt-4 text-lg text-primary-foreground/80 max-w-lg mx-auto">
-                                Join today and start managing your clients more effectively.
-                                It&apos;s free to get started.
+                                Sign in to submit and track your support
+                                requests.
                             </p>
+
                             <div className="mt-8">
-                                <Link to="/register">
+                                <Link to="/login">
                                     <Button
                                         size="lg"
                                         variant="secondary"
                                         className="text-base px-8 h-12 gap-2 shadow-lg"
                                     >
-                                        Create Your Account
+                                        Sign In
                                         <ArrowRight className="h-4 w-4" />
                                     </Button>
                                 </Link>
@@ -219,14 +222,17 @@ export default function Home() {
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-2">
                             <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
-                                <Sparkles className="h-3 w-3 text-primary-foreground" />
+                                <GraduationCap className="h-3 w-3 text-primary-foreground" />
                             </div>
+
                             <span className="text-sm font-semibold text-foreground">
-                                ClientFlow
+                                Student Support Management System
                             </span>
                         </div>
+
                         <p className="text-sm text-muted-foreground">
-                            &copy; {new Date().getFullYear()} ClientFlow. All rights reserved.
+                            &copy; {new Date().getFullYear()} Student Support
+                            Management System. All rights reserved.
                         </p>
                     </div>
                 </div>
