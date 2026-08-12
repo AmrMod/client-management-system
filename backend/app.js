@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./src/auth/auth.routes');
 const userRoutes = require('./src/users/user.routes');
 const noteRoutes = require('./src/notes/note.routes');
+const requestRoutes = require('./src/requests/request.routes');
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/notes', noteRoutes);
+app.use('/requests', requestRoutes);
 
 module.exports = app;

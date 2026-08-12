@@ -1,6 +1,7 @@
 import { updateclientProfile } from "@/api/userapi";
 import { updatePassword, getUserById
  } from "@/api/userapi";
+ import { createRequest, getSupportUnits } from "@/api/requestapi";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,18 +65,25 @@ export default function Dashboard() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
 
-  // Requests state
-  const [requests, setRequests] = useState([
-    { id: "REQ-1002", title: "API Integration Error", category: "Technical Support", priority: "High", status: "Pending", date: "2026-07-04" },
-    { id: "REQ-1001", title: "Invoice Revision Request", category: "Billing", priority: "Medium", status: "Resolved", date: "2026-06-28" },
-    { id: "REQ-0998", title: "Custom Theme Settings request", category: "Feature Request", priority: "Low", status: "Resolved", date: "2026-05-15" }
-  ]);
+  // Mock Requests state
+  // const [requests, setRequests] = useState([
+  //   { id: "REQ-1002", title: "API Integration Error", category: "Technical Support", priority: "High", status: "Pending", date: "2026-07-04" },
+  //   { id: "REQ-1001", title: "Invoice Revision Request", category: "Billing", priority: "Medium", status: "Resolved", date: "2026-06-28" },
+  //   { id: "REQ-0998", title: "Custom Theme Settings request", category: "Feature Request", priority: "Low", status: "Resolved", date: "2026-05-15" }
+  // ]);
 
   // Form states for New Request
+  const [requests, setRequests] = useState([]);
   const [newReqTitle, setNewReqTitle] = useState("");
-  const [newReqCategory, setNewReqCategory] = useState("Technical Support");
-  const [newReqPriority, setNewReqPriority] = useState("Medium");
+  const [newReqSupportUnit, setNewReqSupportUnit] = useState("");
+  const [newReqPriority, setNewReqPriority] = useState("MEDIUM");
   const [newReqDesc, setNewReqDesc] = useState("");
+  const [requestMessage, setRequestMessage] = useState("");
+  const [requestError, setRequestError] = useState("");
+  const [requestLoading, setRequestLoading] = useState(false);
+
+  const [supportUnits, setSupportUnits] = useState([]);
+  const [supportUnitLoading, setSupportUnitLoading] = useState(false);
 
   // Chats state
   const [activeChat, setActiveChat] = useState("Support");
@@ -107,37 +115,91 @@ export default function Dashboard() {
   ]);
   const [uploadingDoc, setUploadingDoc] = useState(false);
 
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+
+
+  //   if (!storedUser) {
+  //     navigate("/login");
+  //   } else {
+  //     const parsed = JSON.parse(storedUser);
+  //     setUser(parsed);
+  //     setProfileName(parsed.name || "Client");
+  //     setProfileEmail(parsed.email || "client@example.com");
+  //     setProfilePhone(parsed.phone || "na");
+  //     setProfileCompany(parsed.company || "na");
+  //   }
+
+  //   // Theme initialization
+  //   const savedTheme = localStorage.getItem("theme");
+  //   const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  //   const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
+  //   setIsDark(initialDark);
+  //   if (initialDark) {
+  //     document.documentElement.classList.add("dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //   }
+  // }, [navigate]);
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem("user");
+  //   navigate("/login");
+  // };
+
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+  const storedUser = localStorage.getItem("user");
 
-
-    if (!storedUser) {
-      navigate("/login");
-    } else {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
-      setProfileName(parsed.name || "Client");
-      setProfileEmail(parsed.email || "client@example.com");
-      setProfilePhone(parsed.phone || "");
-      setProfileCompany(parsed.company || "");
-    }
-
-    // Theme initialization
-    const savedTheme = localStorage.getItem("theme");
-    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
-    setIsDark(initialDark);
-    if (initialDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
+  if (!storedUser) {
     navigate("/login");
+  } else {
+    const parsed = JSON.parse(storedUser);
+
+    setUser(parsed);
+    setProfileName(parsed.name || "Client");
+    setProfileEmail(parsed.email || "client@example.com");
+    setProfilePhone(parsed.phone || "na");
+    setProfileCompany(parsed.company || "na");
+  }
+
+  const loadSupportUnits = async () => {
+    try {
+      setSupportUnitLoading(true);
+
+      const data = await getSupportUnits();
+
+      setSupportUnits(data);
+
+      if (data.length > 0) {
+        setNewReqSupportUnit(String(data[0].id));
+      }
+    } catch (error) {
+      console.error("Failed to load support units:", error);
+    } finally {
+      setSupportUnitLoading(false);
+    }
   };
+
+  loadSupportUnits();
+
+  // Theme initialization
+  const savedTheme = localStorage.getItem("theme");
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
+
+  setIsDark(initialDark);
+
+  if (initialDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}, [navigate]);
+
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  navigate("/login");
+};
 
   const addSystemNotification = (title, message) => {
     const newNotification = {
@@ -228,26 +290,143 @@ export default function Dashboard() {
 
   };
 
-  const handleNewRequestSubmit = (e) => {
+  // const handleNewRequestSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!newReqTitle.trim() || !newReqDesc.trim()) return;
+
+  //   const storedUser = localStorage.getItem("user");
+  //   const parsed = JSON.parse(storedUser);
+  //   const userId = parsed.id;
+
+  //   try {
+  //     const newReq = await createRequest(userId, newReqTitle, newReqDesc, newReqPriority);
+  //     setRequests([newReq, ...requests]);
+  //     setNewReqTitle("");
+  //     setNewReqDesc("");
+  //     setActiveTab("My Requests");
+  //     addSystemNotification("Request Created", `New request "${newReq.title}" has been submitted.`);
+  //   } catch (error) {
+  //     console.error("Failed to create request:", error);
+  //   }
+  // };
+
+  // const handleNewRequestSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (
+  //     !newReqTitle.trim() ||
+  //     !newReqDesc.trim() ||
+  //     !newReqSupportUnit
+  //   ) {
+  //     return;
+  //   }
+
+  //   const storedUser = localStorage.getItem("user");
+  //   const parsed = JSON.parse(storedUser);
+  //   const userId = parsed.id;
+
+  //   try {
+  //     const newReq = await createRequest(
+  //       userId,
+  //       Number(newReqSupportUnit),
+  //       newReqTitle,
+  //       newReqDesc,
+  //       newReqPriority
+  //     );
+
+  //     setRequests([newReq, ...requests]);
+
+  //     setNewReqTitle("");
+  //     setNewReqDesc("");
+
+  //     if (supportUnits.length > 0) {
+  //       setNewReqSupportUnit(String(supportUnits[0].id));
+  //     }
+
+  //     setNewReqPriority("MEDIUM");
+
+  //     setActiveTab("My Requests");
+
+  //     addSystemNotification(
+  //       "Request Created",
+  //       `New request "${newReq.title}" has been submitted.`
+  //     );
+  //   } catch (error) {
+  //     console.error("Failed to create request:", error);
+  //   }
+  // };
+
+  const handleNewRequestSubmit = async (e) => {
     e.preventDefault();
-    if (!newReqTitle.trim() || !newReqDesc.trim()) return;
 
-    const newReq = {
-      id: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
-      title: newReqTitle,
-      category: newReqCategory,
-      priority: newReqPriority,
-      status: "Pending",
-      date: new Date().toISOString().split("T")[0],
-    };
+    setRequestMessage("");
+    setRequestError("");
 
-    setRequests([newReq, ...requests]);
-    setNewReqTitle("");
-    setNewReqDesc("");
-    setActiveTab("My Requests");
-    addSystemNotification("Request Created", `New request "${newReq.title}" has been submitted.`);
-  };
+    if (
+        !newReqTitle.trim() ||
+        !newReqDesc.trim() ||
+        !newReqSupportUnit
+    ) {
+        setRequestError("Please fill in all required fields.");
+        return;
+    }
 
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+        setRequestError("User session not found. Please log in again.");
+        return;
+    }
+
+    const parsed = JSON.parse(storedUser);
+    const userId = parsed.id;
+
+    try {
+        setRequestLoading(true);
+
+        const newReq = await createRequest(
+            userId,
+            Number(newReqSupportUnit),
+            newReqTitle,
+            newReqDesc,
+            newReqPriority
+        );
+
+        // Add the newly created request to state
+        setRequests(prev => [newReq, ...prev]);
+
+        // Clear form
+        setNewReqTitle("");
+        setNewReqDesc("");
+
+        if (supportUnits.length > 0) {
+            setNewReqSupportUnit(String(supportUnits[0].id));
+        }
+
+        setNewReqPriority("MEDIUM");
+
+        // SUCCESS MESSAGE
+        setRequestMessage(
+            "Request submitted successfully. Our support team will review it shortly."
+        );
+
+        addSystemNotification(
+            "Request Created",
+            `New request "${newReq.title}" has been submitted.`
+        );
+
+    } catch (error) {
+        console.error("Failed to create request:", error);
+
+        // ERROR MESSAGE
+        setRequestError(
+            error.message || "Failed to submit request. Please try again."
+        );
+
+    } finally {
+        setRequestLoading(false);
+    }
+};
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!typedMsg.trim()) return;
@@ -553,6 +732,18 @@ export default function Dashboard() {
             </div>
 
             <Card className="max-w-2xl">
+              {requestMessage && (
+                    <div className="mx-6 mt-6 p-4 rounded-lg bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                        {requestMessage}
+                    </div>
+                )}
+
+                {requestError && (
+                    <div className="mx-6 mt-6 p-4 rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                        {requestError}
+                    </div>
+                )
+              }
               <CardContent className="pt-6">
                 <form onSubmit={handleNewRequestSubmit} className="space-y-6">
                   <div className="space-y-2">
@@ -566,27 +757,35 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="category">Category</Label>
-                      <select
-                        id="category"
-                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-card dark:text-foreground"
-                        value={newReqCategory}
-                        onChange={(e) => setNewReqCategory(e.target.value)}
-                      >
-                        <option value="Technical Support">Technical Support</option>
-                        <option value="Billing">Billing</option>
-                        <option value="Feature Request">Feature Request</option>
-                        <option value="Feedback">Feedback</option>
-                        <option value="General Inquiry">General Inquiry</option>
-                      </select>
-                    </div>
+                  <div className="space-y-2">
+                  <Label htmlFor="supportUnit">Support Unit</Label>
 
-                    <div className="space-y-2 flex flex-col justify-end">
+                  <select
+                    id="supportUnit"
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-card dark:text-foreground"
+                    value={newReqSupportUnit}
+                    onChange={(e) => setNewReqSupportUnit(e.target.value)}
+                    disabled={supportUnitLoading}
+                    required
+                  >
+                    <option value="">
+                      {supportUnitLoading
+                        ? "Loading support units..."
+                        : "Select support unit"}
+                    </option>
+
+                    {supportUnits.map((unit) => (
+                      <option key={unit.id} value={unit.id}>
+                        {unit.name}
+                      </option>
+                    ))}
+                  </select>
+                  </div>
+
+                  <div className="space-y-2 flex flex-col justify-end">
                       <Label className="mb-2">Priority Level</Label>
                       <div className="grid grid-cols-4 gap-1.5">
-                        {["Low", "Medium", "High", "Urgent"].map((p) => (
+                        {["LOW", "MEDIUM", "HIGH"].map((p) => (
                           <button
                             key={p}
                             type="button"
@@ -601,8 +800,8 @@ export default function Dashboard() {
                           </button>
                         ))}
                       </div>
-                    </div>
                   </div>
+                  
 
                   <div className="space-y-2">
                     <Label htmlFor="desc">Description</Label>
@@ -617,8 +816,12 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full sm:w-auto">
-                    Submit Request
+                  <Button
+                    type="submit"
+                    className="w-full sm:w-auto"
+                    disabled={requestLoading}
+                  >
+                    {requestLoading ? "Submitting..." : "Submit Request"}
                   </Button>
                 </form>
               </CardContent>

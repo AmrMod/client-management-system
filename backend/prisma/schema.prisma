@@ -22,6 +22,7 @@ model User {
   role      Role @default(CLIENT)
   clientProfile Clientprofile?
   notes UserNote[]
+  requests       Request[]
 }
 
 enum Role {
@@ -52,4 +53,42 @@ model UserNote{
   content   String
   createdAt DateTime @default(now())
   user      User    @relation(fields: [userId], references: [id])
+}
+
+model SupportUnit {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    createdAt DateTime @default(now())
+
+    requests  Request[]
+}
+
+
+model Request {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  supportUnitId Int
+  title       String
+  description String
+  status      RequestStatus @default(PENDING)
+  priority    RequestPriority @default(MEDIUM)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+  supportUnit SupportUnit @relation(fields: [supportUnitId], references: [id])
+
+}
+
+enum RequestStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
+
+enum RequestPriority {
+  LOW
+  MEDIUM
+  HIGH
 }

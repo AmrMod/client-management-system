@@ -44,5 +44,25 @@
 --ORDER BY id
 --LIMIT 10 OFFSET 20;
 
+--INSERT INTO "SupportUnit" ("name", "createdAt")
+--VALUES
+   -- ('IT Helpdesk', datetime('now')),
+    --('Academic Registry', datetime('now')),
+    --('Academic Advising', datetime('now')),
+    --('Finance / Bursary', datetime('now')),
+    --('Human Resources', datetime('now')),
+    --('Facilities Management', datetime('now')),
+    --('Library & Digital Services', datetime('now')),
+    --('Student Affairs', datetime('now')),
+    --('Housing & Dining', datetime('now')),
+    --('Health Center / Medical Services', datetime('now')),
+    --('Safety & Security', datetime('now')),
+    --('Career Services', datetime('now')),
+    --('Writing Center', datetime('now')),
+    --('Admissions', datetime('now')),
+    --('Communications & Public Affairs', datetime('now')),
+    --('Events & Ceremonies', datetime('now')),
+    --('Fleet Management', datetime('now')),
+    --('Procurement', datetime('now'));
 
-
+SELECT * FROM Request
