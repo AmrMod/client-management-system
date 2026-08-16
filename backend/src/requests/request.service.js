@@ -48,12 +48,12 @@ const createRequest = async ({
             supportUnitId,
             title,
             description,
-            ...(priority && { priority })
+            priority
 
 
 
-            //... spreads that object into the larger object:
-            //priority is optional.
+            
+            //if priority is optional.
             // if (priority) {
             //     data.priority = priority;
             // }

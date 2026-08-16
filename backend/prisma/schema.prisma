@@ -13,7 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+
+
+
+/* model User {
   id        Int     @id @default(autoincrement())
   name      String
   email     String  @unique
@@ -28,9 +31,32 @@ model User {
 enum Role {
   CLIENT
   ADMIN
-} 
+} */
 
-model Clientprofile{
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  createdAt DateTime @default(now())
+
+  studentProfile StudentProfile?
+  staffProfile   StaffProfile?
+  notifications  Notification[]
+
+}
+
+enum Role {
+  STUDENT
+  STAFF
+  ADMIN
+}
+
+
+
+
+/* model Clientprofile{
   id        Int     @id @default(autoincrement())
   userId    Int     @unique
   Phone     String
@@ -44,27 +70,96 @@ model Clientprofile{
 enum Status{
   Active
   Inactive
+} */
+
+
+//clientProfile is now StudentProfile and the split of the user table into two
+model StudentProfile {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  studentId    String   @unique
+  name         String
+  phone        String?
+  department   String
+  programme    String
+  level        String
+  createdAt    DateTime @default(now())
+
+  user         User      @relation(fields: [userId], references: [id])
+  requests     Request[]
+  notes        StudentNote[]
+
 }
 
-model UserNote{
+
+model StaffProfile {
+  id            Int       @id @default(autoincrement())
+  userId        Int       @unique
+  name          String
+  phone         String?
+  staffRole     StaffRole
+  supportUnitId Int
+  createdAt     DateTime  @default(now())
+
+  user          User        @relation(fields: [userId], references: [id])
+  supportUnit   SupportUnit @relation(fields: [supportUnitId], references: [id])
+  requests      Request[]
+  notes  StudentNote[]
+}
+
+
+enum StaffRole {
+  MANAGER
+  SUPPORT_STAFF
+}
+
+
+
+/* model UserNote{
   id        Int     @id @default(autoincrement())
   userId    Int     
   title     String
   content   String
   createdAt DateTime @default(now())
   user      User    @relation(fields: [userId], references: [id])
+} */
+
+model StudentNote {
+  id            Int      @id @default(autoincrement())
+  studentId     Int
+  createdById   Int
+  title         String
+  content       String
+  createdAt     DateTime @default(now())
+
+  student       StudentProfile @relation(fields: [studentId], references: [id])
+  createdBy     StaffProfile   @relation(fields: [createdById], references: [id])
 }
 
-model SupportUnit {
+
+
+
+/* model SupportUnit {
     id        Int      @id @default(autoincrement())
     name      String   @unique
     createdAt DateTime @default(now())
 
     requests  Request[]
+} */
+
+model SupportUnit {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  staff     StaffProfile[]
+  requests  Request[]
 }
 
 
-model Request {
+
+
+/* model Request {
   id          Int      @id @default(autoincrement())
   userId      Int
   supportUnitId Int
@@ -77,6 +172,25 @@ model Request {
 
   user        User     @relation(fields: [userId], references: [id])
   supportUnit SupportUnit @relation(fields: [supportUnitId], references: [id])
+
+} */
+
+model Request {
+  id             Int             @id @default(autoincrement())
+  studentId      Int
+  supportUnitId  Int
+  assignedStaffId Int?
+  title          String
+  description    String
+  status         RequestStatus   @default(PENDING)
+  priority       RequestPriority @default(MEDIUM)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  student        StudentProfile  @relation(fields: [studentId], references: [id])
+  supportUnit    SupportUnit     @relation(fields: [supportUnitId], references: [id])
+  assignedStaff  StaffProfile?   @relation(fields: [assignedStaffId], references: [id])
+  attachments    RequestAttachment[]
 
 }
 
@@ -92,3 +206,58 @@ enum RequestPriority {
   MEDIUM
   HIGH
 }
+
+model Conversation {
+  id             Int      @id @default(autoincrement())
+  studentId      Int
+  staffId        Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  student        StudentProfile @relation(fields: [studentId], references: [id])
+  staff          StaffProfile   @relation(fields: [staffId], references: [id])
+  messages       Message[]
+
+  @@unique([studentId, staffId])
+}
+
+model Message {
+  id             Int      @id @default(autoincrement())
+  conversationId Int
+  senderId       Int
+  senderType     MessageSender
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+}
+
+enum MessageSender {
+  STUDENT
+  STAFF
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model RequestAttachment {
+  id          Int      @id @default(autoincrement())
+  requestId   Int
+  fileName    String
+  fileUrl     String
+  fileType    String?
+  fileSize    Int?
+  createdAt   DateTime @default(now())
+
+  request     Request  @relation(fields: [requestId], references: [id])
+}
+
+

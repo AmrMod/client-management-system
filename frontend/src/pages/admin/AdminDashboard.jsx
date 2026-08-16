@@ -1,5 +1,6 @@
 
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,7 +56,8 @@ import { getDashboardStats } from "@/api/userapi";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [adminUser, setAdminUser] = useState(null);
+  const { user: adminUser, logout, loading: authLoading } = useAuth();
+  // const [adminUser, setAdminUser] = useState(null); // Replaced by useAuth() context
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -130,16 +132,37 @@ export default function AdminDashboard() {
   //   { id: "TXN-8818", client: "Stark Industries", amount: "$8,000.00", date: "2026-06-30", status: "Pending" }
   // ]);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
-      navigate("/login");
-    } else {
-      const parsed = JSON.parse(storedUser);
-      setAdminUser(parsed);
-    }
+  // OLD useEffect — replaced by AuthContext
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   if (!storedUser) {
+  //     navigate("/login");
+  //   } else {
+  //     const parsed = JSON.parse(storedUser);
+  //     setAdminUser(parsed);
+  //   }
+  //
+  //   // Theme initialization
+  //   const savedTheme = localStorage.getItem("theme");
+  //   const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  //   const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
+  //   setIsDark(initialDark);
+  //   if (initialDark) {
+  //     document.documentElement.classList.add("dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //   }
+  // }, [navigate]);
 
-    // Theme initialization
+  // NEW: Redirect if not authenticated (using AuthContext)
+  useEffect(() => {
+    if (!authLoading && !adminUser) {
+      navigate("/login");
+    }
+  }, [adminUser, authLoading, navigate]);
+
+  // NEW: Theme initialization (no longer tied to user loading)
+  useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
@@ -149,7 +172,7 @@ export default function AdminDashboard() {
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     // const getTotalUsersByAdmin = async () => {
@@ -176,8 +199,15 @@ export default function AdminDashboard() {
     getDashboardStatsByAdmin();
   }, [adminUser])
 
+  // OLD handleLogout — replaced by AuthContext logout
+  // const handleLogout = () => {
+  //   localStorage.removeItem("user");
+  //   navigate("/login");
+  // };
+
+  // NEW: handleLogout using AuthContext
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logout();
     navigate("/login");
   };
 

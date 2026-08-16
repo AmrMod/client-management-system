@@ -1,9 +1,12 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ThemeProvider from "./components/ThemeProvider";
+import { AuthProvider } from "./context/AuthContext";
+
+
 import Home from './pages/Home';
 import Login from './pages/login';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard/Dashboard';
 import ManagerDashboard from './pages/manager/ManagerDashboard';
 import Register from './pages/register';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -14,25 +17,28 @@ import EditUsers from './pages/admin/EditUsers';
 import ClientNotes from './pages/admin/ClientNotes';
 
 
+
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/AdminDashboard" element={<AdminDashboard />} />
-          <Route path="/SupportDashboard" element={<SupportDashboard />} />
-          <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
-          <Route path="/Users" element={<Users />} />
-          <Route path="/CreateuserByAdmin" element={<CreateUserByAdmin />} />
-          <Route path="/:id/EditUsers" element={<EditUsers />} />
-          <Route path = "/:id/ClientNotes" element = {<ClientNotes />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/AdminDashboard" element={<AdminDashboard />} />
+            <Route path="/SupportDashboard" element={<SupportDashboard />} />
+            <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+            <Route path="/Users" element={<Users />} />
+            <Route path="/CreateuserByAdmin" element={<CreateUserByAdmin />} />
+            <Route path="/:id/EditUsers" element={<EditUsers />} />
+            <Route path = "/:id/ClientNotes" element = {<ClientNotes />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

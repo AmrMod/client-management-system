@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/userapi";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,11 +24,11 @@ LifeBuoy,
 const Login = () => {
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
-const [role] = useState("");
 const [error, setError] = useState("");
 const [loading, setLoading] = useState(false);
 
 const navigate = useNavigate();
+const { login } = useAuth();
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,9 +52,9 @@ const handleSubmit = async (e) => {
     setLoading(true);
 
     try {
-        const user = await loginUser(email, password, role);
+        const user = await loginUser(email, password);
 
-        localStorage.setItem("user", JSON.stringify(user));
+        login(user);
 
         if (user.role === "ADMIN") {
             navigate("/AdminDashboard");

@@ -3,6 +3,7 @@ import { updatePassword, getUserById
  } from "@/api/userapi";
  import { createRequest, getSupportUnits } from "@/api/requestapi";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,12 +39,14 @@ import {
   Lock
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import DashboardHome from "./components/DashboardHome";
 
 
 export default function Dashboard() {
   
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, logout, updateUser, loading: authLoading } = useAuth();
+  // const [user, setUser] = useState(null); // Replaced by useAuth() context
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -85,19 +88,69 @@ export default function Dashboard() {
   const [supportUnits, setSupportUnits] = useState([]);
   const [supportUnitLoading, setSupportUnitLoading] = useState(false);
 
-  // Chats state
-  const [activeChat, setActiveChat] = useState("Support");
-  const [messages, setMessages] = useState({
-    Support: [
-      { sender: "support", text: "Hello! How can I assist you today?", time: "10:30 AM" },
-      { sender: "client", text: "Hi, I have an issue with the API token auth.", time: "10:32 AM" },
-      { sender: "support", text: "I can help with that. Could you share the response code you are receiving?", time: "10:33 AM" },
-    ],
-    PM: [
-      { sender: "pm", text: "Hi Amir, the design sprint layouts are ready for your review.", time: "Yesterday" },
-      { sender: "client", text: "Great! I'll take a look at them today.", time: "Yesterday" },
-    ]
-  });
+  const [activeConversationId, setActiveConversationId] = useState(1);
+
+  
+
+  const [conversations, setConversations] = useState([
+    {
+      id: 1,
+      name: "IT Support",
+      initials: "IT",
+      role: "Support Staff",
+      online: true,
+      lastMessage: "Could you send me the error code?",
+      time: "10:33 AM",
+      messages: [
+        {
+          id: 1,
+          senderType: "staff",
+          senderName: "IT Support",
+          text: "Hello! How can I assist you today?",
+          time: "10:30 AM",
+        },
+        {
+          id: 2,
+          senderType: "student",
+          senderName: "You",
+          text: "Hi, I have an issue with my student portal.",
+          time: "10:32 AM",
+        },
+        {
+          id: 3,
+          senderType: "staff",
+          senderName: "IT Support",
+          text: "I can help with that. Could you send me the error code?",
+          time: "10:33 AM",
+        },
+      ],
+    },
+
+
+    {
+      id: 2,
+      name: "Student Affairs",
+      initials: "SA",
+      role: "Support Staff",
+      online: false,
+      lastMessage: "Your request has been received.",
+      time: "Monday",
+      messages: [
+        {
+          id: 1,
+          senderType: "staff",
+          senderName: "Student Affairs",
+          text: "Your request has been received.",
+          time: "Monday",
+        },
+      ],
+    },
+  ]);
+
+  const activeConversation = conversations.find(
+    (conversation) => conversation.id === activeConversationId
+  );
+
   const [typedMsg, setTypedMsg] = useState("");
 
   // Notifications state
@@ -147,59 +200,84 @@ export default function Dashboard() {
   //   navigate("/login");
   // };
 
+  // OLD useEffect — replaced by AuthContext
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   if (!storedUser) {
+  //     navigate("/login");
+  //   } else {
+  //     const parsed = JSON.parse(storedUser);
+  //     setUser(parsed);
+  //     setProfileName(parsed.name || "Client");
+  //     setProfileEmail(parsed.email || "client@example.com");
+  //     setProfilePhone(parsed.phone || "na");
+  //     setProfileCompany(parsed.company || "na");
+  //   }
+  // }, [navigate]);
+
+  // NEW: Redirect if not authenticated (using AuthContext)
   useEffect(() => {
-  const storedUser = localStorage.getItem("user");
-
-  if (!storedUser) {
-    navigate("/login");
-  } else {
-    const parsed = JSON.parse(storedUser);
-
-    setUser(parsed);
-    setProfileName(parsed.name || "Client");
-    setProfileEmail(parsed.email || "client@example.com");
-    setProfilePhone(parsed.phone || "na");
-    setProfileCompany(parsed.company || "na");
-  }
-
-  const loadSupportUnits = async () => {
-    try {
-      setSupportUnitLoading(true);
-
-      const data = await getSupportUnits();
-
-      setSupportUnits(data);
-
-      if (data.length > 0) {
-        setNewReqSupportUnit(String(data[0].id));
-      }
-    } catch (error) {
-      console.error("Failed to load support units:", error);
-    } finally {
-      setSupportUnitLoading(false);
+    if (!authLoading && !user) {
+      navigate("/login");
     }
+  }, [user, authLoading, navigate]);
+
+  // NEW: Sync profile fields when user loads from context
+  useEffect(() => {
+    if (user) {
+      setProfileName(user.name || "Client");
+      setProfileEmail(user.email || "client@example.com");
+      setProfilePhone(user.phone || "na");
+      setProfileCompany(user.company || "na");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const loadSupportUnits = async () => {
+      try {
+        setSupportUnitLoading(true);
+
+        const data = await getSupportUnits();
+
+        setSupportUnits(data);
+
+        if (data.length > 0) {
+          setNewReqSupportUnit(String(data[0].id));
+        }
+      } catch (error) {
+        console.error("Failed to load support units:", error);
+      } finally {
+        setSupportUnitLoading(false);
+      }
+    };
+
+    loadSupportUnits();
+
+    // Theme initialization
+    const savedTheme = localStorage.getItem("theme");
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
+
+    setIsDark(initialDark);
+
+    if (initialDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  // OLD handleLogout — replaced by AuthContext logout
+  // const handleLogout = () => {
+  //   localStorage.removeItem("user");
+  //   navigate("/login");
+  // };
+
+  // NEW: handleLogout using AuthContext
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
-
-  loadSupportUnits();
-
-  // Theme initialization
-  const savedTheme = localStorage.getItem("theme");
-  const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const initialDark = savedTheme === "dark" || (!savedTheme && systemDark);
-
-  setIsDark(initialDark);
-
-  if (initialDark) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-}, [navigate]);
-
-const handleLogout = () => {
-  localStorage.removeItem("user");
-  navigate("/login");
-};
 
   const addSystemNotification = (title, message) => {
     const newNotification = {
@@ -229,21 +307,27 @@ const handleLogout = () => {
     
         setLoading(true);
         try {
-          const storedUser = localStorage.getItem("user");
-          const parsed = JSON.parse(storedUser);
-          const id = parsed.id;
-          const userId =id;
+          // OLD: Read user from localStorage
+          // const storedUser = localStorage.getItem("user");
+          // const parsed = JSON.parse(storedUser);
+          // const id = parsed.id;
+          // const userId = id;
+
+          // NEW: Get id from AuthContext user
+          const id = user.id;
+          const userId = id;
           console.log(id);
           
 
           
-          const user = await updateclientProfile(id,userId, profileName, profileEmail, profilePhone, profileCompany, status);
-          console.log(user);
+          const updatedData = await updateclientProfile(id,userId, profileName, profileEmail, profilePhone, profileCompany, status);
+          console.log(updatedData);
 
           //...user - shallow copy
-          const updatedUser = { ...user, name: profileName, email: profileEmail, phone: profilePhone, company: profileCompany };
-          setUser(updatedUser);
-          localStorage.setItem("user", JSON.stringify(updatedUser));
+          const updatedUser = { ...updatedData, name: profileName, email: profileEmail, phone: profilePhone, company: profileCompany };
+          // OLD: setUser(updatedUser); localStorage.setItem("user", JSON.stringify(updatedUser));
+          // NEW: Use AuthContext updateUser
+          updateUser(updatedUser);
           alert("Profile Updated Successfully");
           addSystemNotification("Profile Updated", "Your profile details have been successfully saved.");
           
@@ -269,17 +353,21 @@ const handleLogout = () => {
 
         
 
-        const storedUser = localStorage.getItem("user");
-        const parsed = JSON.parse(storedUser);
-        const id = parsed.id;
+        // OLD: Read user from localStorage
+        // const storedUser = localStorage.getItem("user");
+        // const parsed = JSON.parse(storedUser);
+        // const id = parsed.id;
 
+        // NEW: Get id from AuthContext user
+        const id = user.id;
 
         try{
 
-        const user = await updatePassword(id, currentPassword, confirmPassword);
-        const updatedPassword = { ...user, password: confirmPassword };
-        setUser(updatedPassword);
-        localStorage.setItem("user", JSON.stringify(updatedPassword));
+        const updatedData = await updatePassword(id, currentPassword, confirmPassword);
+        const updatedPassword = { ...updatedData, password: confirmPassword };
+        // OLD: setUser(updatedPassword); localStorage.setItem("user", JSON.stringify(updatedPassword));
+        // NEW: Use AuthContext updateUser
+        updateUser(updatedPassword);
         alert("Password Updated Successfully");
         }
         catch(err){
@@ -371,15 +459,21 @@ const handleLogout = () => {
         return;
     }
 
-    const storedUser = localStorage.getItem("user");
+    // OLD: Read user from localStorage
+    // const storedUser = localStorage.getItem("user");
+    // if (!storedUser) {
+    //     setRequestError("User session not found. Please log in again.");
+    //     return;
+    // }
+    // const parsed = JSON.parse(storedUser);
+    // const userId = parsed.id;
 
-    if (!storedUser) {
+    // NEW: Get userId from AuthContext user
+    if (!user) {
         setRequestError("User session not found. Please log in again.");
         return;
     }
-
-    const parsed = JSON.parse(storedUser);
-    const userId = parsed.id;
+    const userId = user.id;
 
     try {
         setRequestLoading(true);
@@ -428,32 +522,36 @@ const handleLogout = () => {
     }
 };
   const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!typedMsg.trim()) return;
+  e.preventDefault();
 
-    const newMsg = {
-      sender: "client",
-      text: typedMsg,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+  if (!typedMsg.trim()) return;
 
-    setMessages(prev => ({
-      ...prev,
-      [activeChat]: [...prev[activeChat], newMsg]
-    }));
-    setTypedMsg("");
-
-    setTimeout(() => {
-      const reply = activeChat === "Support"
-        ? { sender: "support", text: "Thanks for the details. Let me look into this and get back to you shortly.", time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
-        : { sender: "pm", text: "Sounds good, let me know if you need any adjustments.", time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-
-      setMessages(prev => ({
-        ...prev,
-        [activeChat]: [...prev[activeChat], reply]
-      }));
-    }, 1500);
+  const newMessage = {
+    id: Date.now(),
+    senderType: "student",
+    senderName: "You",
+    text: typedMsg,
+    time: new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    }),
   };
+
+  setConversations((prev) =>
+    prev.map((conversation) =>
+      conversation.id === activeConversationId
+        ? {
+            ...conversation,
+            messages: [...conversation.messages, newMessage],
+            lastMessage: typedMsg,
+            time: newMessage.time,
+          }
+        : conversation
+    )
+  );
+
+  setTypedMsg("");
+};
 
   const markAllRead = () => {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
@@ -505,106 +603,13 @@ const handleLogout = () => {
     switch (activeTab) {
       case "Dashboard":
         return (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Dashboard
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Welcome back, {profileName}. Here&apos;s an overview of your workspace.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground mt-1">2 added this week</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-                  <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">3</div>
-                  <p className="text-xs text-muted-foreground mt-1">Next release in 2 days</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
-                  <ClipboardList className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {requests.filter((r) => r.status === "Pending").length}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Awaiting support reply</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">Recent Requests</CardTitle>
-                  <CardDescription>Overview of your most recent support requests.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {requests.length === 0 ? (
-                    <p className="text-sm text-muted-foreground py-4 text-center">No requests submitted yet.</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {requests.slice(0, 3).map((req) => (
-                        <div key={req.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
-                          <div>
-                            <p className="font-semibold text-sm text-foreground">{req.title}</p>
-                            <div className="flex gap-2 mt-1">
-                              <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{req.category}</span>
-                              <span className="text-[10px] text-muted-foreground">{req.date}</span>
-                            </div>
-                          </div>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            req.status === "Pending" ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300" :
-                            "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
-                          }`}>
-                            {req.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                  <Button onClick={() => setActiveTab("New Request")} className="w-full">
-                    Create New Request
-                  </Button>
-                  <Button onClick={() => setActiveTab("Messages")} variant="outline" className="w-full">
-                    Message Support
-                  </Button>
-                  <Button onClick={() => setActiveTab("Documents")} variant="ghost" className="w-full">
-                    View Documents
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <DashboardHome
+            profileName={profileName}
+            requests={requests}
+            setActiveTab={setActiveTab}
+          />
         );
-
+      
       case "My Profile":
         return (
           <div className="space-y-8 animate-in fade-in duration-300">
@@ -828,111 +833,207 @@ const handleLogout = () => {
             </Card>
           </div>
         );
-
-      case "Messages":
+        
+      case "Messages":      
         return (
           <div className="space-y-8 animate-in fade-in duration-300">
+
+            {/* Page Header */}
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Messages</h1>
-              <p className="text-muted-foreground mt-1">Communicate directly with your support agents and project managers.</p>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                Messages
+              </h1>
+
+              <p className="text-muted-foreground mt-1">
+                Communicate directly with support staff and project managers.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[500px] border border-border rounded-xl overflow-hidden bg-card">
-              <div className="lg:col-span-1 border-r border-border flex flex-col h-full bg-muted/10">
-                <div className="p-4 border-b border-border">
-                  <h3 className="font-semibold text-foreground">Conversations</h3>
-                </div>
-                <div className="flex-1 overflow-y-auto divide-y divide-border">
-                  <div
-                    onClick={() => setActiveChat("Support")}
-                    className={`p-4 cursor-pointer transition flex items-center gap-3 ${
-                      activeChat === "Support" ? "bg-accent" : "hover:bg-accent/40"
-                    }`}
-                  >
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                        SP
-                      </div>
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-card" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm text-foreground">Support Team</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {messages.Support[messages.Support.length - 1]?.text}
-                      </p>
-                    </div>
-                  </div>
+            {/* Messaging Container */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 h-[600px] border border-border rounded-xl overflow-hidden bg-card">
 
-                  <div
-                    onClick={() => setActiveChat("PM")}
-                    className={`p-4 cursor-pointer transition flex items-center gap-3 ${
-                      activeChat === "PM" ? "bg-accent" : "hover:bg-accent/40"
-                    }`}
-                  >
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                        PM
+              {/* Conversations */}
+              <div className="lg:col-span-1 border-r border-border flex flex-col bg-muted/10">
+
+                <div className="p-4 border-b border-border">
+                  <h3 className="font-semibold text-foreground">
+                    Conversations
+                  </h3>
+
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {conversations.length} conversations
+                  </p>
+                </div>
+
+                <div className="flex-1 overflow-y-auto divide-y divide-border">
+
+                  {conversations.map((conversation) => (
+                    <div
+                      key={conversation.id}
+                      onClick={() =>
+                        setActiveConversationId(conversation.id)
+                      }
+                      className={`p-4 cursor-pointer transition flex items-center gap-3 ${
+                        activeConversationId === conversation.id
+                          ? "bg-accent"
+                          : "hover:bg-accent/40"
+                      }`}
+                    >
+
+                      {/* Avatar */}
+                      <div className="relative shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
+                          {conversation.initials}
+                        </div>
+
+                        {conversation.online && (
+                          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-card" />
+                        )}
                       </div>
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-card" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm text-foreground">Sarah (PM)</span>
+
+                      {/* Conversation Info */}
+                      <div className="flex-1 min-w-0">
+
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-medium text-sm text-foreground truncate">
+                            {conversation.name}
+                          </span>
+
+                          <span className="text-[10px] text-muted-foreground shrink-0">
+                            {conversation.time}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {conversation.role}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground truncate mt-1">
+                          {conversation.lastMessage}
+                        </p>
+
                       </div>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {messages.PM[messages.PM.length - 1]?.text}
-                      </p>
                     </div>
-                  </div>
+                  ))}
+
                 </div>
               </div>
 
+              {/* Active Conversation */}
               <div className="lg:col-span-3 flex flex-col h-full bg-card">
+
+                {/* Chat Header */}
                 <div className="p-4 border-b border-border flex items-center gap-3 bg-card/50 backdrop-blur-sm">
-                  <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                    {activeChat === "Support" ? "SP" : "PM"}
+
+                  <div className="relative">
+
+                    <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
+                      {activeConversation?.initials}
+                    </div>
+
+                    {activeConversation?.online && (
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-card" />
+                    )}
+
                   </div>
+
                   <div>
                     <h4 className="font-semibold text-sm text-foreground">
-                      {activeChat === "Support" ? "Support Team" : "Sarah (Project Manager)"}
+                      {activeConversation?.name}
                     </h4>
-                    <span className="text-xs text-emerald-500 font-medium">Online</span>
+
+                    <span
+                      className={`text-xs font-medium ${
+                        activeConversation?.online
+                          ? "text-emerald-500"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {activeConversation?.online
+                        ? "Online"
+                        : "Offline"}
+                    </span>
                   </div>
+
                 </div>
 
-                <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-muted/5 flex flex-col justify-end">
+                {/* Messages */}
+                <div className="flex-1 p-4 overflow-y-auto bg-muted/5">
+
                   <div className="space-y-4">
-                    {messages[activeChat].map((msg, idx) => (
-                      <div key={idx} className={`flex ${msg.sender === "client" ? "justify-end" : "justify-start"} items-end gap-2`}>
-                        {msg.sender !== "client" && (
-                          <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold">
-                            {activeChat === "Support" ? "SP" : "PM"}
+
+                    {activeConversation?.messages.map((message) => {
+
+                      const isStudent =
+                        message.senderType === "student";
+
+                      return (
+                        <div
+                          key={message.id}
+                          className={`flex ${
+                            isStudent
+                              ? "justify-end"
+                              : "justify-start"
+                          } items-end gap-2`}
+                        >
+
+                          {/* Staff Avatar */}
+                          {!isStudent && (
+                            <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
+                              {activeConversation.initials}
+                            </div>
+                          )}
+
+                          {/* Message */}
+                          <div
+                            className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
+                              isStudent
+                                ? "bg-primary text-primary-foreground rounded-br-none"
+                                : "bg-card border border-border text-foreground rounded-bl-none"
+                            }`}
+                          >
+
+                            {!isStudent && (
+                              <p className="text-[10px] font-semibold mb-1 opacity-70">
+                                {message.senderName}
+                              </p>
+                            )}
+
+                            <p className="leading-relaxed">
+                              {message.text}
+                            </p>
+
+                            <span className="block text-[9px] text-right mt-1 opacity-70">
+                              {message.time}
+                            </span>
+
                           </div>
-                        )}
-                        <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
-                          msg.sender === "client"
-                            ? "bg-primary text-primary-foreground rounded-br-none"
-                            : "bg-card border border-border text-foreground rounded-bl-none"
-                        }`}>
-                          <p className="leading-relaxed">{msg.text}</p>
-                          <span className="block text-[9px] text-right mt-1 opacity-70">{msg.time}</span>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
+
                   </div>
                 </div>
 
-                <form onSubmit={handleSendMessage} className="p-4 border-t border-border bg-card flex items-center gap-2">
+                {/* Message Input */}
+                <form
+                  onSubmit={handleSendMessage}
+                  className="p-4 border-t border-border bg-card flex items-center gap-2"
+                >
+
                   <Input
                     placeholder="Type a message..."
                     value={typedMsg}
                     onChange={(e) => setTypedMsg(e.target.value)}
                     className="flex-1"
                   />
-                  <Button type="submit">Send</Button>
+
+                  <Button type="submit">
+                    Send
+                  </Button>
+
                 </form>
+
               </div>
             </div>
           </div>
