@@ -48,7 +48,9 @@ import {
 import { useEffect, useState } from "react";
 
 // Import user components connected to database
-import UsersList from "./Users";
+//import UsersList from "./Users";
+import Students from "./Students";
+import Staff from "./Staff";
 import CreateUserByAdmin from "./createUserByAdmin";
 
 // import { getTotalUsers } from "@/api/userapi";
@@ -240,7 +242,8 @@ export default function AdminDashboard() {
     name: "User Management",
     icon: UsersIcon,
     subItems: [
-        { name: "Users", icon: User },
+        { name: "Students", icon: User },
+        { name: "Staff", icon: Briefcase },
         { name: "Roles", icon: ShieldCheck },
     ]
 },
@@ -368,24 +371,33 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Users":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">User Directory</h1>
-                <p className="text-muted-foreground mt-1">Manage system accounts, edit user roles, or remove accounts.</p>
-              </div>
-              <Button onClick={() => setActiveTab("Create User")} className="gap-2">
-                <Plus className="h-4 w-4" /> Create User
-              </Button>
-            </div>
-            <Card className="overflow-hidden p-6 pt-0">
-              <UsersList />
+      // case "Users":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      //         <div>
+      //           <h1 className="text-3xl font-bold tracking-tight text-foreground">User Directory</h1>
+      //           <p className="text-muted-foreground mt-1">Manage system accounts, edit user roles, or remove accounts.</p>
+      //         </div>
+      //         <Button onClick={() => setActiveTab("Create User")} className="gap-2">
+      //           <Plus className="h-4 w-4" /> Create User
+      //         </Button>
+      //       </div>
+      //       <Card className="overflow-hidden p-6 pt-0">
+      //         <UsersList />
               
-            </Card>
-          </div>
-        );
+      //       </Card>
+      //     </div>
+      //   );
+
+      case "Staff":
+        return <Staff />;
+
+      case "Students":
+        return <Students />;
+      
+      
+
 
       case "Create User":
         return (
