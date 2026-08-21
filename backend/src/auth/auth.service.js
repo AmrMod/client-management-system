@@ -1,4 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require("bcrypt");
+const { generateToken } = require("./auth.utils");
+
+
+
 const prisma = new PrismaClient();
 
 /**
@@ -21,8 +26,10 @@ const register = async ({ name, email, password }) => {
         throw error;
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await prisma.user.create({
-        data: { name, email, password }
+        data: { name, email, password: hashedPassword }
     });
 
     return newUser;
@@ -35,26 +42,57 @@ const register = async ({ name, email, password }) => {
  */
 const login = async ({ email, password }) => {
     if (!email || !password) {
-        const error = new Error('Email and password are required');
+        const error = new Error("Email and password are required");
         error.status = 400;
         throw error;
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+    });
 
     if (!user) {
-        const error = new Error('Invalid credentials');
+        const error = new Error("Invalid credentials");
         error.status = 401;
         throw error;
     }
 
-    if (user.password !== password) {
-        const error = new Error('Invalid credentials');
+    // Compare plain-text password with stored hash
+    const passwordMatches = await bcrypt.compare(
+        password,
+        user.password
+    );
+
+
+    if (!passwordMatches) {
+        const error = new Error("Invalid credentials");
         error.status = 401;
         throw error;
     }
 
-    return user;
+    //jwt creation
+    const token = generateToken(user);
+
+    // Never return the password/hash to the frontend
+    // return {
+    //     id: user.id,
+    //     email: user.email,
+    //     role: user.role,
+    //     createdAt: user.createdAt,
+    // };
+
+    //return token added
+    return {
+        user: {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt,
+        },
+        token,
+    };
 };
 
 module.exports = {

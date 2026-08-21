@@ -4,6 +4,7 @@ import { updatePassword, getUserById
  import { createRequest, getSupportUnits } from "@/api/requestapi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,14 +47,15 @@ export default function Dashboard() {
   
   const navigate = useNavigate();
   const { user, logout, updateUser, loading: authLoading } = useAuth();
+  console.log("AUTH USER:", user);
   // const [user, setUser] = useState(null); // Replaced by useAuth() context
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
   // Profile states
-  const [profileName, setProfileName] = useState("Client");
-  const [profileEmail, setProfileEmail] = useState("client@example.com");
+  // const [profileName, setProfileName] = useState("Client");
+  // const [profileEmail, setProfileEmail] = useState("client@example.com");
   const [profilePhone, setProfilePhone] = useState("+1 (555) 019-2834");
   const [profileCompany, setProfileCompany] = useState("Acme Corp");
   const [status, setStatus] = useState("Active");
@@ -223,14 +225,33 @@ export default function Dashboard() {
   }, [user, authLoading, navigate]);
 
   // NEW: Sync profile fields when user loads from context
-  useEffect(() => {
-    if (user) {
-      setProfileName(user.name || "Client");
-      setProfileEmail(user.email || "client@example.com");
-      setProfilePhone(user.phone || "na");
-      setProfileCompany(user.company || "na");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setProfileName(user.name || "Client");
+  //     setProfileEmail(user.email || "client@example.com");
+  //     setProfilePhone(user.phone || "na");
+  //     setProfileCompany(user.company || "na");
+  //   }
+  // }, [user]);
+
+// useEffect(() => {
+//     if (user) {
+//       setProfileName(user.name || "Client");
+//       setProfileEmail(user.email || "client@example.com");
+//       setProfilePhone(user.phone || "na");
+//       setProfileCompany(user.company || "na");
+//     }
+//   }, [user]);
+
+  
+  const profileName =
+    user?.studentProfile?.name ||
+    user?.staffProfile?.name ||
+    "User";
+
+  const profileEmail =
+    user?.email ||
+    "No email";
 
   useEffect(() => {
     const loadSupportUnits = async () => {

@@ -33,6 +33,32 @@ export const registerUser = async (name, email, password) => {
     }
 };
 
+
+export const getCurrentUser = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("No authentication token");
+    }
+
+    const res = await fetch(`${API_BASE}/users/me`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.error || "Failed to get current user"
+        );
+    }
+
+    return data;
+};
+
 // export const getAllUsers = async () => {
 //     try {
 //         const res = await fetch(`${API_BASE}/users`);

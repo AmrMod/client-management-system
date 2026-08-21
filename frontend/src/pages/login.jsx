@@ -54,7 +54,7 @@ const handleSubmit = async (e) => {
     try {
         const user = await loginUser(email, password);
 
-        login(user);
+        await login(user);
 
         if (user.role === "ADMIN") {
             navigate("/AdminDashboard");

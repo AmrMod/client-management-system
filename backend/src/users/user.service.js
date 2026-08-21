@@ -1,6 +1,46 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+
+
+
+
+const getCurrentUser = async (userId) => {
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId,
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+
+            studentProfile: {
+                select: {
+                    name: true,
+                },
+            },
+
+            staffProfile: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    });
+
+    if (!user) {
+        const error = new Error("User not found");
+        error.status = 404;
+        throw error;
+    }
+
+    return user;
+};
+
+
+
 /**
  * Get all users.
  * @returns {Promise<Array>} List of all users
@@ -238,6 +278,7 @@ const getAllUsersWithPagination = async (page, limit) => {
 
 
 module.exports = {
+    getCurrentUser,
     getAllUsers,
     getUserById,
     createUserByAdmin,
