@@ -16,6 +16,8 @@ import CreateUserByAdmin from "./pages/admin/CreateUserByAdmin";
 import EditUsers from './pages/admin/EditUsers';
 import ClientNotes from './pages/admin/ClientNotes';
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 
 function App() {
@@ -26,11 +28,22 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/AdminDashboard" element={<AdminDashboard />} />
+
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/AdminDashboard" element={<AdminDashboard />} />
+              
+            </Route>
             <Route path="/SupportDashboard" element={<SupportDashboard />} />
+
+              
             <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+
+            
+
+            
             <Route path="/Users" element={<Users />} />
             <Route path="/CreateuserByAdmin" element={<CreateUserByAdmin />} />
             <Route path="/:id/EditUsers" element={<EditUsers />} />

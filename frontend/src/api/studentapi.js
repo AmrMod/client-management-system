@@ -1,4 +1,5 @@
 const API_BASE = "http://localhost:3000";
+import { authHeaders } from "./apiutils";
 
 export const getAllStudents = async (
     page,
@@ -9,7 +10,10 @@ export const getAllStudents = async (
 ) => {
     try {
         const res = await fetch(
-            `${API_BASE}/students?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&sortBy=${sortBy}&order=${order}`
+            `${API_BASE}/students?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&sortBy=${sortBy}&order=${order}`,
+            {
+                headers: authHeaders(),
+            }
         );
 
         const data = await res.json();

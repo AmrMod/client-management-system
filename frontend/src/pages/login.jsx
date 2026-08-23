@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/userapi";
+import { loginUser, getCurrentUser } from "../api/userapi";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,7 @@ const [error, setError] = useState("");
 const [loading, setLoading] = useState(false);
 
 const navigate = useNavigate();
-const { login } = useAuth();
+const {user, login } = useAuth();
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,21 +52,50 @@ const handleSubmit = async (e) => {
     setLoading(true);
 
     try {
-        const user = await loginUser(email, password);
+        const loginResponse = await loginUser(email, password);
 
-        await login(user);
+        
 
-        if (user.role === "ADMIN") {
+        const currentUser = await login(loginResponse);
+
+        
+
+
+        
+        
+
+        // if (user.user.role === "ADMIN") {
+        //     navigate("/AdminDashboard");
+        // } else if (user.user.role === "ManagerDashbo") {
+        //     navigate("/ManagerDashboard");
+        // } else if (user.user.role === "STUDENT") {
+        //     navigate("/dashboard");
+        // }
+
+        if (currentUser.role === "ADMIN") {
             navigate("/AdminDashboard");
-        } else {
+
+        } else if (
+            currentUser.role === "STAFF" &&
+            currentUser.staffProfile?.staffRole === "MANAGER"
+        ) {
+            navigate("/ManagerDashboard");
+
+        } else if (
+            currentUser.role === "STAFF" &&
+            currentUser.staffProfile?.staffRole === "SUPPORT_STAFF"
+        ) {
+            navigate("/SupportDashboard");
+
+        } else if (currentUser.role === "STUDENT") {
             navigate("/dashboard");
         }
-    } catch (err) {
-        setError(err.message);
-    } finally {
-        setLoading(false);
-    }
-};
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
 return (
     <div className="min-h-screen bg-muted/30 flex">

@@ -35,10 +35,15 @@ import {
   User,
 } from "lucide-react";
 
+
+
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SupportDashboard() {
   const navigate = useNavigate();
+
+   const { user, logout, updateUser, loading: authLoading } = useAuth();
 
   const [supportUser, setSupportUser] = useState(null);
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -135,33 +140,38 @@ export default function SupportDashboard() {
     },
   ]);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
 
-    if (!storedUser) {
-      navigate("/login");
-      return;
-    }
+  //   if (!storedUser) {
+  //     navigate("/login");
+  //     return;
+  //   }
 
-    const parsed = JSON.parse(storedUser);
-    setSupportUser(parsed);
+  //   const parsed = JSON.parse(storedUser);
+  //   setSupportUser(parsed);
 
-    const savedTheme = localStorage.getItem("theme");
-    const systemDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
+  //   const savedTheme = localStorage.getItem("theme");
+  //   const systemDark = window.matchMedia(
+  //     "(prefers-color-scheme: dark)"
+  //   ).matches;
 
-    const initialDark =
-      savedTheme === "dark" || (!savedTheme && systemDark);
+  //   const initialDark =
+  //     savedTheme === "dark" || (!savedTheme && systemDark);
 
-    setIsDark(initialDark);
+  //   setIsDark(initialDark);
 
-    if (initialDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [navigate]);
+  //   if (initialDark) {
+  //     document.documentElement.classList.add("dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //   }
+  // }, [navigate]);
+ useEffect(() => {
+        if (!authLoading && !user) {
+          navigate("/login");
+        }
+      }, [user, authLoading, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");

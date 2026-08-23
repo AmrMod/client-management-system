@@ -19,6 +19,8 @@
 // };
 
 const API_BASE = "http://localhost:3000";
+import { authHeaders } from "./apiutils";
+
 
 export const getAllStaff = async (
     page,
@@ -31,7 +33,10 @@ export const getAllStaff = async (
         const res = await fetch(
             `${API_BASE}/staff?page=${page}&limit=${limit}&search=${encodeURIComponent(
                 search
-            )}&sortBy=${sortBy}&order=${order}`
+            )}&sortBy=${sortBy}&order=${order}`,
+            {
+                headers: authHeaders(),
+            }
         );
 
         const data = await res.json();

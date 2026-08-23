@@ -178,7 +178,8 @@ const getAllStudents = async (
             where,
             skip,
             take: limit,
-
+            
+            //computed property syntax
             orderBy: {
                 [validSortBy]: validOrder,
             },

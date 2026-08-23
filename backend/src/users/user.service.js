@@ -25,6 +25,7 @@ const getCurrentUser = async (userId) => {
             staffProfile: {
                 select: {
                     name: true,
+                    staffRole: true
                 },
             },
         },

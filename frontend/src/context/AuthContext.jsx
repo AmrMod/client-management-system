@@ -120,6 +120,8 @@ export const AuthProvider = ({ children }) => {
         const currentUser = await getCurrentUser();
 
         setUser(currentUser);
+
+        return currentUser;
     };
 
 

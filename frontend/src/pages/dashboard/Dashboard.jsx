@@ -1,7 +1,7 @@
 import { updateclientProfile } from "@/api/userapi";
 import { updatePassword, getUserById
  } from "@/api/userapi";
- import { createRequest, getSupportUnits } from "@/api/requestapi";
+ import { createRequest, getSupportUnits, getMyRequests  } from "@/api/requestapi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -41,13 +41,19 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardHome from "./components/DashboardHome";
+import MyRequests from "./components/MyRequests";
 
 
 export default function Dashboard() {
   
+
+
   const navigate = useNavigate();
   const { user, logout, updateUser, loading: authLoading } = useAuth();
-  console.log("AUTH USER:", user);
+  
+
+
+
   // const [user, setUser] = useState(null); // Replaced by useAuth() context
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -288,6 +294,8 @@ export default function Dashboard() {
     }
   }, []);
 
+
+
   // OLD handleLogout — replaced by AuthContext logout
   // const handleLogout = () => {
   //   localStorage.removeItem("user");
@@ -494,13 +502,12 @@ export default function Dashboard() {
         setRequestError("User session not found. Please log in again.");
         return;
     }
-    const userId = user.id;
+    
 
     try {
         setRequestLoading(true);
 
         const newReq = await createRequest(
-            userId,
             Number(newReqSupportUnit),
             newReqTitle,
             newReqDesc,
@@ -694,59 +701,9 @@ export default function Dashboard() {
 
       case "My Requests":
         return (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">My Requests</h1>
-                <p className="text-muted-foreground mt-1">Track and manage your submitted requests.</p>
-              </div>
-              <Button onClick={() => setActiveTab("New Request")}>New Request</Button>
-            </div>
-
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request ID</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Priority</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Date Created</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {requests.map((req) => (
-                      <TableRow key={req.id}>
-                        <TableCell className="font-semibold">{req.id}</TableCell>
-                        <TableCell>{req.title}</TableCell>
-                        <TableCell>{req.category}</TableCell>
-                        <TableCell>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            req.priority === "High" || req.priority === "Urgent" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300" :
-                            req.priority === "Medium" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
-                            "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                          }`}>
-                            {req.priority}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            req.status === "Pending" ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300" :
-                            "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
-                          }`}>
-                            {req.status}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{req.date}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
+          <MyRequests
+            setActiveTab={setActiveTab}
+          />
         );
 
       case "New Request":
