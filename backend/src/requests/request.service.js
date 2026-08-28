@@ -167,10 +167,281 @@ const getSupportUnits = async () => {
     });
 };
 
+const getSupportStaffByManager = async (userId) => {
+
+    const manager = await prisma.staffProfile.findUnique({
+        where: {
+            userId
+        },
+        select: {
+            supportUnitId: true
+        }
+    });
+
+    if (!manager) {
+        const error = new Error('Staff profile not found');
+
+        error.status = 404;
+        throw error;
+    }
+
+    const staff = await prisma.staffProfile.findMany({
+        where: {
+            supportUnitId: manager.supportUnitId,
+            staffRole: 'SUPPORT_STAFF'
+        },
+        select: {
+            id: true,
+            name: true
+        },
+        orderBy: {
+            name: 'asc'
+        }
+    });
+
+    return staff;
+};
+
+const assignRequest = async (requestId, staffId, managerUserId) => {
+
+    const manager = await prisma.staffProfile.findUnique({
+        where: {
+            userId: managerUserId
+        },
+        select: {
+            supportUnitId: true
+        }
+    });
+
+    if (!manager) {
+        const error = new Error('Manager profile not found');
+
+        error.status = 404;
+        throw error;
+    }
+
+    const request = await prisma.request.findUnique({
+        where: {
+            id: requestId
+        },
+        select: {
+            id: true,
+            supportUnitId: true
+        }
+    });
+
+    if (!request) {
+        const error = new Error('Request not found');
+
+        error.status = 404;
+        throw error;
+    }
+
+    if (request.supportUnitId !== manager.supportUnitId) {
+        const error = new Error(
+            'You cannot assign a request outside your support unit'
+        );
+
+        error.status = 403;
+        throw error;
+    }
+
+    const staff = await prisma.staffProfile.findUnique({
+        where: {
+            id: staffId
+        },
+        select: {
+            id: true,
+            supportUnitId: true,
+            staffRole: true
+        }
+    });
+
+    if (!staff) {
+        const error = new Error('Support staff not found');
+
+        error.status = 404;
+        throw error;
+    }
+
+    if (staff.staffRole !== 'SUPPORT_STAFF') {
+        const error = new Error(
+            'Request can only be assigned to support staff'
+        );
+
+        error.status = 400;
+        throw error;
+    }
+
+    if (staff.supportUnitId !== request.supportUnitId) {
+        const error = new Error(
+            'Support staff does not belong to this support unit'
+        );
+
+        error.status = 400;
+        throw error;
+    }
+
+    const updatedRequest = await prisma.request.update({
+        where: {
+            id: requestId
+        },
+        data: {
+            assignedStaffId: staffId
+        },
+        select: {
+            id: true,
+            title: true,
+            status: true,
+            priority: true,
+            assignedStaff: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            }
+        }
+    });
+
+    return updatedRequest;
+};
+
+const getSupportRequests = async (userId) => {
+
+    const staff = await prisma.staffProfile.findUnique({
+        where: {
+            userId
+        },
+        select: {
+            id: true
+        }
+    });
+
+    if (!staff) {
+        const error = new Error('Staff profile not found');
+
+        error.status = 404;
+        throw error;
+    }
+
+    return await prisma.request.findMany({
+        where: {
+            assignedStaffId: staff.id
+        },
+        select: {
+            id: true,
+            title: true,
+            priority: true,
+            status: true,
+            createdAt: true,
+
+            student: {
+                select: {
+                    name: true,
+                    studentId: true
+                }
+            }
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+};
+
+
+const updateRequestStatus = async (
+    requestId,
+    userId,
+    status
+) => {
+
+    const allowedStatuses = [
+        "PENDING",
+        "IN_PROGRESS",
+        "RESOLVED",
+        "REJECTED"
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+        const error = new Error("Invalid request status");
+
+        error.status = 400;
+        throw error;
+    }
+
+    const staff = await prisma.staffProfile.findUnique({
+        where: {
+            userId
+        },
+        select: {
+            id: true
+        }
+    });
+
+    if (!staff) {
+        const error = new Error("Staff profile not found");
+
+        error.status = 404;
+        throw error;
+    }
+
+    const request = await prisma.request.findUnique({
+        where: {
+            id: requestId
+        },
+        select: {
+            id: true,
+            assignedStaffId: true
+        }
+    });
+
+    if (!request) {
+        const error = new Error("Request not found");
+
+        error.status = 404;
+        throw error;
+    }
+
+    if (request.assignedStaffId !== staff.id) {
+        const error = new Error(
+            "You can only update requests assigned to you"
+        );
+
+        error.status = 403;
+        throw error;
+    }
+
+    return await prisma.request.update({
+        where: {
+            id: requestId
+        },
+        data: {
+            status
+        },
+        select: {
+            id: true,
+            title: true,
+            priority: true,
+            status: true,
+            createdAt: true,
+
+            student: {
+                select: {
+                    name: true,
+                    studentId: true
+                }
+            }
+        }
+    });
+};
 
 module.exports = {
     createRequest,
     getRequestsByManager,
     getRequestsByUserId,
-    getSupportUnits
+    getSupportUnits,
+    getSupportStaffByManager,
+    assignRequest,
+    getSupportRequests,
+    updateRequestStatus
 };

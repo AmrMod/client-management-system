@@ -16,5 +16,36 @@ router.get(
     requestController.getManagerRequests
 );
 router.get('/support-units', requestController.getSupportUnits);
+router.get(
+    '/staff',
+    authenticate,
+    requireRole('STAFF'),
+    requireStaffRole('MANAGER'),
+    requestController.getSupportStaff
+);
+router.patch(
+    '/:id/assign',
+    authenticate,
+    requireRole('STAFF'),
+    requireStaffRole('MANAGER'),
+    requestController.assignRequest
+);
+
+router.get(
+    '/my-assigned',
+    authenticate,
+    requireRole('STAFF'),
+    requireStaffRole('SUPPORT_STAFF'),
+    requestController.getSupportRequests
+);
+
+router.patch(
+    '/:id/status',
+    authenticate,
+    requireRole('STAFF'),
+    requireStaffRole('SUPPORT_STAFF'),
+    requestController.updateRequestStatus
+);
+
 
 module.exports = router;

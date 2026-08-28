@@ -40,6 +40,9 @@ import {
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
+import SupportRequests from "./components/SupportRequests";
+
+
 export default function SupportDashboard() {
   const navigate = useNavigate();
 
@@ -385,63 +388,64 @@ export default function SupportDashboard() {
         );
 
       case "Requests":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Support Requests
-              </h1>
+         return (
+          <SupportRequests />
+        //   <div className="space-y-6 animate-in fade-in duration-300">
+        //     <div>
+        //       <h1 className="text-3xl font-bold tracking-tight text-foreground">
+        //         Support Requests
+        //       </h1>
 
-              <p className="text-muted-foreground mt-1">
-                View and manage student support requests.
-              </p>
-            </div>
+        //       <p className="text-muted-foreground mt-1">
+        //         View and manage student support requests.
+        //       </p>
+        //     </div>
 
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request</TableHead>
-                      <TableHead>Student</TableHead>
-                      <TableHead>Unit</TableHead>
-                      <TableHead>Priority</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
+        //     <Card>
+        //       <CardContent className="p-0">
+        //         <Table>
+        //           <TableHeader>
+        //             <TableRow>
+        //               <TableHead>Request</TableHead>
+        //               <TableHead>Student</TableHead>
+        //               <TableHead>Unit</TableHead>
+        //               <TableHead>Priority</TableHead>
+        //               <TableHead>Status</TableHead>
+        //             </TableRow>
+        //           </TableHeader>
 
-                  <TableBody>
-                    {requests.map((request) => (
-                      <TableRow key={request.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-semibold">
-                              {request.subject}
-                            </p>
+        //           <TableBody>
+        //             {requests.map((request) => (
+        //               <TableRow key={request.id}>
+        //                 <TableCell>
+        //                   <div>
+        //                     <p className="font-semibold">
+        //                       {request.subject}
+        //                     </p>
 
-                            <p className="text-xs text-muted-foreground">
-                              {request.id}
-                            </p>
-                          </div>
-                        </TableCell>
+        //                     <p className="text-xs text-muted-foreground">
+        //                       {request.id}
+        //                     </p>
+        //                   </div>
+        //                 </TableCell>
 
-                        <TableCell>{request.student}</TableCell>
-                        <TableCell>{request.unit}</TableCell>
+        //                 <TableCell>{request.student}</TableCell>
+        //                 <TableCell>{request.unit}</TableCell>
 
-                        <TableCell>
-                          <span className="text-sm">
-                            {request.priority}
-                          </span>
-                        </TableCell>
+        //                 <TableCell>
+        //                   <span className="text-sm">
+        //                     {request.priority}
+        //                   </span>
+        //                 </TableCell>
 
-                        <TableCell>{request.status}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
+        //                 <TableCell>{request.status}</TableCell>
+        //               </TableRow>
+        //             ))}
+        //           </TableBody>
+        //         </Table>
+        //       </CardContent>
+        //     </Card>
+        //   </div>
         );
 
       case "Students":

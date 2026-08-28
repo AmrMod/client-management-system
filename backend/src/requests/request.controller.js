@@ -94,9 +94,127 @@ const getSupportUnits = async (req, res) => {
     }
 };
 
+const getSupportStaff = async (req, res) => {
+    try {
+
+        const userId = req.user.userId;
+
+        const staff = await requestService.getSupportStaffByManager(userId);
+
+        res.status(200).json(staff);
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
+const assignRequest = async (req, res) => {
+    try {
+
+        const requestId = Number(req.params.id);
+        const { staffId } = req.body;
+        const managerUserId = req.user.userId;
+
+        const updatedRequest = await requestService.assignRequest(
+            requestId,
+            staffId,
+            managerUserId
+        );
+
+        res.status(200).json(updatedRequest);
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
+const getSupportRequests = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const requests =
+            await requestService.getSupportRequests(userId);
+
+        res.status(200).json(requests);
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
+const updateRequestStatus = async (req, res) => {
+    try {
+
+        const requestId = Number(req.params.id);
+        const userId = req.user.userId;
+        const { status } = req.body;
+
+        const updatedRequest =
+            await requestService.updateRequestStatus(
+                requestId,
+                userId,
+                status
+            );
+
+        res.status(200).json(updatedRequest);
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
+
+
 module.exports = {
     createRequest,
     getManagerRequests,
     getMyRequests,
-    getSupportUnits
+    getSupportUnits,
+    getSupportStaff,
+    assignRequest,
+    getSupportRequests,
+    updateRequestStatus
 };

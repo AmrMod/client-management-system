@@ -14,7 +14,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-import { getManagerRequests } from "@/api/requestapi";
+import { getManagerRequests, getSupportStaff, assignRequest } from "@/api/requestapi";
 
 
 const ManagerRequests = () => {
@@ -22,29 +22,80 @@ const ManagerRequests = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [staff, setStaff] = useState([]);
+    const [staffLoading, setStaffLoading] = useState(true);
 
+
+    // useEffect(() => {
+
+    //     const loadRequests = async () => {
+    //         try {
+    //             setLoading(true);
+    //             setError(null);
+
+    //             const data = await getManagerRequests();
+
+    //             setRequests(data);
+
+    //         } catch (error) {
+    //             setError(error.message);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     loadRequests();
+
+    // }, []);
 
     useEffect(() => {
 
-        const loadRequests = async () => {
-            try {
-                setLoading(true);
-                setError(null);
+    const loadData = async () => {
+        try {
+            setLoading(true);
+            setStaffLoading(true);
+            setError(null);
 
-                const data = await getManagerRequests();
+            const [requestsData, staffData] = await Promise.all([
+                getManagerRequests(),
+                getSupportStaff()
+            ]);
 
-                setRequests(data);
+            setRequests(requestsData);
+            setStaff(staffData);
 
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+            setStaffLoading(false);
+        }
+    };
 
-        loadRequests();
+    loadData();
 
-    }, []);
+}, []);
+
+    const handleAssign = async (requestId, staffId) => {
+        try {
+
+            const updatedRequest = await assignRequest(
+                requestId,
+                Number(staffId)
+            );
+
+            setRequests((currentRequests) =>
+                currentRequests.map((request) =>
+                    request.id === requestId
+                        ? updatedRequest
+                        : request
+                )
+            );
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
 
 
     if (loading) {
@@ -175,7 +226,41 @@ const ManagerRequests = () => {
 
 
                                     <TableCell>
-                                        {request.assignedStaff?.name || "Unassigned"}
+
+                                        {request.assignedStaff ? (
+
+                                            <span>
+                                                {request.assignedStaff.name}
+                                            </span>
+
+                                        ) : (
+
+                                            <select
+                                                className="border rounded-md px-3 py-2 text-sm"
+                                                defaultValue=""
+                                                onChange={(e) =>
+                                                    handleAssign(
+                                                        request.id,
+                                                        e.target.value
+                                                    )
+                                                }
+                                            >
+                                                <option value="" disabled>
+                                                    Select staff
+                                                </option>
+
+                                                {staff.map((member) => (
+                                                    <option
+                                                        key={member.id}
+                                                        value={member.id}
+                                                    >
+                                                        {member.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                        )}
+
                                     </TableCell>
 
 
