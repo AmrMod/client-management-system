@@ -37,31 +37,40 @@ export const createRequest = async (
   }
 };
 
-export const getMyRequests = async () => {
-  try {
-    const res = await fetch(`${API_BASE}/requests`, {
-      method: "GET",
-      headers: authHeaders(),
-    });
+// export const getMyRequests = async () => {
+//   try {
+//     const res = await fetch(`${API_BASE}/requests`, {
+//       method: "GET",
+//       headers: authHeaders(),
+//     });
 
-    const data = await res.json();
+//     const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to fetch requests");
-    }
+//     if (!res.ok) {
+//       throw new Error(data.error || "Failed to fetch requests");
+//     }
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
+//     return data;
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
-export const getManagerRequests = async () => {
+export const getMyRequests = async (
+    page,
+    limit,
+    search = "",
+    sortBy = "createdAt",
+    order = "asc"
+) => {
     try {
-        const res = await fetch(`${API_BASE}/requests/manager`, {
-            method: "GET",
-            headers: authHeaders(),
-        });
+        const res = await fetch(
+            `${API_BASE}/requests?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&sortBy=${sortBy}&order=${order}`,
+            {
+                method: "GET",
+                headers: authHeaders(),
+            }
+        );
 
         const data = await res.json();
 
@@ -76,6 +85,69 @@ export const getManagerRequests = async () => {
     } catch (err) {
         throw err;
     }
+};
+
+// export const getManagerRequests = async () => {
+//     try {
+//         const res = await fetch(`${API_BASE}/requests/manager`, {
+//             method: "GET",
+//             headers: authHeaders(),
+//         });
+
+//         const data = await res.json();
+
+//         if (!res.ok) {
+//             throw new Error(
+//                 data.error || "Failed to fetch requests"
+//             );
+//         }
+
+//         return data;
+
+//     } catch (err) {
+//         throw err;
+//     }
+// };
+
+export const getManagerRequests = async ({
+    page = 1,
+    limit = 10,
+    search = "",
+    status,
+    priority,
+    sortBy = "createdAt",
+    order = "desc"
+} = {}) => {
+
+    const params = new URLSearchParams();
+
+    params.append("page", page);
+    params.append("limit", limit);
+
+    if (search) params.append("search", search);
+    if (status) params.append("status", status);
+    if (priority) params.append("priority", priority);
+
+    params.append("sortBy", sortBy);
+    params.append("order", order);
+
+    const res = await fetch(
+        `${API_BASE}/requests/manager?${params.toString()}`,
+        {
+            method: "GET",
+            headers: authHeaders(),
+        }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.error || "Failed to fetch requests"
+        );
+    }
+
+    return data;
 };
 
 export const getSupportUnits = async () => {
@@ -144,12 +216,62 @@ export const assignRequest = async (requestId, staffId) => {
     }
 };
 
-export const getSupportRequests = async () => {
+// export const getSupportRequests = async () => {
+//     try {
+//         const res = await fetch(`${API_BASE}/requests/my-assigned`, {
+//             method: "GET",
+//             headers: authHeaders(),
+//         });
+
+//         const data = await res.json();
+
+//         if (!res.ok) {
+//             throw new Error(
+//                 data.error || "Failed to fetch assigned requests"
+//             );
+//         }
+
+//         return data;
+
+//     } catch (err) {
+//         throw err;
+//     }
+// };
+
+export const getSupportRequests = async ({
+    page = 1,
+    limit = 10,
+    search = "",
+    status,
+    priority,
+    sortBy = "createdAt",
+    order = "desc"
+} = {}) => {
+
+    const params = new URLSearchParams({
+        page,
+        limit,
+        search,
+        sortBy,
+        order
+    });
+
+    if (status) {
+        params.append("status", status);
+    }
+
+    if (priority) {
+        params.append("priority", priority);
+    }
+
     try {
-        const res = await fetch(`${API_BASE}/requests/my-assigned`, {
-            method: "GET",
-            headers: authHeaders(),
-        });
+        const res = await fetch(
+            `${API_BASE}/requests/my-assigned?${params.toString()}`,
+            {
+                method: "GET",
+                headers: authHeaders(),
+            }
+        );
 
         const data = await res.json();
 

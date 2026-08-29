@@ -67,7 +67,61 @@ const createRequest = async ({
     return newRequest;
 };
 
-const getRequestsByUserId = async (userId) => {
+// const getRequestsByUserId = async (userId) => {
+
+//     const student = await prisma.studentProfile.findUnique({
+//         where: {
+//             userId
+//         },
+//         select: {
+//             id: true
+//         }
+//     });
+
+//     if (!student) {
+//         const error = new Error('Student profile not found');
+
+//         error.status = 404;
+//         throw error;
+//     }
+
+//     return await prisma.request.findMany({
+//         where: {
+//             studentId: student.id
+//         },
+//         select: {
+//             id: true,
+//             title: true,
+//             priority: true,
+//             status: true,
+//             createdAt: true,
+//             supportUnit: {
+//                 select: {
+//                     name: true
+//                 }
+//             }
+//         },
+//         orderBy: {
+//             createdAt: 'asc'
+//         }
+//     });
+// };
+
+
+const getRequestsByUserId = async (
+    userId,
+    page,
+    limit,
+    search,
+    sortBy,
+    order
+) => {
+
+    const skip = (page - 1) * limit;
+
+    // ==========================================
+    // FIND STUDENT
+    // ==========================================
 
     const student = await prisma.studentProfile.findUnique({
         where: {
@@ -82,39 +136,168 @@ const getRequestsByUserId = async (userId) => {
         const error = new Error('Student profile not found');
 
         error.status = 404;
+
         throw error;
     }
 
-    return await prisma.request.findMany({
-        where: {
-            studentId: student.id
-        },
-        select: {
-            id: true,
-            title: true,
-            priority: true,
-            status: true,
-            createdAt: true,
-            supportUnit: {
-                select: {
-                    name: true
+
+    // ==========================================
+    // SEARCH + OWNERSHIP
+    // ==========================================
+
+    const where = {
+        studentId: student.id,
+
+        ...(search
+            ? {
+                  OR: [
+                      {
+                          title: {
+                              contains: search
+                          }
+                      },
+                      {
+                          supportUnit: {
+                              name: {
+                                  contains: search
+                              }
+                          }
+                      }
+                  ]
+              }
+            : {})
+    };
+
+
+    // ==========================================
+    // DATABASE QUERY
+    // ==========================================
+
+    const [requests, totalRequests] = await Promise.all([
+
+        prisma.request.findMany({
+            where,
+
+            skip,
+            take: limit,
+
+            orderBy: {
+                [sortBy]: order
+            },
+
+            select: {
+                id: true,
+                title: true,
+                priority: true,
+                status: true,
+                createdAt: true,
+
+                supportUnit: {
+                    select: {
+                        name: true
+                    }
                 }
             }
-        },
-        orderBy: {
-            createdAt: 'asc'
-        }
-    });
+        }),
+
+        prisma.request.count({
+            where
+        })
+
+    ]);
+
+
+    // ==========================================
+    // PAGINATION
+    // ==========================================
+
+    const totalPages = Math.ceil(
+        totalRequests / limit
+    );
+
+
+    return {
+        requests,
+        totalRequests,
+        totalPages,
+        currentPage: page,
+        limit,
+        sortBy,
+        order
+    };
 };
 
-const getRequestsByManager = async (userId) => {
+// const getRequestsByManager = async (userId) => {
+
+//     const manager = await prisma.staffProfile.findUnique({
+//         where: {
+//             userId
+//         },
+//         select: {
+//             id: true,
+//             supportUnitId: true
+//         }
+//     });
+
+//     if (!manager) {
+//         const error = new Error('Staff profile not found');
+
+//         error.status = 404;
+//         throw error;
+//     }
+
+//     const requests = await prisma.request.findMany({
+//         where: {
+//             supportUnitId: manager.supportUnitId
+//         },
+//         select: {
+//             id: true,
+//             title: true,
+//             priority: true,
+//             status: true,
+//             createdAt: true,
+
+//             student: {
+//                 select: {
+//                     name: true,
+//                     studentId: true
+//                 }
+//             },
+
+//             assignedStaff: {
+//                 select: {
+//                     name: true
+//                 }
+//             }
+//         },
+//         orderBy: {
+//             createdAt: 'desc'
+//         }
+//     });
+
+//     return requests;
+// };
+
+const getRequestsByManager = async ({
+    userId,
+    page,
+    limit,
+    search,
+    status,
+    priority,
+    sortBy,
+    order
+}) => {
+
+    // ==========================================
+    // FIND MANAGER
+    // ==========================================
 
     const manager = await prisma.staffProfile.findUnique({
         where: {
             userId
         },
         select: {
-            id: true,
             supportUnitId: true
         }
     });
@@ -126,36 +309,116 @@ const getRequestsByManager = async (userId) => {
         throw error;
     }
 
-    const requests = await prisma.request.findMany({
-        where: {
-            supportUnitId: manager.supportUnitId
-        },
-        select: {
-            id: true,
-            title: true,
-            priority: true,
-            status: true,
-            createdAt: true,
 
-            student: {
-                select: {
-                    name: true,
-                    studentId: true
+    // ==========================================
+    // PAGINATION
+    // ==========================================
+
+    const skip = (page - 1) * limit;
+
+
+    // ==========================================
+    // SEARCH + FILTER
+    // ==========================================
+
+    const where = {
+        supportUnitId: manager.supportUnitId,
+
+        ...(search && {
+            OR: [
+                {
+                    title: {
+                        contains: search
+                    }
+                },
+                {
+                    student: {
+                        name: {
+                            contains: search
+                        }
+                    }
+                },
+                {
+                    student: {
+                        studentId: {
+                            contains: search
+                        }
+                    }
                 }
+            ]
+        }),
+
+        ...(status && {
+            status
+        }),
+
+        ...(priority && {
+            priority
+        })
+    };
+
+
+    // ==========================================
+    // DATABASE QUERIES
+    // ==========================================
+
+    const [requests, totalRequests] = await Promise.all([
+
+        prisma.request.findMany({
+            where,
+
+            skip,
+            take: limit,
+
+            orderBy: {
+                [sortBy]: order
             },
 
-            assignedStaff: {
-                select: {
-                    name: true
+            select: {
+                id: true,
+                title: true,
+                priority: true,
+                status: true,
+                createdAt: true,
+
+                student: {
+                    select: {
+                        name: true,
+                        studentId: true
+                    }
+                },
+
+                assignedStaff: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
                 }
             }
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    });
+        }),
 
-    return requests;
+        prisma.request.count({
+            where
+        })
+    ]);
+
+
+    // ==========================================
+    // PAGINATION RESPONSE
+    // ==========================================
+
+    const totalPages = Math.ceil(
+        totalRequests / limit
+    );
+
+    return {
+        requests,
+        totalRequests,
+        totalPages,
+        currentPage: page,
+        sortBy,
+        order
+    };
 };
 
 
@@ -306,7 +569,58 @@ const assignRequest = async (requestId, staffId, managerUserId) => {
     return updatedRequest;
 };
 
-const getSupportRequests = async (userId) => {
+// const getSupportRequests = async (userId) => {
+
+//     const staff = await prisma.staffProfile.findUnique({
+//         where: {
+//             userId
+//         },
+//         select: {
+//             id: true
+//         }
+//     });
+
+//     if (!staff) {
+//         const error = new Error('Staff profile not found');
+
+//         error.status = 404;
+//         throw error;
+//     }
+
+//     return await prisma.request.findMany({
+//         where: {
+//             assignedStaffId: staff.id
+//         },
+//         select: {
+//             id: true,
+//             title: true,
+//             priority: true,
+//             status: true,
+//             createdAt: true,
+
+//             student: {
+//                 select: {
+//                     name: true,
+//                     studentId: true
+//                 }
+//             }
+//         },
+//         orderBy: {
+//             createdAt: 'desc'
+//         }
+//     });
+// };
+
+const getSupportRequests = async ({
+    userId,
+    page,
+    limit,
+    search,
+    status,
+    priority,
+    sortBy,
+    order
+}) => {
 
     const staff = await prisma.staffProfile.findUnique({
         where: {
@@ -324,28 +638,77 @@ const getSupportRequests = async (userId) => {
         throw error;
     }
 
-    return await prisma.request.findMany({
-        where: {
-            assignedStaffId: staff.id
-        },
-        select: {
-            id: true,
-            title: true,
-            priority: true,
-            status: true,
-            createdAt: true,
+    const skip = (page - 1) * limit;
 
-            student: {
-                select: {
-                    name: true,
-                    studentId: true
+    const where = {
+        assignedStaffId: staff.id,
+
+        ...(search && {
+            OR: [
+                {
+                    title: {
+                        contains: search
+                    }
+                },
+                {
+                    student: {
+                        name: {
+                            contains: search
+                        }
+                    }
+                }
+            ]
+        }),
+
+        ...(status && {
+            status
+        }),
+
+        ...(priority && {
+            priority
+        })
+    };
+
+    const [requests, totalRequests] = await Promise.all([
+
+        prisma.request.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                [sortBy]: order
+            },
+            select: {
+                id: true,
+                title: true,
+                priority: true,
+                status: true,
+                createdAt: true,
+
+                student: {
+                    select: {
+                        name: true,
+                        studentId: true
+                    }
                 }
             }
-        },
-        orderBy: {
-            createdAt: 'desc'
+        }),
+
+        prisma.request.count({
+            where
+        })
+
+    ]);
+
+    return {
+        requests,
+        pagination: {
+            page,
+            limit,
+            totalRequests,
+            totalPages: Math.ceil(totalRequests / limit)
         }
-    });
+    };
 };
 
 
