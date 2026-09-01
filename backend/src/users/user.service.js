@@ -19,6 +19,8 @@ const getCurrentUser = async (userId) => {
             studentProfile: {
                 select: {
                     name: true,
+                    phone: true,
+                
                 },
             },
 

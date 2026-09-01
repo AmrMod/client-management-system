@@ -10,13 +10,20 @@ const validate =
     require("../middleware/validate.middleware");
 
 const {
+    createRequestSchema,
     getMyRequestsSchema,
     managerRequestsSchema,
     supportRequestsSchema
 } = require("./request.validation");
 
 
-router.post('/', authenticate, requireRole("STUDENT"), requestController.createRequest);
+router.post(
+    '/',
+    authenticate,
+    requireRole("STUDENT"),
+    validate(createRequestSchema),
+    requestController.createRequest
+);
 
 //before zod
 // router.get('/', authenticate, requireRole('STUDENT'), requestController.getMyRequests);

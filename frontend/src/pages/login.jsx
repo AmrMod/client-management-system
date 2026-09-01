@@ -39,15 +39,15 @@ const handleSubmit = async (e) => {
         return;
     }
 
-    if (!email.includes("@")) {
-        setError("Please enter a valid email address");
-        return;
-    }
+    // if (!email.includes("@")) {
+    //     setError("Please enter a valid email address");
+    //     return;
+    // }
 
-    if (password.length < 6) {
-        setError("Password must be at least 6 characters long");
-        return;
-    }
+    // if (password.length < 6) {
+    //     setError("Password must be at least 6 characters long");
+    //     return;
+    // }
 
     setLoading(true);
 

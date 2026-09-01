@@ -27,9 +27,18 @@ export const createRequest = async (
 
     const data = await res.json();
 
+    // if (!res.ok) {
+    //     console.log("Validation response:", data);
+
+    //   throw new Error(data.error || "Failed to create request");
+    // }
     if (!res.ok) {
-      throw new Error(data.error || "Failed to create request");
-    }
+            throw new Error(
+                data.details?.[0]?.message ||
+                data.error ||
+                'Failed to create request'
+            );
+        }
 
     return data;
   } catch (err) {

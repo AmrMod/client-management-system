@@ -42,6 +42,7 @@ import {
 import { useEffect, useState } from "react";
 import DashboardHome from "./components/DashboardHome";
 import MyRequests from "./components/MyRequests";
+import NewRequest from "./components/NewRequest";
 
 
 export default function Dashboard() {
@@ -62,7 +63,7 @@ export default function Dashboard() {
   // Profile states
   // const [profileName, setProfileName] = useState("Client");
   // const [profileEmail, setProfileEmail] = useState("client@example.com");
-  const [profilePhone, setProfilePhone] = useState("+1 (555) 019-2834");
+  // const [profilePhone, setProfilePhone] = useState("+1 (555) 019-2834");
   const [profileCompany, setProfileCompany] = useState("Acme Corp");
   const [status, setStatus] = useState("Active");
   const [error, setError] = useState("");
@@ -258,6 +259,16 @@ export default function Dashboard() {
   const profileEmail =
     user?.email ||
     "No email";
+  
+  const profilePhone =
+    user?.studentProfile?.phone ||
+    user?.staffProfile?.phone ||
+    "No phone";
+
+  const profileStatus =
+    user?.studentProfile?.status ||
+    user?.staffProfile?.status ||
+    "No status";
 
   useEffect(() => {
     const loadSupportUnits = async () => {
@@ -473,83 +484,85 @@ export default function Dashboard() {
   //   }
   // };
 
-  const handleNewRequestSubmit = async (e) => {
-    e.preventDefault();
+//   const handleNewRequestSubmit = async (e) => {
+//     e.preventDefault();
 
-    setRequestMessage("");
-    setRequestError("");
+//     setRequestMessage("");
+//     setRequestError("");
 
-    if (
-        !newReqTitle.trim() ||
-        !newReqDesc.trim() ||
-        !newReqSupportUnit
-    ) {
-        setRequestError("Please fill in all required fields.");
-        return;
-    }
+//     // if (
+//     //     !newReqTitle.trim() ||
+//     //     !newReqDesc.trim() ||
+//     //     !newReqSupportUnit
+//     // ) {
+//     //     setRequestError("Please fill in all required fields.");
+//     //     return;
+//     // }
 
-    // OLD: Read user from localStorage
-    // const storedUser = localStorage.getItem("user");
-    // if (!storedUser) {
-    //     setRequestError("User session not found. Please log in again.");
-    //     return;
-    // }
-    // const parsed = JSON.parse(storedUser);
-    // const userId = parsed.id;
+//     // OLD: Read user from localStorage
+//     // const storedUser = localStorage.getItem("user");
+//     // if (!storedUser) {
+//     //     setRequestError("User session not found. Please log in again.");
+//     //     return;
+//     // }
+//     // const parsed = JSON.parse(storedUser);
+//     // const userId = parsed.id;
 
-    // NEW: Get userId from AuthContext user
-    if (!user) {
-        setRequestError("User session not found. Please log in again.");
-        return;
-    }
+//     // NEW: Get userId from AuthContext user
+//     if (!user) {
+//         setRequestError("User session not found. Please log in again.");
+//         return;
+//     }
     
 
-    try {
-        setRequestLoading(true);
+//     try {
+//         setRequestLoading(true);
 
-        const newReq = await createRequest(
-            Number(newReqSupportUnit),
-            newReqTitle,
-            newReqDesc,
-            newReqPriority
-        );
 
-        // Add the newly created request to state
-        setRequests(prev => [newReq, ...prev]);
+//         const newReq = await createRequest(
+//             Number(newReqSupportUnit),
+//             newReqTitle,
+//             newReqDesc,
+//             newReqPriority
+//         );
 
-        // Clear form
-        setNewReqTitle("");
-        setNewReqDesc("");
+//         // Add the newly created request to state
+//         setRequests(prev => [newReq, ...prev]);
 
-        if (supportUnits.length > 0) {
-            setNewReqSupportUnit(String(supportUnits[0].id));
-        }
+//         // Clear form
+//         setNewReqTitle("");
+//         setNewReqDesc("");
 
-        setNewReqPriority("MEDIUM");
+//         if (supportUnits.length > 0) {
+//             setNewReqSupportUnit(String(supportUnits[0].id));
+//         }
 
-        // SUCCESS MESSAGE
-        setRequestMessage(
-            "Request submitted successfully. Our support team will review it shortly."
-        );
+//         setNewReqPriority("MEDIUM");
 
-        addSystemNotification(
-            "Request Created",
-            `New request "${newReq.title}" has been submitted.`
-        );
+//         // SUCCESS MESSAGE
+//         setRequestMessage(
+//             "Request submitted successfully. Our support team will review it shortly."
+//         );
 
-    } catch (error) {
-        console.error("Failed to create request:", error);
+//         addSystemNotification(
+//             "Request Created",
+//             `New request "${newReq.title}" has been submitted.`
+//         );
 
-        // ERROR MESSAGE
-        setRequestError(
-            error.message || "Failed to submit request. Please try again."
-        );
+//     } catch (error) {
+//         console.error("Failed to create request:", error);
 
-    } finally {
-        setRequestLoading(false);
-    }
-};
-  const handleSendMessage = (e) => {
+//         // ERROR MESSAGE
+//         setRequestError(
+//             error.message || "Failed to submit request. Please try again."
+//         );
+
+//     } finally {
+//         setRequestLoading(false);
+//     }
+// };
+  
+const handleSendMessage = (e) => {
   e.preventDefault();
 
   if (!typedMsg.trim()) return;
@@ -618,7 +631,7 @@ export default function Dashboard() {
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard },
-    { name: "My Profile", icon: User },
+    // { name: "My Profile", icon: User },
     { name: "My Requests", icon: ClipboardList },
     { name: "New Request", icon: PlusCircle },
     { name: "Messages", icon: MessageSquare, badge: 3 },
@@ -638,66 +651,67 @@ export default function Dashboard() {
           />
         );
       
-      case "My Profile":
-        return (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">My Profile</h1>
-              <p className="text-muted-foreground mt-1">View and update your profile details.</p>
-            </div>
+      // case "My Profile":
+      //   return (
+      //     <div className="space-y-8 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">My Profile</h1>
+      //         <p className="text-muted-foreground mt-1">View and update your profile details.</p>
+      //       </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-1 flex flex-col items-center p-6 text-center">
-                <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl shadow-sm mb-4">
-                  {profileName.split(" ").map((n) => n[0]).join("").toUpperCase()}
-                </div>
-                <h3 className="font-bold text-lg text-foreground">{profileName}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{profileEmail}</p>
-                <div className="w-full border-t my-6 pt-4 text-left space-y-3">
-                  <div>
-                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Role</span>
-                    <span className="text-sm font-medium text-foreground">Client User</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Status</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">Active</span>
-                  </div>
-                </div>
-              </Card>
+      //       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      //         <Card className="lg:col-span-1 flex flex-col items-center p-6 text-center">
+      //           <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl shadow-sm mb-4">
+      //             {profileName.split(" ").map((n) => n[0]).join("").toUpperCase()}
+      //           </div>
+      //           <h3 className="font-bold text-lg text-foreground">{profileName}</h3>
+      //           <p className="text-sm text-muted-foreground mt-1">{profileEmail}</p>
+      //           <div className="w-full border-t my-6 pt-4 text-left space-y-3">
+      //             <div>
+      //               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Role</span>
+      //               <span className="text-sm font-medium text-foreground">Client User</span>
+      //             </div>
+      //             <div>
+      //               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Status</span>
+      //               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">Active</span>
+      //             </div>
+      //           </div>
+      //         </Card>
 
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle>Profile Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleUpdateProfile} className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="p-name">Full Name</Label>
-                        <Input id="p-name" value={profileName} onChange={(e) => setProfileName(e.target.value)} required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="p-email">Email Address</Label>
-                        <Input id="p-email" type="email" value={profileEmail} onChange={(e) => setProfileEmail(e.target.value)} required />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="p-phone">Phone Number</Label>
-                        <Input id="p-phone" value={profilePhone} onChange={(e) => setProfilePhone(e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="p-company">Company</Label>
-                        <Input id="p-company" value={profileCompany} onChange={(e) => setProfileCompany(e.target.value)} />
-                      </div>
-                    </div>
-                    <Button type="submit" className="mt-4">Save Changes</Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        );
+      //         <Card className="lg:col-span-2">
+      //           <CardHeader>
+      //             <CardTitle>Profile Details</CardTitle>
+      //           </CardHeader>
+      //           <CardContent>
+      //             <form onSubmit={handleUpdateProfile} className="space-y-4">
+      //               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      //                 <div className="space-y-2">
+      //                   <Label htmlFor="p-name">Full Name</Label>
+      //                   <Input id="p-name" value={profileName} onChange={(e) => setProfileName(e.target.value)} required />
+      //                 </div>
+      //                 <div className="space-y-2">
+      //                   <Label htmlFor="p-email">Email Address</Label>
+      //                   <Input id="p-email" type="email" value={profileEmail} //onChange={(e) => setProfileEmail(e.target.value)} 
+      //                   disabled />
+      //                 </div>
+      //               </div>
+      //               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      //                 <div className="space-y-2">
+      //                   <Label htmlFor="p-phone">Phone Number</Label>
+      //                   <Input id="p-phone" value={profilePhone} onChange={(e) => setProfilePhone(e.target.value)} />
+      //                 </div>
+      //                 {/* <div className="space-y-2">
+      //                   <Label htmlFor="p-company">Company</Label>
+      //                   <Input id="p-company" value={profileCompany} onChange={(e) => setProfileCompany(e.target.value)} />
+      //                 </div> */}
+      //               </div>
+      //               <Button type="submit" className="mt-4">Save Changes</Button>
+      //             </form>
+      //           </CardContent>
+      //         </Card>
+      //       </div>
+      //     </div>
+      //   );
 
       case "My Requests":
         return (
@@ -707,110 +721,15 @@ export default function Dashboard() {
         );
 
       case "New Request":
-        return (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">New Request</h1>
-              <p className="text-muted-foreground mt-1">Submit a new request to our support and project teams.</p>
-            </div>
-
-            <Card className="max-w-2xl">
-              {requestMessage && (
-                    <div className="mx-6 mt-6 p-4 rounded-lg bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                        {requestMessage}
-                    </div>
-                )}
-
-                {requestError && (
-                    <div className="mx-6 mt-6 p-4 rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
-                        {requestError}
-                    </div>
-                )
-              }
-              <CardContent className="pt-6">
-                <form onSubmit={handleNewRequestSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Request Subject</Label>
-                    <Input
-                      id="title"
-                      placeholder="e.g. Issues with payment portal"
-                      value={newReqTitle}
-                      onChange={(e) => setNewReqTitle(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                  <Label htmlFor="supportUnit">Support Unit</Label>
-
-                  <select
-                    id="supportUnit"
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-card dark:text-foreground"
-                    value={newReqSupportUnit}
-                    onChange={(e) => setNewReqSupportUnit(e.target.value)}
-                    disabled={supportUnitLoading}
-                    required
-                  >
-                    <option value="">
-                      {supportUnitLoading
-                        ? "Loading support units..."
-                        : "Select support unit"}
-                    </option>
-
-                    {supportUnits.map((unit) => (
-                      <option key={unit.id} value={unit.id}>
-                        {unit.name}
-                      </option>
-                    ))}
-                  </select>
-                  </div>
-
-                  <div className="space-y-2 flex flex-col justify-end">
-                      <Label className="mb-2">Priority Level</Label>
-                      <div className="grid grid-cols-4 gap-1.5">
-                        {["LOW", "MEDIUM", "HIGH"].map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setNewReqPriority(p)}
-                            className={`py-1.5 px-2 text-xs font-medium rounded-md border transition-all ${
-                              newReqPriority === p
-                                ? "bg-primary text-primary-foreground border-primary"
-                                : "bg-background hover:bg-accent border-input text-muted-foreground"
-                            }`}
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-                  </div>
-                  
-
-                  <div className="space-y-2">
-                    <Label htmlFor="desc">Description</Label>
-                    <textarea
-                      id="desc"
-                      rows={5}
-                      placeholder="Describe your issue or request..."
-                      className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus:border-ring dark:text-foreground"
-                      value={newReqDesc}
-                      onChange={(e) => setNewReqDesc(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full sm:w-auto"
-                    disabled={requestLoading}
-                  >
-                    {requestLoading ? "Submitting..." : "Submit Request"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        );
+            return (
+                <NewRequest
+                    user={user}
+                    supportUnits={supportUnits}
+                    supportUnitLoading={supportUnitLoading}
+                    setRequests={setRequests}
+                    addSystemNotification={addSystemNotification}
+                />
+            );
         
       case "Messages":      
         return (

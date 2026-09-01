@@ -9,7 +9,14 @@ export const loginUser = async (email, password, role) => {
             body: JSON.stringify({ email, password, role }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Login failed');
+        // if (!res.ok) throw new Error(data.error || 'Login failed');
+        if (!res.ok) {
+            throw new Error(
+                data.details?.[0]?.message ||
+                data.error ||
+                'Login failed'
+            );
+        }
         return data; // user info or token
     } catch (err) {
         throw err;

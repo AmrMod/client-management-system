@@ -20,14 +20,15 @@ const createRequest = async ({
     priority
 }) => {
 
-    if (!userId || !title || !description || !supportUnitId) {
-        const error = new Error(
-            'Support unit, title, and description are required'
-        );
+    //zod has taken care of this - No need for this anymore
+    // if (!userId || !title || !description || !supportUnitId) {
+    //     const error = new Error(
+    //         'Support unit, title, and description are required'
+    //     );
 
-        error.status = 400;
-        throw error;
-    }
+    //     error.status = 400;
+    //     throw error;
+    // }
 
     // Find the student's profile using the authenticated user's ID
     const student = await prisma.studentProfile.findUnique({

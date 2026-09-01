@@ -2,8 +2,10 @@ const requestService = require('./request.service');
 
 const createRequest = async (req, res) => {
     try {
-        const { supportUnitId, title, description, priority } = req.body;
+        const { supportUnitId, title, description, priority } = req.validated.body;
         const userId = req.user.userId;
+
+        
 
         const newRequest = await requestService.createRequest({
             userId,
