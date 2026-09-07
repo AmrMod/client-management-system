@@ -7,6 +7,8 @@ const noteRoutes = require('./src/notes/note.routes');
 const requestRoutes = require('./src/requests/request.routes');
 const studentRoutes = require('./src/students/student.routes');
 const staffRoutes = require('./src/staff/staff.routes');
+const conversationRoutes =
+    require('./src/conversation/conversation.route');
 
 
 const app = express();
@@ -25,5 +27,8 @@ app.use('/notes', noteRoutes);
 app.use('/requests', requestRoutes);
 app.use('/students', studentRoutes);
 app.use('/staff', staffRoutes);
+app.use('/conversations',
+    conversationRoutes);
+
 
 module.exports = app;

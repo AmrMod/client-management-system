@@ -82,6 +82,7 @@ model StudentProfile {
   notes    StudentNote[]
 
   conversations Conversation[]
+  messages      Message[]
 }
 
 model StaffProfile {
@@ -98,6 +99,7 @@ model StaffProfile {
   requests      Request[]
   notes         StudentNote[]
   conversations Conversation[]
+  messages      Message[]
 }
 
 enum StaffRole {
@@ -142,8 +144,9 @@ model SupportUnit {
   name      String   @unique
   createdAt DateTime @default(now())
 
-  staff    StaffProfile[]
-  requests Request[]
+  staff         StaffProfile[]
+  requests      Request[]
+  conversations Conversation[]
 }
 
 /**
@@ -174,10 +177,12 @@ model Request {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
-  student       StudentProfile      @relation(fields: [studentId], references: [id])
-  supportUnit   SupportUnit         @relation(fields: [supportUnitId], references: [id])
-  assignedStaff StaffProfile?       @relation(fields: [assignedStaffId], references: [id])
-  attachments   RequestAttachment[]
+  student        StudentProfile      @relation(fields: [studentId], references: [id])
+  supportUnit    SupportUnit         @relation(fields: [supportUnitId], references: [id])
+  assignedStaff  StaffProfile?       @relation(fields: [assignedStaffId], references: [id])
+  attachments    RequestAttachment[]
+  conversation   Conversation?       @relation(fields: [conversationId], references: [id])
+  conversationId Int?
 }
 
 enum RequestStatus {
@@ -194,17 +199,20 @@ enum RequestPriority {
 }
 
 model Conversation {
-  id        Int      @id @default(autoincrement())
-  studentId Int
-  staffId   Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  studentId     Int
+  supportUnitId Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  student  StudentProfile @relation(fields: [studentId], references: [id])
-  staff    StaffProfile   @relation(fields: [staffId], references: [id])
-  messages Message[]
+  student        StudentProfile @relation(fields: [studentId], references: [id])
+  supportUnit    SupportUnit    @relation(fields: [supportUnitId], references: [id])
+  messages       Message[]
+  staffProfile   StaffProfile?  @relation(fields: [staffProfileId], references: [id])
+  staffProfileId Int?
+  requests       Request[]
 
-  @@unique([studentId, staffId])
+  @@unique([studentId, supportUnitId])
 }
 
 model Message {
@@ -215,7 +223,11 @@ model Message {
   content        String
   createdAt      DateTime      @default(now())
 
-  conversation Conversation @relation(fields: [conversationId], references: [id])
+  conversation     Conversation    @relation(fields: [conversationId], references: [id])
+  studentProfile   StudentProfile? @relation(fields: [studentProfileId], references: [id])
+  studentProfileId Int?
+  staffProfile     StaffProfile?   @relation(fields: [staffProfileId], references: [id])
+  staffProfileId   Int?
 }
 
 enum MessageSender {
