@@ -52,6 +52,7 @@ import { useEffect, useState } from "react";
 import Students from "./Students";
 import Staff from "./Staff";
 import CreateUserByAdmin from "./createUserByAdmin";
+import AdminConversationUI from "./AdminConversationUI";
 
 // import { getTotalUsers } from "@/api/userapi";
 import { getDashboardStats } from "@/api/userapi";
@@ -653,16 +654,22 @@ Manage staff members responsible for handling student support requests.
 
       case "Messages":
         return (
-          <div className="space-y-6 animate-in fade-in duration-300">
+        <div className="space-y-8">
+
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Admin Messages</h1>
-              <p className="text-muted-foreground mt-1">View system support channels.</p>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                    Messages
+                </h1>
+
+                <p className="text-muted-foreground mt-1">
+                    View conversations across all support units.
+                </p>
             </div>
-            <Card className="p-6 text-center text-muted-foreground">
-              Direct inbox integrations display here.
-            </Card>
-          </div>
-        );
+
+            <AdminConversationUI />
+
+        </div>
+    );
 
       case "Notifications":
         return (

@@ -40,6 +40,7 @@ import {
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ManagerRequests from "./components/ManagerRequests";
+import SupportConversationUI from "../support/components/SupportConversationUI";
 
 
 export default function ManagerDashboard() {
@@ -621,6 +622,8 @@ export default function ManagerDashboard() {
                         <Card className="p-6 text-center text-muted-foreground">
                             Manager messaging interface will appear here.
                         </Card>
+
+                        <SupportConversationUI />
                     </div>
                 );
 

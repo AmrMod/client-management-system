@@ -956,326 +956,326 @@ const [messagesLoading, setMessagesLoading] =
             );
         
       // case "Messages":      
-        return (
-          <div className="space-y-8 animate-in fade-in duration-300">
+        // return (
+        //   <div className="space-y-8 animate-in fade-in duration-300">
 
-            {/* Page Header */}
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Messages
-              </h1>
+        //     {/* Page Header */}
+        //     <div>
+        //       <h1 className="text-3xl font-bold tracking-tight text-foreground">
+        //         Messages
+        //       </h1>
 
-              <p className="text-muted-foreground mt-1">
-                Communicate directly with support staff and project managers.
-              </p>
-            </div>
+        //       <p className="text-muted-foreground mt-1">
+        //         Communicate directly with support staff and project managers.
+        //       </p>
+        //     </div>
 
-            {/* Messaging Container */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 h-[600px] border border-border rounded-xl overflow-hidden bg-card">
+        //     {/* Messaging Container */}
+        //     <div className="grid grid-cols-1 lg:grid-cols-4 h-[600px] border border-border rounded-xl overflow-hidden bg-card">
 
-              {/* Conversations Sidebar */}
-              <div className="lg:col-span-1 border-r border-border flex flex-col bg-muted/10">
+        //       {/* Conversations Sidebar */}
+        //       <div className="lg:col-span-1 border-r border-border flex flex-col bg-muted/10">
 
-                <div className="p-4 border-b border-border">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-foreground">
-                      Conversations
-                    </h3>
+        //         <div className="p-4 border-b border-border">
+        //           <div className="flex items-center justify-between">
+        //             <h3 className="font-semibold text-foreground">
+        //               Conversations
+        //             </h3>
 
-                    <button
-                      onClick={() =>
-                        setShowNewConversation(!showNewConversation)
-                      }
-                      className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition"
-                      title="New Conversation"
-                    >
-                      {showNewConversation ? (
-                        <X className="w-4 h-4" />
-                      ) : (
-                        <PlusCircle className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
+        //             <button
+        //               onClick={() =>
+        //                 setShowNewConversation(!showNewConversation)
+        //               }
+        //               className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition"
+        //               title="New Conversation"
+        //             >
+        //               {showNewConversation ? (
+        //                 <X className="w-4 h-4" />
+        //               ) : (
+        //                 <PlusCircle className="w-4 h-4" />
+        //               )}
+        //             </button>
+        //           </div>
 
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {conversations.length} conversation{conversations.length !== 1 ? "s" : ""}
-                  </p>
-                </div>
+        //           <p className="text-xs text-muted-foreground mt-1">
+        //             {conversations.length} conversation{conversations.length !== 1 ? "s" : ""}
+        //           </p>
+        //         </div>
 
-                {/* New Conversation Form */}
-                {showNewConversation && (
-                  <div className="p-3 border-b border-border bg-muted/20 space-y-2">
-                    <p className="text-xs font-medium text-foreground">
-                      Start a new conversation
-                    </p>
+        //         {/* New Conversation Form */}
+        //         {showNewConversation && (
+        //           <div className="p-3 border-b border-border bg-muted/20 space-y-2">
+        //             <p className="text-xs font-medium text-foreground">
+        //               Start a new conversation
+        //             </p>
 
-                    <select
-                      value={newConvSupportUnit}
-                      onChange={(e) =>
-                        setNewConvSupportUnit(e.target.value)
-                      }
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20"
-                    >
-                      <option value="">Select support unit...</option>
-                      {supportUnits.map((unit) => (
-                        <option key={unit.id} value={unit.id}>
-                          {unit.name}
-                        </option>
-                      ))}
-                    </select>
+        //             <select
+        //               value={newConvSupportUnit}
+        //               onChange={(e) =>
+        //                 setNewConvSupportUnit(e.target.value)
+        //               }
+        //               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20"
+        //             >
+        //               <option value="">Select support unit...</option>
+        //               {supportUnits.map((unit) => (
+        //                 <option key={unit.id} value={unit.id}>
+        //                   {unit.name}
+        //                 </option>
+        //               ))}
+        //             </select>
 
-                    {newConvError && (
-                      <p className="text-xs text-destructive">
-                        {newConvError}
-                      </p>
-                    )}
+        //             {newConvError && (
+        //               <p className="text-xs text-destructive">
+        //                 {newConvError}
+        //               </p>
+        //             )}
 
-                    <Button
-                      size="sm"
-                      className="w-full"
-                      disabled={!newConvSupportUnit || newConvLoading}
-                      onClick={handleStartConversation}
-                    >
-                      {newConvLoading
-                        ? "Starting..."
-                        : "Start Conversation"}
-                    </Button>
-                  </div>
-                )}
+        //             <Button
+        //               size="sm"
+        //               className="w-full"
+        //               disabled={!newConvSupportUnit || newConvLoading}
+        //               onClick={handleStartConversation}
+        //             >
+        //               {newConvLoading
+        //                 ? "Starting..."
+        //                 : "Start Conversation"}
+        //             </Button>
+        //           </div>
+        //         )}
 
-                <div className="flex-1 overflow-y-auto divide-y divide-border">
+        //         <div className="flex-1 overflow-y-auto divide-y divide-border">
 
-                  {loading ? (
-                    <div className="p-4 text-sm text-muted-foreground">
-                      Loading conversations...
-                    </div>
-                  ) : conversations.length === 0 ? (
-                    <div className="p-4 text-sm text-muted-foreground">
-                      No conversations yet.
-                    </div>
-                  ) : (
-                    conversations.map((conversation) => {
-                      const unitName =
-                        conversation.supportUnit?.name || "Unknown";
-                      const initials =
-                        unitName.substring(0, 2).toUpperCase();
-                      const lastMsg =
-                        conversation.messages?.length > 0
-                          ? conversation.messages[
-                              conversation.messages.length - 1
-                            ].content
-                          : "No messages yet";
-                      const timeDisplay = conversation.updatedAt
-                        ? new Date(
-                            conversation.updatedAt
-                          ).toLocaleDateString([], {
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "";
+        //           {loading ? (
+        //             <div className="p-4 text-sm text-muted-foreground">
+        //               Loading conversations...
+        //             </div>
+        //           ) : conversations.length === 0 ? (
+        //             <div className="p-4 text-sm text-muted-foreground">
+        //               No conversations yet.
+        //             </div>
+        //           ) : (
+        //             conversations.map((conversation) => {
+        //               const unitName =
+        //                 conversation.supportUnit?.name || "Unknown";
+        //               const initials =
+        //                 unitName.substring(0, 2).toUpperCase();
+        //               const lastMsg =
+        //                 conversation.messages?.length > 0
+        //                   ? conversation.messages[
+        //                       conversation.messages.length - 1
+        //                     ].content
+        //                   : "No messages yet";
+        //               const timeDisplay = conversation.updatedAt
+        //                 ? new Date(
+        //                     conversation.updatedAt
+        //                   ).toLocaleDateString([], {
+        //                     month: "short",
+        //                     day: "numeric",
+        //                   })
+        //                 : "";
 
-                      return (
-                        <div
-                          key={conversation.id}
-                          onClick={() =>
-                            setActiveConversationId(conversation.id)
-                          }
-                          className={`p-4 cursor-pointer transition flex items-center gap-3 ${
-                            activeConversationId === conversation.id
-                              ? "bg-accent"
-                              : "hover:bg-accent/40"
-                          }`}
-                        >
+        //               return (
+        //                 <div
+        //                   key={conversation.id}
+        //                   onClick={() =>
+        //                     setActiveConversationId(conversation.id)
+        //                   }
+        //                   className={`p-4 cursor-pointer transition flex items-center gap-3 ${
+        //                     activeConversationId === conversation.id
+        //                       ? "bg-accent"
+        //                       : "hover:bg-accent/40"
+        //                   }`}
+        //                 >
 
-                          {/* Avatar */}
-                          <div className="relative shrink-0">
-                            <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                              {initials}
-                            </div>
-                          </div>
+        //                   {/* Avatar */}
+        //                   <div className="relative shrink-0">
+        //                     <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
+        //                       {initials}
+        //                     </div>
+        //                   </div>
 
-                          {/* Conversation Info */}
-                          <div className="flex-1 min-w-0">
+        //                   {/* Conversation Info */}
+        //                   <div className="flex-1 min-w-0">
 
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-medium text-sm text-foreground truncate">
-                                {unitName}
-                              </span>
+        //                     <div className="flex items-center justify-between gap-2">
+        //                       <span className="font-medium text-sm text-foreground truncate">
+        //                         {unitName}
+        //                       </span>
 
-                              <span className="text-[10px] text-muted-foreground shrink-0">
-                                {timeDisplay}
-                              </span>
-                            </div>
+        //                       <span className="text-[10px] text-muted-foreground shrink-0">
+        //                         {timeDisplay}
+        //                       </span>
+        //                     </div>
 
-                            {/* <p className="text-xs text-muted-foreground mt-0.5">
-                              Support Staff
-                            </p> */}
+        //                     {/* <p className="text-xs text-muted-foreground mt-0.5">
+        //                       Support Staff
+        //                     </p> */}
 
-                            <p className="text-xs text-muted-foreground truncate mt-1">
-                              {lastMsg}
-                            </p>
+        //                     <p className="text-xs text-muted-foreground truncate mt-1">
+        //                       {lastMsg}
+        //                     </p>
 
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
+        //                   </div>
+        //                 </div>
+        //               );
+        //             })
+        //           )}
 
-                </div>
-              </div>
+        //         </div>
+        //       </div>
 
-              {/* Active Conversation */}
-              <div className="lg:col-span-3 flex flex-col h-full bg-card">
+        //       {/* Active Conversation */}
+        //       <div className="lg:col-span-3 flex flex-col h-full bg-card">
 
-                {!activeConversation ? (
+        //         {!activeConversation ? (
 
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <MessageSquare className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-                      <h3 className="text-lg font-medium text-foreground">
-                        Select a conversation
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Choose a conversation to start messaging.
-                      </p>
-                    </div>
-                  </div>
+        //           <div className="flex-1 flex items-center justify-center">
+        //             <div className="text-center">
+        //               <MessageSquare className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+        //               <h3 className="text-lg font-medium text-foreground">
+        //                 Select a conversation
+        //               </h3>
+        //               <p className="text-sm text-muted-foreground mt-1">
+        //                 Choose a conversation to start messaging.
+        //               </p>
+        //             </div>
+        //           </div>
 
-                ) : (
-                  <>
-                    {/* Chat Header */}
-                    <div className="p-4 border-b border-border flex items-center gap-3 bg-card/50 backdrop-blur-sm">
+        //         ) : (
+        //           <>
+        //             {/* Chat Header */}
+        //             <div className="p-4 border-b border-border flex items-center gap-3 bg-card/50 backdrop-blur-sm">
 
-                      <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                        {activeConversation.supportUnit?.name
-                          ?.substring(0, 2)
-                          .toUpperCase() || "??"}
-                      </div>
+        //               <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
+        //                 {activeConversation.supportUnit?.name
+        //                   ?.substring(0, 2)
+        //                   .toUpperCase() || "??"}
+        //               </div>
 
-                      <div>
-                        <h4 className="font-semibold text-sm text-foreground">
-                          {activeConversation.supportUnit?.name || "Unknown"}
-                        </h4>
+        //               <div>
+        //                 <h4 className="font-semibold text-sm text-foreground">
+        //                   {activeConversation.supportUnit?.name || "Unknown"}
+        //                 </h4>
 
-                        {/* <span className="text-xs text-muted-foreground">
-                          Support Staff
-                        </span> */}
-                      </div>
+        //                 {/* <span className="text-xs text-muted-foreground">
+        //                   Support Staff
+        //                 </span> */}
+        //               </div>
 
-                    </div>
+        //             </div>
 
-                    {/* Error */}
-                    {error && (
-                      <div className="border-b border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                        {error}
-                      </div>
-                    )}
+        //             {/* Error */}
+        //             {error && (
+        //               <div className="border-b border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        //                 {error}
+        //               </div>
+        //             )}
 
-                    {/* Messages */}
-                    <div className="flex-1 p-4 overflow-y-auto bg-muted/5">
+        //             {/* Messages */}
+        //             <div className="flex-1 p-4 overflow-y-auto bg-muted/5">
 
-                      {messagesLoading ? (
-                        <div className="flex h-full items-center justify-center">
-                          <p className="text-sm text-muted-foreground">
-                            Loading messages...
-                          </p>
-                        </div>
-                      ) : !activeConversation.messages ||
-                        activeConversation.messages.length === 0 ? (
-                        <div className="flex h-full items-center justify-center">
-                          <p className="text-sm text-muted-foreground">
-                            No messages yet. Start the conversation.
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
+        //               {messagesLoading ? (
+        //                 <div className="flex h-full items-center justify-center">
+        //                   <p className="text-sm text-muted-foreground">
+        //                     Loading messages...
+        //                   </p>
+        //                 </div>
+        //               ) : !activeConversation.messages ||
+        //                 activeConversation.messages.length === 0 ? (
+        //                 <div className="flex h-full items-center justify-center">
+        //                   <p className="text-sm text-muted-foreground">
+        //                     No messages yet. Start the conversation.
+        //                   </p>
+        //                 </div>
+        //               ) : (
+        //                 <div className="space-y-4">
 
-                          {activeConversation.messages.map((message) => {
+        //                   {activeConversation.messages.map((message) => {
 
-                            const isStudent =
-                              message.senderType === "student";
+        //                     const isStudent =
+        //                       message.senderType === "student";
 
-                            return (
-                              <div
-                                key={message.id}
-                                className={`flex ${
-                                  isStudent
-                                    ? "justify-end"
-                                    : "justify-start"
-                                } items-end gap-2`}
-                              >
+        //                     return (
+        //                       <div
+        //                         key={message.id}
+        //                         className={`flex ${
+        //                           isStudent
+        //                             ? "justify-end"
+        //                             : "justify-start"
+        //                         } items-end gap-2`}
+        //                       >
 
-                                {/* Staff Avatar */}
-                                {!isStudent && (
-                                  <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
-                                    {activeConversation.supportUnit?.name
-                                      ?.substring(0, 2)
-                                      .toUpperCase() || "??"}
-                                  </div>
-                                )}
+        //                         {/* Staff Avatar */}
+        //                         {!isStudent && (
+        //                           <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
+        //                             {activeConversation.supportUnit?.name
+        //                               ?.substring(0, 2)
+        //                               .toUpperCase() || "??"}
+        //                           </div>
+        //                         )}
 
-                                {/* Message Bubble */}
-                                <div
-                                  className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
-                                    isStudent
-                                      ? "bg-primary text-primary-foreground rounded-br-none"
-                                      : "bg-card border border-border text-foreground rounded-bl-none"
-                                  }`}
-                                >
+        //                         {/* Message Bubble */}
+        //                         <div
+        //                           className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
+        //                             isStudent
+        //                               ? "bg-primary text-primary-foreground rounded-br-none"
+        //                               : "bg-card border border-border text-foreground rounded-bl-none"
+        //                           }`}
+        //                         >
 
-                                  {!isStudent && (
-                                    <p className="text-[10px] font-semibold mb-1 opacity-70">
-                                      {activeConversation.supportUnit?.name || "Staff"}
-                                    </p>
-                                  )}
+        //                           {!isStudent && (
+        //                             <p className="text-[10px] font-semibold mb-1 opacity-70">
+        //                               {activeConversation.supportUnit?.name || "Staff"}
+        //                             </p>
+        //                           )}
 
-                                  <p className="leading-relaxed">
-                                    {message.content}
-                                  </p>
+        //                           <p className="leading-relaxed">
+        //                             {message.content}
+        //                           </p>
 
-                                  <span className="block text-[9px] text-right mt-1 opacity-70">
-                                    {new Date(
-                                      message.createdAt
-                                    ).toLocaleTimeString([], {
-                                      hour: "numeric",
-                                      minute: "2-digit",
-                                    })}
-                                  </span>
+        //                           <span className="block text-[9px] text-right mt-1 opacity-70">
+        //                             {new Date(
+        //                               message.createdAt
+        //                             ).toLocaleTimeString([], {
+        //                               hour: "numeric",
+        //                               minute: "2-digit",
+        //                             })}
+        //                           </span>
 
-                                </div>
-                              </div>
-                            );
-                          })}
+        //                         </div>
+        //                       </div>
+        //                     );
+        //                   })}
 
-                        </div>
-                      )}
-                    </div>
+        //                 </div>
+        //               )}
+        //             </div>
 
-                    {/* Message Input */}
-                    <form
-                      onSubmit={handleSendMessage}
-                      className="p-4 border-t border-border bg-card flex items-center gap-2"
-                    >
+        //             {/* Message Input */}
+        //             <form
+        //               onSubmit={handleSendMessage}
+        //               className="p-4 border-t border-border bg-card flex items-center gap-2"
+        //             >
 
-                      <Input
-                        placeholder="Type a message..."
-                        value={typedMsg}
-                        onChange={(e) => setTypedMsg(e.target.value)}
-                        className="flex-1"
-                      />
+        //               <Input
+        //                 placeholder="Type a message..."
+        //                 value={typedMsg}
+        //                 onChange={(e) => setTypedMsg(e.target.value)}
+        //                 className="flex-1"
+        //               />
 
-                      <Button type="submit" disabled={!typedMsg.trim()}>
-                        Send
-                      </Button>
+        //               <Button type="submit" disabled={!typedMsg.trim()}>
+        //                 Send
+        //               </Button>
 
-                    </form>
-                  </>
-                )}
+        //             </form>
+        //           </>
+        //         )}
 
-              </div>
-            </div>
-          </div>
-        );
+        //       </div>
+        //     </div>
+        //   </div>
+        // );
 
       case "Messages":
               return (

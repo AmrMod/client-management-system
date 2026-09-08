@@ -59,6 +59,33 @@ export const getMyConversations = async () => {
     }
 };
 
+// Get conversations for staff's support unit
+export const getStaffConversations = async () => {
+    try {
+        const res = await fetch(
+            `${API_BASE}/conversations/staff`,
+            {
+                method: "GET",
+                headers: authHeaders(),
+            }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(
+                data.error ||
+                "Failed to fetch staff conversations"
+            );
+        }
+
+        return data;
+
+    } catch (err) {
+        throw err;
+    }
+};
+
 
 // Send a message
 export const createMessage = async (conversationId, content) => {
@@ -109,6 +136,32 @@ export const getMessages = async (conversationId) => {
             throw new Error(
                 data.error ||
                 "Failed to fetch messages"
+            );
+        }
+
+        return data;
+
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const getAllConversations = async () => {
+    try {
+        const res = await fetch(
+            `${API_BASE}/conversations/admin`,
+            {
+                method: "GET",
+                headers: authHeaders(),
+            }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(
+                data.error ||
+                "Failed to fetch conversations"
             );
         }
 

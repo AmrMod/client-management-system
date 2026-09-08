@@ -106,6 +106,85 @@ const getMyConversations = async (userId) => {
     });
 };
 
+const getStaffConversations = async (userId) => {
+    const staff = await prisma.staffProfile.findUnique({
+        where: { userId },
+        select: {
+            id: true,
+            supportUnitId: true
+        }
+    });
+
+    if (!staff) {
+        const error = new Error('Staff profile not found');
+        error.status = 404;
+        throw error;
+    }
+
+    return await prisma.conversation.findMany({
+        where: {
+            supportUnitId: staff.supportUnitId
+        },
+        select: {
+            id: true,
+            studentId: true,
+            supportUnitId: true,
+            createdAt: true,
+            updatedAt: true,
+
+            student: {
+                select: {
+                    id: true,
+                    studentId: true,
+                    name: true
+                }
+            },
+
+            supportUnit: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            }
+        },
+
+        orderBy: {
+            updatedAt: 'desc'
+        }
+    });
+};
+
+const getAllConversations = async () => {
+    return await prisma.conversation.findMany({
+        select: {
+            id: true,
+            studentId: true,
+            supportUnitId: true,
+            createdAt: true,
+            updatedAt: true,
+
+            student: {
+                select: {
+                    id: true,
+                    studentId: true,
+                    name: true
+                }
+            },
+
+            supportUnit: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            }
+        },
+
+        orderBy: {
+            updatedAt: 'desc'
+        }
+    });
+};
+
 
 const createMessage = async ({
     userId,
@@ -288,6 +367,17 @@ const getMessages = async ({
         });
     }
 
+    else if (role === 'ADMIN') {
+            conversation = await prisma.conversation.findUnique({
+                where: {
+                    id: conversationId
+                },
+                select: {
+                    id: true
+                }
+            });
+        }
+
     else {
         const error = new Error(
             'You are not authorized to view this conversation'
@@ -342,6 +432,9 @@ const getMessages = async ({
 module.exports = {
     createConversation,
     getMyConversations,
+    getStaffConversations,
+    getAllConversations,
     createMessage,
     getMessages
+    
 };

@@ -35,6 +35,20 @@ router.get(
     conversationController.getMyConversations
 );
 
+router.get(
+    '/staff',
+    authenticate,
+    requireRole('STAFF'),
+    conversationController.getStaffConversations
+);
+
+router.get(
+    '/admin',
+    authenticate,
+    requireRole('ADMIN'),
+    conversationController.getAllConversations
+);
+
 
 router.post(
     '/:id/messages',
@@ -48,7 +62,7 @@ router.post(
 router.get(
     '/:id/messages',
     authenticate,
-    requireRole('STUDENT', 'STAFF'),
+    requireRole('STUDENT', 'STAFF', 'ADMIN'),
     conversationController.getMessages
 );
 

@@ -54,6 +54,54 @@ const getMyConversations = async (req, res) => {
     }
 };
 
+const getStaffConversations = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const conversations =
+            await conversationService.getStaffConversations(userId);
+
+        res.status(200).json(conversations);
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
+const getAllConversations = async (req, res) => {
+    try {
+
+        const conversations =
+            await conversationService.getAllConversations();
+
+        res.status(200).json(conversations);
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
 
 const createMessage = async (req, res) => {
     try {
@@ -124,6 +172,8 @@ const getMessages = async (req, res) => {
 module.exports = {
     createConversation,
     getMyConversations,
+    getStaffConversations,
+    getAllConversations,
     createMessage,
     getMessages
 };

@@ -40,6 +40,10 @@ import {
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
+
+
+import SupportConversationUI from "./components/SupportConversationUI";
+
 import SupportRequests from "./components/SupportRequests";
 
 
@@ -564,9 +568,11 @@ export default function SupportDashboard() {
               </p>
             </div>
 
-            <Card className="p-6 text-center text-muted-foreground">
+            {/* <Card className="p-6 text-center text-muted-foreground">
               Student support conversations will appear here.
-            </Card>
+            </Card> */}
+
+            <SupportConversationUI />
           </div>
         );
 
