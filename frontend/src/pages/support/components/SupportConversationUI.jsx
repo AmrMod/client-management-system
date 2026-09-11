@@ -40,6 +40,51 @@ const SupportConversationUI = () => {
         };
 
     }, []);
+
+    useEffect(() => {
+
+        if (!activeConversationId) {
+            return;
+        }
+
+        console.log("Joining conversation:", activeConversationId);
+
+
+        socket.emit(
+            "join_conversation",
+            activeConversationId
+        );
+
+    }, [activeConversationId]);
+
+    useEffect(() => {
+
+    const handleNewMessage = (message) => {
+
+        setConversations(prev =>
+            prev.map(conversation =>
+                conversation.id === message.conversationId
+                    ? {
+                        ...conversation,
+                        messages: [
+                            ...(conversation.messages || []),
+                            message
+                        ]
+                    }
+                    : conversation
+            )
+        );
+
+    };
+
+    socket.on("new_message", handleNewMessage);
+
+    return () => {
+        socket.off("new_message", handleNewMessage);
+    };
+
+    }, []);
+
     // =========================
     // LOAD STAFF CONVERSATIONS
     // =========================
@@ -159,26 +204,29 @@ const SupportConversationUI = () => {
 
             setError("");
 
-            const newMessage =
+            // const newMessage =
+
                 await createMessage(
                     activeConversationId,
                     typedMsg
                 );
 
-            setConversations(prev =>
-                prev.map(conversation =>
-                    conversation.id ===
-                    activeConversationId
-                        ? {
-                            ...conversation,
-                            messages: [
-                                ...(conversation.messages || []),
-                                newMessage
-                            ]
-                        }
-                        : conversation
-                )
-            );
+            setTypedMsg("");    
+
+            // setConversations(prev =>
+            //     prev.map(conversation =>
+            //         conversation.id ===
+            //         activeConversationId
+            //             ? {
+            //                 ...conversation,
+            //                 messages: [
+            //                     ...(conversation.messages || []),
+            //                     newMessage
+            //                 ]
+            //             }
+            //             : conversation
+            //     )
+            // );
 
             setTypedMsg("");
 
@@ -293,7 +341,7 @@ const SupportConversationUI = () => {
 
             {/* MESSAGE AREA */}
 
-            <div className="lg:col-span-3 flex flex-col h-full bg-card">
+            <div className="lg:col-span-3 flex flex-col h-full min-h-0 bg-card">
 
                 {!activeConversation ? (
 
@@ -357,7 +405,7 @@ const SupportConversationUI = () => {
 
                         {/* MESSAGES */}
 
-                        <div className="flex-1 p-4 overflow-y-auto bg-muted/5">
+                        <div className="flex-1 min-h-0 p-4 overflow-y-auto bg-muted/5">
 
                             {messagesLoading ? (
 

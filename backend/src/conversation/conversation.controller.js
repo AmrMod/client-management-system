@@ -1,5 +1,9 @@
 const conversationService = require('./conversation.service');
 
+const {
+    getIO
+} = require("../../socket/socketManager");
+
 
 const createConversation = async (req, res) => {
     try {
@@ -118,6 +122,15 @@ const createMessage = async (req, res) => {
                 conversationId,
                 content
             });
+
+        const io = getIO();
+
+        io.to(
+            `conversation:${conversationId}`
+        ).emit(
+            "new_message",
+            message
+        );
 
         res.status(201).json(message);
 
