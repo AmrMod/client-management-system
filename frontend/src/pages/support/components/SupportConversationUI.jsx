@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+
+
 import { MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,22 +15,65 @@ import {
 import socket from "@/socket/socket";
 
 const SupportConversationUI = () => {
+    const queryClient = useQueryClient();
+
 
     // =========================
     // STATE
     // =========================
 
-    const [conversations, setConversations] = useState([]);
+    // const [conversations, setConversations] = useState([]);
     const [activeConversationId, setActiveConversationId] =
         useState(null);
 
     const [typedMsg, setTypedMsg] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [messagesLoading, setMessagesLoading] =
-        useState(false);
+    // const [messagesLoading, setMessagesLoading] =
+    //     useState(false);
 
-    const [error, setError] = useState("");
+    // const [error, setError] = useState("");
+
+       // =========================
+    // STAFF CONVERSATIONS QUERY
+    // =========================
+
+    const {
+        data: conversations = [],
+        isLoading: conversationsLoading,
+        error: conversationsError
+    } = useQuery({
+        queryKey: ["staff-conversations"],
+        queryFn: getStaffConversations
+    });
+
+    
+
+
+    // =========================
+    // SELECT FIRST CONVERSATION
+    // =========================
+
+    useEffect(() => {
+        if (
+            conversations.length > 0 &&
+            !activeConversationId
+        ) {
+            setActiveConversationId(conversations[0].id);
+        }
+    }, [conversations, activeConversationId]);
+
+
+
+    const {
+        data: messages = [],
+        isLoading: messagesLoading,
+        error: messagesError
+    } = useQuery({
+        queryKey: ["messages", activeConversationId],
+        queryFn: () => getMessages(activeConversationId),
+        enabled: !!activeConversationId
+    });
 
 
 
@@ -61,18 +107,26 @@ const SupportConversationUI = () => {
 
     const handleNewMessage = (message) => {
 
-        setConversations(prev =>
-            prev.map(conversation =>
-                conversation.id === message.conversationId
-                    ? {
-                        ...conversation,
-                        messages: [
-                            ...(conversation.messages || []),
-                            message
-                        ]
-                    }
-                    : conversation
-            )
+        // setConversations(prev =>
+        //     prev.map(conversation =>
+        //         conversation.id === message.conversationId
+        //             ? {
+        //                 ...conversation,
+        //                 messages: [
+        //                     ...(conversation.messages || []),
+        //                     message
+        //                 ]
+        //             }
+        //             : conversation
+        //     )
+        // );
+
+        queryClient.setQueryData(
+            ["messages", message.conversationId],
+            (oldMessages = []) => [
+                ...oldMessages,
+                message
+            ]
         );
 
     };
@@ -83,44 +137,44 @@ const SupportConversationUI = () => {
         socket.off("new_message", handleNewMessage);
     };
 
-    }, []);
+    }, [queryClient]);
 
     // =========================
     // LOAD STAFF CONVERSATIONS
     // =========================
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const loadConversations = async () => {
+    //     const loadConversations = async () => {
 
-            try {
+    //         try {
 
-                setLoading(true);
-                setError("");
+    //             setLoading(true);
+    //             setError("");
 
-                const data =
-                    await getStaffConversations();
+    //             const data =
+    //                 await getStaffConversations();
 
-                setConversations(data);
+    //             setConversations(data);
 
-                if (data.length > 0) {
-                    setActiveConversationId(data[0].id);
-                }
+    //             if (data.length > 0) {
+    //                 setActiveConversationId(data[0].id);
+    //             }
 
-            } catch (err) {
+    //         } catch (err) {
 
-                setError(err.message);
+    //             setError(err.message);
 
-            } finally {
+    //         } finally {
 
-                setLoading(false);
+    //             setLoading(false);
 
-            }
-        };
+    //         }
+    //     };
 
-        loadConversations();
+    //     loadConversations();
 
-    }, []);
+    // }, []);
 
 
     // =========================
@@ -138,55 +192,64 @@ const SupportConversationUI = () => {
     // LOAD MESSAGES
     // =========================
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (!activeConversationId) {
-            return;
-        }
+    //     if (!activeConversationId) {
+    //         return;
+    //     }
 
-        const loadMessages = async () => {
+    //     const loadMessages = async () => {
 
-            try {
+    //         try {
 
-                setMessagesLoading(true);
-                setError("");
+    //             setMessagesLoading(true);
+    //             setError("");
 
-                const data =
-                    await getMessages(
-                        activeConversationId
-                    );
+    //             const data =
+    //                 await getMessages(
+    //                     activeConversationId
+    //                 );
 
-                setConversations(prev =>
-                    prev.map(conversation =>
-                        conversation.id ===
-                        activeConversationId
-                            ? {
-                                ...conversation,
-                                messages: data
-                            }
-                            : conversation
-                    )
-                );
+    //             setConversations(prev =>
+    //                 prev.map(conversation =>
+    //                     conversation.id ===
+    //                     activeConversationId
+    //                         ? {
+    //                             ...conversation,
+    //                             messages: data
+    //                         }
+    //                         : conversation
+    //                 )
+    //             );
 
-            } catch (err) {
+    //         } catch (err) {
 
-                setError(err.message);
+    //             setError(err.message);
 
-            } finally {
+    //         } finally {
 
-                setMessagesLoading(false);
+    //             setMessagesLoading(false);
 
-            }
-        };
+    //         }
+    //     };
 
-        loadMessages();
+    //     loadMessages();
 
-    }, [activeConversationId]);
+    // }, [activeConversationId]);
 
 
     // =========================
     // SEND MESSAGE
     // =========================
+
+    const {
+        mutate: sendMessage,
+        isPending: sendingMessage,
+        error: sendMessageError
+    } = useMutation({
+        mutationFn: ({ conversationId, content }) =>
+            createMessage(conversationId, content)
+    });
 
     const handleSendMessage = async (e) => {
 
@@ -200,18 +263,23 @@ const SupportConversationUI = () => {
             return;
         }
 
-        try {
+        // try {
 
-            setError("");
+        //     setError("");
 
             // const newMessage =
 
-                await createMessage(
-                    activeConversationId,
-                    typedMsg
-                );
+                // await createMessage(
+                //     activeConversationId,
+                //     typedMsg
+                // );
 
-            setTypedMsg("");    
+            sendMessage({
+                conversationId: activeConversationId,
+                content: typedMsg
+            });
+
+            // setTypedMsg("");    
 
             // setConversations(prev =>
             //     prev.map(conversation =>
@@ -230,11 +298,11 @@ const SupportConversationUI = () => {
 
             setTypedMsg("");
 
-        } catch (err) {
+        // } catch (err) {
 
-            setError(err.message);
+        //     setError(err.message);
 
-        }
+        // }
     };
 
 
@@ -267,7 +335,7 @@ const SupportConversationUI = () => {
 
                 <div className="flex-1 overflow-y-auto divide-y divide-border">
 
-                    {loading ? (
+                    {conversationsLoading ? (
 
                         <div className="p-4 text-sm text-muted-foreground">
                             Loading conversations...
@@ -396,9 +464,9 @@ const SupportConversationUI = () => {
 
                         {/* ERROR */}
 
-                        {error && (
+                        {sendMessageError  && (
                             <div className="border-b border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                                {error}
+                                {sendMessageError.message}
                             </div>
                         )}
 
@@ -417,8 +485,7 @@ const SupportConversationUI = () => {
 
                                 </div>
 
-                            ) : !activeConversation.messages ||
-                              activeConversation.messages.length === 0 ? (
+                            ) : messages.length === 0 ? (
 
                                 <div className="flex h-full items-center justify-center">
 
@@ -432,7 +499,7 @@ const SupportConversationUI = () => {
 
                                 <div className="space-y-4">
 
-                                    {activeConversation.messages.map(
+                                    {messages.map(
                                         message => {
 
                                             const isStaff =
@@ -529,11 +596,18 @@ const SupportConversationUI = () => {
                                 className="flex-1"
                             />
 
-                            <Button
+                            {/* <Button
                                 type="submit"
                                 disabled={!typedMsg.trim()}
                             >
                                 Send
+                            </Button> */}
+
+                            <Button
+                                type="submit"
+                                disabled={!typedMsg.trim() || sendingMessage}
+                            >
+                                {sendingMessage ? "Sending..." : "Send"}
                             </Button>
 
                         </form>

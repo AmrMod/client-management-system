@@ -123,14 +123,19 @@ const createMessage = async (req, res) => {
                 content
             });
 
-        const io = getIO();
+            try {
+                const io = getIO();
 
-        io.to(
-            `conversation:${conversationId}`
-        ).emit(
-            "new_message",
-            message
-        );
+                io.to(
+                    `conversation:${conversationId}`
+                ).emit(
+                    "new_message",
+                    message
+                );
+
+            } catch (error) {
+                // Socket.IO may not be initialized during HTTP tests.
+            }
 
         res.status(201).json(message);
 

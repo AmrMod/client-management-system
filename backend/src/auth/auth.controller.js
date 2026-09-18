@@ -6,7 +6,6 @@ const register = async (req, res) => {
         const newUser = await authService.register({ email, password });
         res.status(201).json(newUser);
     } catch (error) {
-        console.error(error);
         if (error.status) {
             return res.status(error.status).json({ error: error.message });
         }
@@ -20,7 +19,6 @@ const login = async (req, res) => {
         const user = await authService.login({ email, password });
         res.status(200).json(user);
     } catch (error) {
-        console.error(error);
         if (error.status) {
             return res.status(error.status).json({ error: error.message });
         }

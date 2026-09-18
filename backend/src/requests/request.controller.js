@@ -17,8 +17,6 @@ const createRequest = async (req, res) => {
 
         res.status(201).json(newRequest);
     } catch (error) {
-        console.error(error);
-
         if (error.status) {
             return res.status(error.status).json({
                 error: error.message
@@ -83,9 +81,6 @@ const getMyRequests = async (req, res) => {
 
 
     } catch (error) {
-
-        console.error(error);
-
         if (error.status) {
             return res.status(error.status).json({
                 error: error.message
@@ -262,7 +257,6 @@ const getSupportUnits = async (req, res) => {
 
         res.status(200).json(supportUnits);
     } catch (error) {
-        console.error(error);
 
         if (error.status) {
             return res.status(error.status).json({
@@ -287,7 +281,6 @@ const getSupportStaff = async (req, res) => {
 
     } catch (error) {
 
-        console.error(error);
 
         if (error.status) {
             return res.status(error.status).json({
@@ -317,8 +310,6 @@ const assignRequest = async (req, res) => {
         res.status(200).json(updatedRequest);
 
     } catch (error) {
-
-        console.error(error);
 
         if (error.status) {
             return res.status(error.status).json({
@@ -387,7 +378,6 @@ const getSupportRequests = async (req, res) => {
 
     } catch (error) {
 
-        console.error(error);
 
         if (error.status) {
             return res.status(error.status).json({
@@ -419,7 +409,6 @@ const updateRequestStatus = async (req, res) => {
 
     } catch (error) {
 
-        console.error(error);
 
         if (error.status) {
             return res.status(error.status).json({
