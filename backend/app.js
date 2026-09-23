@@ -9,6 +9,8 @@ const studentRoutes = require('./src/students/student.routes');
 const staffRoutes = require('./src/staff/staff.routes');
 const conversationRoutes =
     require('./src/conversation/conversation.route');
+const dashboardRoutes =
+    require('./src/dashboard/dashboard.route');
 
 
 const app = express();
@@ -29,6 +31,7 @@ app.use('/students', studentRoutes);
 app.use('/staff', staffRoutes);
 app.use('/conversations',
     conversationRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 
 module.exports = app;

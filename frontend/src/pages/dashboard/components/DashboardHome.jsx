@@ -14,6 +14,9 @@ import {
     Clock,
 } from "lucide-react";
 
+import { useQuery } from "@tanstack/react-query";
+import { getStudentDashboardStats } from "@/api/dashboardapi";
+
 
 const DashboardHome = ({
     profileName,
@@ -21,13 +24,26 @@ const DashboardHome = ({
     setActiveTab
 }) => {
 
-    const pendingRequests = requests.filter(
-        (request) => request.status === "Pending"
-    ).length;
+    const {
+        data: dashboardStats,
+        isLoading,
+        isError,
+        error
+    } = useQuery({
+        queryKey: ["student-dashboard-stats"],
+        queryFn: getStudentDashboardStats,
+    });
 
-    const resolvedRequests = requests.filter(
-        (request) => request.status === "Resolved"
-    ).length;
+    if (isLoading) {
+        return <div>Loading dashboard statistics...</div>;
+    }
+
+    if (isError) {
+        return <div>Error fetching dashboard statistics: {error.message}</div>;
+    }
+
+
+    
 
 
     return (
@@ -60,7 +76,7 @@ const DashboardHome = ({
 
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {requests.length}
+                            {dashboardStats?.totalRequests ?? 0}
                         </div>
 
                         <p className="text-xs text-muted-foreground mt-1">
@@ -82,7 +98,7 @@ const DashboardHome = ({
 
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {pendingRequests}
+                            {dashboardStats?.pendingRequests ?? 0}
                         </div>
 
                         <p className="text-xs text-muted-foreground mt-1">
@@ -104,7 +120,7 @@ const DashboardHome = ({
 
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {resolvedRequests}
+                            {dashboardStats?.resolvedRequests ?? 0}
                         </div>
 
                         <p className="text-xs text-muted-foreground mt-1">
