@@ -46,6 +46,8 @@ import SupportConversationUI from "./components/SupportConversationUI";
 
 import SupportRequests from "./components/SupportRequests";
 
+import SupportDashboardHome from "./components/SupportDashboardHome";
+
 
 export default function SupportDashboard() {
   const navigate = useNavigate();
@@ -238,157 +240,160 @@ export default function SupportDashboard() {
     switch (activeTab) {
       case "Dashboard":
         return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Support Dashboard
-              </h1>
+          // <div className="space-y-6 animate-in fade-in duration-300">
+          //   <div>
+          //     <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          //       Support Dashboard
+          //     </h1>
 
-              <p className="text-muted-foreground mt-1">
-                Manage student requests and provide support services.
-              </p>
-            </div>
+          //     <p className="text-muted-foreground mt-1">
+          //       Manage student requests and provide support services.
+          //     </p>
+          //   </div>
 
-            {/* Statistics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Open Requests
-                  </CardTitle>
+          //   {/* Statistics */}
+          //   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          //     <Card>
+          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
+          //         <CardTitle className="text-sm font-medium">
+          //           Open Requests
+          //         </CardTitle>
 
-                  <ClipboardList className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
+          //         <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          //       </CardHeader>
 
-                <CardContent>
-                  <div className="text-2xl font-bold">18</div>
+          //       <CardContent>
+          //         <div className="text-2xl font-bold">18</div>
 
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Requests waiting for action
-                  </p>
-                </CardContent>
-              </Card>
+          //         <p className="text-xs text-muted-foreground mt-1">
+          //           Requests waiting for action
+          //         </p>
+          //       </CardContent>
+          //     </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    In Progress
-                  </CardTitle>
+          //     <Card>
+          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
+          //         <CardTitle className="text-sm font-medium">
+          //           In Progress
+          //         </CardTitle>
 
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
+          //         <Clock className="h-4 w-4 text-muted-foreground" />
+          //       </CardHeader>
 
-                <CardContent>
-                  <div className="text-2xl font-bold">9</div>
+          //       <CardContent>
+          //         <div className="text-2xl font-bold">9</div>
 
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Currently being handled
-                  </p>
-                </CardContent>
-              </Card>
+          //         <p className="text-xs text-muted-foreground mt-1">
+          //           Currently being handled
+          //         </p>
+          //       </CardContent>
+          //     </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Resolved Today
-                  </CardTitle>
+          //     <Card>
+          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
+          //         <CardTitle className="text-sm font-medium">
+          //           Resolved Today
+          //         </CardTitle>
 
-                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
+          //         <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+          //       </CardHeader>
 
-                <CardContent>
-                  <div className="text-2xl font-bold">14</div>
+          //       <CardContent>
+          //         <div className="text-2xl font-bold">14</div>
 
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Requests successfully resolved
-                  </p>
-                </CardContent>
-              </Card>
+          //         <p className="text-xs text-muted-foreground mt-1">
+          //           Requests successfully resolved
+          //         </p>
+          //       </CardContent>
+          //     </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    High Priority
-                  </CardTitle>
+          //     <Card>
+          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
+          //         <CardTitle className="text-sm font-medium">
+          //           High Priority
+          //         </CardTitle>
 
-                  <AlertCircle className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
+          //         <AlertCircle className="h-4 w-4 text-muted-foreground" />
+          //       </CardHeader>
 
-                <CardContent>
-                  <div className="text-2xl font-bold">5</div>
+          //       <CardContent>
+          //         <div className="text-2xl font-bold">5</div>
 
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Require immediate attention
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+          //         <p className="text-xs text-muted-foreground mt-1">
+          //           Require immediate attention
+          //         </p>
+          //       </CardContent>
+          //     </Card>
+          //   </div>
 
-            {/* Recent Requests */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base font-semibold">
-                  Recent Requests
-                </CardTitle>
+          //   {/* Recent Requests */}
+          //   <Card>
+          //     <CardHeader>
+          //       <CardTitle className="text-base font-semibold">
+          //         Recent Requests
+          //       </CardTitle>
 
-                <CardDescription>
-                  Latest student support requests requiring attention.
-                </CardDescription>
-              </CardHeader>
+          //       <CardDescription>
+          //         Latest student support requests requiring attention.
+          //       </CardDescription>
+          //     </CardHeader>
 
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request</TableHead>
-                      <TableHead>Student</TableHead>
-                      <TableHead>Support Unit</TableHead>
-                      <TableHead>Priority</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
+          //     <CardContent className="p-0">
+          //       <Table>
+          //         <TableHeader>
+          //           <TableRow>
+          //             <TableHead>Request</TableHead>
+          //             <TableHead>Student</TableHead>
+          //             <TableHead>Support Unit</TableHead>
+          //             <TableHead>Priority</TableHead>
+          //             <TableHead>Status</TableHead>
+          //           </TableRow>
+          //         </TableHeader>
 
-                  <TableBody>
-                    {requests.map((request) => (
-                      <TableRow key={request.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-semibold">
-                              {request.subject}
-                            </p>
+          //         <TableBody>
+          //           {requests.map((request) => (
+          //             <TableRow key={request.id}>
+          //               <TableCell>
+          //                 <div>
+          //                   <p className="font-semibold">
+          //                     {request.subject}
+          //                   </p>
 
-                            <p className="text-xs text-muted-foreground">
-                              {request.id}
-                            </p>
-                          </div>
-                        </TableCell>
+          //                   <p className="text-xs text-muted-foreground">
+          //                     {request.id}
+          //                   </p>
+          //                 </div>
+          //               </TableCell>
 
-                        <TableCell>{request.student}</TableCell>
+          //               <TableCell>{request.student}</TableCell>
 
-                        <TableCell>{request.unit}</TableCell>
+          //               <TableCell>{request.unit}</TableCell>
 
-                        <TableCell>
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                              request.priority === "High"
-                                ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                                : request.priority === "Medium"
-                                ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                                : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                            }`}
-                          >
-                            {request.priority}
-                          </span>
-                        </TableCell>
+          //               <TableCell>
+          //                 <span
+          //                   className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+          //                     request.priority === "High"
+          //                       ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+          //                       : request.priority === "Medium"
+          //                       ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+          //                       : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+          //                   }`}
+          //                 >
+          //                   {request.priority}
+          //                 </span>
+          //               </TableCell>
 
-                        <TableCell>{request.status}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
+          //               <TableCell>{request.status}</TableCell>
+          //             </TableRow>
+          //           ))}
+          //         </TableBody>
+          //       </Table>
+          //     </CardContent>
+          //   </Card>
+          // </div>
+
+          <SupportDashboardHome  />
+
         );
 
       case "Requests":

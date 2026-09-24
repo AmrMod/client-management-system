@@ -41,6 +41,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ManagerRequests from "./components/ManagerRequests";
 import SupportConversationUI from "../support/components/SupportConversationUI";
+import ManagerDashboardHome from "./components/ManagerDashboardHome";
 
 
 export default function ManagerDashboard() {
@@ -238,195 +239,198 @@ export default function ManagerDashboard() {
     const renderTabContent = () => {
         switch (activeTab) {
             case "Dashboard":
-                return (
-                    <div className="space-y-6">
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
-                                Manager Dashboard
-                            </h1>
+                 return (
+                //     <div className="space-y-6">
+                //         <div>
+                //             <h1 className="text-3xl font-bold tracking-tight">
+                //                 Manager Dashboard
+                //             </h1>
 
-                            <p className="text-muted-foreground mt-1">
-                                Monitor student support operations, requests,
-                                and staff performance.
-                            </p>
-                        </div>
+                //             <p className="text-muted-foreground mt-1">
+                //                 Monitor student support operations, requests,
+                //                 and staff performance.
+                //             </p>
+                //         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium">
-                                        Pending Requests
-                                    </CardTitle>
+                //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                //             <Card>
+                //                 <CardHeader className="flex flex-row items-center justify-between pb-2">
+                //                     <CardTitle className="text-sm font-medium">
+                //                         Pending Requests
+                //                     </CardTitle>
 
-                                    <Clock className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
+                //                     <Clock className="h-4 w-4 text-muted-foreground" />
+                //                 </CardHeader>
 
-                                <CardContent>
-                                    <div className="text-2xl font-bold">
-                                        18
-                                    </div>
+                //                 <CardContent>
+                //                     <div className="text-2xl font-bold">
+                //                         18
+                //                     </div>
 
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        5 high priority
-                                    </p>
-                                </CardContent>
-                            </Card>
+                //                     <p className="text-xs text-muted-foreground mt-1">
+                //                         5 high priority
+                //                     </p>
+                //                 </CardContent>
+                //             </Card>
 
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium">
-                                        Active Requests
-                                    </CardTitle>
+                //             <Card>
+                //                 <CardHeader className="flex flex-row items-center justify-between pb-2">
+                //                     <CardTitle className="text-sm font-medium">
+                //                         Active Requests
+                //                     </CardTitle>
 
-                                    <Activity className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
+                //                     <Activity className="h-4 w-4 text-muted-foreground" />
+                //                 </CardHeader>
 
-                                <CardContent>
-                                    <div className="text-2xl font-bold">
-                                        27
-                                    </div>
+                //                 <CardContent>
+                //                     <div className="text-2xl font-bold">
+                //                         27
+                //                     </div>
 
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Currently being handled
-                                    </p>
-                                </CardContent>
-                            </Card>
+                //                     <p className="text-xs text-muted-foreground mt-1">
+                //                         Currently being handled
+                //                     </p>
+                //                 </CardContent>
+                //             </Card>
 
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium">
-                                        Students
-                                    </CardTitle>
+                //             <Card>
+                //                 <CardHeader className="flex flex-row items-center justify-between pb-2">
+                //                     <CardTitle className="text-sm font-medium">
+                //                         Students
+                //                     </CardTitle>
 
-                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
+                //                     <Users className="h-4 w-4 text-muted-foreground" />
+                //                 </CardHeader>
 
-                                <CardContent>
-                                    <div className="text-2xl font-bold">
-                                        248
-                                    </div>
+                //                 <CardContent>
+                //                     <div className="text-2xl font-bold">
+                //                         248
+                //                     </div>
 
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Registered students
-                                    </p>
-                                </CardContent>
-                            </Card>
+                //                     <p className="text-xs text-muted-foreground mt-1">
+                //                         Registered students
+                //                     </p>
+                //                 </CardContent>
+                //             </Card>
 
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium">
-                                        Resolved
-                                    </CardTitle>
+                //             <Card>
+                //                 <CardHeader className="flex flex-row items-center justify-between pb-2">
+                //                     <CardTitle className="text-sm font-medium">
+                //                         Resolved
+                //                     </CardTitle>
 
-                                    <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
+                //                     <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                //                 </CardHeader>
 
-                                <CardContent>
-                                    <div className="text-2xl font-bold">
-                                        143
-                                    </div>
+                //                 <CardContent>
+                //                     <div className="text-2xl font-bold">
+                //                         143
+                //                     </div>
 
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        This month
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </div>
+                //                     <p className="text-xs text-muted-foreground mt-1">
+                //                         This month
+                //                     </p>
+                //                 </CardContent>
+                //             </Card>
+                //         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <Card className="lg:col-span-2">
-                                <CardHeader>
-                                    <CardTitle>
-                                        Recent Support Activity
-                                    </CardTitle>
+                //         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                //             <Card className="lg:col-span-2">
+                //                 <CardHeader>
+                //                     <CardTitle>
+                //                         Recent Support Activity
+                //                     </CardTitle>
 
-                                    <CardDescription>
-                                        Latest actions across the support
-                                        system.
-                                    </CardDescription>
-                                </CardHeader>
+                //                     <CardDescription>
+                //                         Latest actions across the support
+                //                         system.
+                //                     </CardDescription>
+                //                 </CardHeader>
 
-                                <CardContent>
-                                    <div className="space-y-4">
-                                        {activityLogs.map((log) => (
-                                            <div
-                                                key={log.id}
-                                                className="flex items-center justify-between border-b pb-3 last:border-0"
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                                                        <Activity className="h-4 w-4" />
-                                                    </div>
+                //                 <CardContent>
+                //                     <div className="space-y-4">
+                //                         {activityLogs.map((log) => (
+                //                             <div
+                //                                 key={log.id}
+                //                                 className="flex items-center justify-between border-b pb-3 last:border-0"
+                //                             >
+                //                                 <div className="flex items-center gap-3">
+                //                                     <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                //                                         <Activity className="h-4 w-4" />
+                //                                     </div>
 
-                                                    <p className="text-sm font-medium">
-                                                        {log.action}
-                                                    </p>
-                                                </div>
+                //                                     <p className="text-sm font-medium">
+                //                                         {log.action}
+                //                                     </p>
+                //                                 </div>
 
-                                                <span className="text-xs text-muted-foreground">
-                                                    {log.time}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                //                                 <span className="text-xs text-muted-foreground">
+                //                                     {log.time}
+                //                                 </span>
+                //                             </div>
+                //                         ))}
+                //                     </div>
+                //                 </CardContent>
+                //             </Card>
 
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>
-                                        Support Overview
-                                    </CardTitle>
+                //             <Card>
+                //                 <CardHeader>
+                //                     <CardTitle>
+                //                         Support Overview
+                //                     </CardTitle>
 
-                                    <CardDescription>
-                                        Current request distribution.
-                                    </CardDescription>
-                                </CardHeader>
+                //                     <CardDescription>
+                //                         Current request distribution.
+                //                     </CardDescription>
+                //                 </CardHeader>
 
-                                <CardContent className="space-y-4">
-                                    <div className="flex justify-between">
-                                        <span className="text-sm">
-                                            Pending
-                                        </span>
+                //                 <CardContent className="space-y-4">
+                //                     <div className="flex justify-between">
+                //                         <span className="text-sm">
+                //                             Pending
+                //                         </span>
 
-                                        <span className="font-semibold">
-                                            18
-                                        </span>
-                                    </div>
+                //                         <span className="font-semibold">
+                //                             18
+                //                         </span>
+                //                     </div>
 
-                                    <div className="flex justify-between">
-                                        <span className="text-sm">
-                                            In Progress
-                                        </span>
+                //                     <div className="flex justify-between">
+                //                         <span className="text-sm">
+                //                             In Progress
+                //                         </span>
 
-                                        <span className="font-semibold">
-                                            27
-                                        </span>
-                                    </div>
+                //                         <span className="font-semibold">
+                //                             27
+                //                         </span>
+                //                     </div>
 
-                                    <div className="flex justify-between">
-                                        <span className="text-sm">
-                                            Resolved
-                                        </span>
+                //                     <div className="flex justify-between">
+                //                         <span className="text-sm">
+                //                             Resolved
+                //                         </span>
 
-                                        <span className="font-semibold">
-                                            143
-                                        </span>
-                                    </div>
+                //                         <span className="font-semibold">
+                //                             143
+                //                         </span>
+                //                     </div>
 
-                                    <div className="flex justify-between">
-                                        <span className="text-sm">
-                                            Escalated
-                                        </span>
+                //                     <div className="flex justify-between">
+                //                         <span className="text-sm">
+                //                             Escalated
+                //                         </span>
 
-                                        <span className="font-semibold text-destructive">
-                                            4
-                                        </span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
+                //                         <span className="font-semibold text-destructive">
+                //                             4
+                //                         </span>
+                //                     </div>
+                //                 </CardContent>
+                //             </Card>
+                //         </div>
+                //     </div>
+
+                    <ManagerDashboardHome activityLogs={activityLogs} />
+
                 );
 
             case "Requests":

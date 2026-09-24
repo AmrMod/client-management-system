@@ -2,6 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+const notificationService = require('../notifications/notification.service');
+
 /**
  * Create a new request.
  *
@@ -64,6 +66,12 @@ const createRequest = async ({
 
         }
     });
+
+    await notificationService.createNotification(
+        userId,
+        "Request Submitted",
+        `Your request "${newRequest.title}" has been submitted successfully.`
+    );
 
     return newRequest;
 };
@@ -485,12 +493,15 @@ const assignRequest = async (requestId, staffId, managerUserId) => {
     }
 
     const request = await prisma.request.findUnique({
-        where: {
-            id: requestId
-        },
+        where: { id: requestId },
         select: {
             id: true,
-            supportUnitId: true
+            supportUnitId: true,
+            student: {
+                select: {
+                    userId: true
+                }
+            }
         }
     });
 
@@ -566,6 +577,12 @@ const assignRequest = async (requestId, staffId, managerUserId) => {
             }
         }
     });
+
+    await notificationService.createNotification(
+        request.student.userId,
+        "Request Assigned",
+        `Your request "${updatedRequest.title}" has been assigned to ${updatedRequest.assignedStaff.name}.`
+    );
 
     return updatedRequest;
 };
@@ -750,12 +767,16 @@ const updateRequestStatus = async (
     }
 
     const request = await prisma.request.findUnique({
-        where: {
-            id: requestId
-        },
+        where: { id: requestId },
         select: {
             id: true,
-            assignedStaffId: true
+            assignedStaffId: true,
+            title: true,
+            student: {
+                    select: {
+                    userId: true
+                }
+            }
         }
     });
 
@@ -775,7 +796,7 @@ const updateRequestStatus = async (
         throw error;
     }
 
-    return await prisma.request.update({
+    const updatedRequest = await prisma.request.update({
         where: {
             id: requestId
         },
@@ -797,6 +818,20 @@ const updateRequestStatus = async (
             }
         }
     });
+
+    await notificationService.createNotification(
+        request.student.userId,
+        status === "RESOLVED"
+            ? "Request Resolved"
+            : "Request Updated",
+        status === "RESOLVED"
+            ? `Your request "${request.title}" has been resolved.`
+            : `Your request "${request.title}" status changed to ${status
+                .replace("_", " ")
+                .toLowerCase()}.`
+    );
+
+    return updatedRequest;
 };
 
 module.exports = {

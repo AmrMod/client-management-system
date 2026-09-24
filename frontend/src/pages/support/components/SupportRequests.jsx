@@ -546,22 +546,22 @@ const SupportRequests = () => {
     |--------------------------------------------------------------------------
     */
 
-    const totalRequests = pagination?.total || 0;
+    // const totalRequests = pagination?.total || 0;
 
-    const pendingCount =
-        requests.filter(
-            (request) => request.status === "PENDING"
-        ).length;
+    // const pendingCount =
+    //     requests.filter(
+    //         (request) => request.status === "PENDING"
+    //     ).length;
 
-    const inProgressCount =
-        requests.filter(
-            (request) => request.status === "IN_PROGRESS"
-        ).length;
+    // const inProgressCount =
+    //     requests.filter(
+    //         (request) => request.status === "IN_PROGRESS"
+    //     ).length;
 
-    const resolvedCount =
-        requests.filter(
-            (request) => request.status === "RESOLVED"
-        ).length;
+    // const resolvedCount =
+    //     requests.filter(
+    //         (request) => request.status === "RESOLVED"
+    //     ).length;
 
 
     return (
@@ -600,137 +600,6 @@ const SupportRequests = () => {
                     Refresh
 
                 </Button>
-
-            </div>
-
-
-            {/* Statistics */}
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-
-
-                <Card>
-
-                    <CardContent className="p-6">
-
-                        <div className="flex items-center justify-between">
-
-                            <div>
-
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Total Requests
-                                </p>
-
-                                <p className="text-2xl font-bold mt-2">
-                                    {totalRequests}
-                                </p>
-
-                            </div>
-
-                            <div className="rounded-full bg-primary/10 p-3">
-
-                                <ClipboardList className="h-5 w-5 text-primary" />
-
-                            </div>
-
-                        </div>
-
-                    </CardContent>
-
-                </Card>
-
-
-                <Card>
-
-                    <CardContent className="p-6">
-
-                        <div className="flex items-center justify-between">
-
-                            <div>
-
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Pending
-                                </p>
-
-                                <p className="text-2xl font-bold mt-2">
-                                    {pendingCount}
-                                </p>
-
-                            </div>
-
-                            <div className="rounded-full bg-yellow-100 dark:bg-yellow-900/30 p-3">
-
-                                <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-
-                            </div>
-
-                        </div>
-
-                    </CardContent>
-
-                </Card>
-
-
-                <Card>
-
-                    <CardContent className="p-6">
-
-                        <div className="flex items-center justify-between">
-
-                            <div>
-
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    In Progress
-                                </p>
-
-                                <p className="text-2xl font-bold mt-2">
-                                    {inProgressCount}
-                                </p>
-
-                            </div>
-
-                            <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-3">
-
-                                <RefreshCw className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-
-                            </div>
-
-                        </div>
-
-                    </CardContent>
-
-                </Card>
-
-
-                <Card>
-
-                    <CardContent className="p-6">
-
-                        <div className="flex items-center justify-between">
-
-                            <div>
-
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Resolved
-                                </p>
-
-                                <p className="text-2xl font-bold mt-2">
-                                    {resolvedCount}
-                                </p>
-
-                            </div>
-
-                            <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
-
-                                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-
-                            </div>
-
-                        </div>
-
-                    </CardContent>
-
-                </Card>
 
             </div>
 

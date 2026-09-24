@@ -17,6 +17,7 @@ export const createRequest = async (
     const res = await fetch(`${API_BASE}/requests`, {
       method: "POST",
       headers: authHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         supportUnitId,
         title,
@@ -78,6 +79,7 @@ export const getMyRequests = async (
             {
                 method: "GET",
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 
@@ -145,6 +147,7 @@ export const getManagerRequests = async ({
         {
             method: "GET",
             headers: authHeaders(),
+            credentials: "include",
         }
     );
 
@@ -180,6 +183,7 @@ export const getSupportStaff = async () => {
         const res = await fetch(`${API_BASE}/requests/staff`, {
             method: "GET",
             headers: authHeaders(),
+            credentials: "include",
         });
 
         const data = await res.json();
@@ -204,6 +208,7 @@ export const assignRequest = async (requestId, staffId) => {
             {
                 method: "PATCH",
                 headers: authHeaders(),
+                credentials: "include",
                 body: JSON.stringify({
                     staffId,
                 }),
@@ -279,6 +284,7 @@ export const getSupportRequests = async ({
             {
                 method: "GET",
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 
@@ -305,6 +311,7 @@ export const updateRequestStatus = async (requestId, status) => {
             {
                 method: "PATCH",
                 headers: authHeaders(),
+                credentials: "include",
                 body: JSON.stringify({
                     status,
                 }),

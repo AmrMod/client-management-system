@@ -16,8 +16,7 @@ const NewRequest = ({
     user,
     supportUnits,
     supportUnitLoading,
-    setRequests,
-    addSystemNotification
+    setRequests
 }) => {
 
     const [newReqTitle, setNewReqTitle] = useState("");
@@ -67,10 +66,7 @@ const NewRequest = ({
                 "Request submitted successfully. Our support team will review it shortly."
             );
 
-            addSystemNotification(
-                "Request Created",
-                `New request "${newReq.title}" has been submitted.`
-            );
+            
 
         } catch (error) {
             console.error("Failed to create request:", error);

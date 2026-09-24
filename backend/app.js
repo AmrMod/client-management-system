@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 
 const authRoutes = require('./src/auth/auth.routes');
 const userRoutes = require('./src/users/user.routes');
@@ -11,6 +13,11 @@ const conversationRoutes =
     require('./src/conversation/conversation.route');
 const dashboardRoutes =
     require('./src/dashboard/dashboard.route');
+const {
+    generalLimiter,
+    authLimiter
+} = require("./src/middleware/rateLimiter");
+const notificationRoutes = require('./src/notifications/notification.routes');
 
 
 const app = express();
@@ -22,8 +29,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use(cookieParser());
+
+app.use(generalLimiter);
+
+
 // Routes
-app.use('/auth', authRoutes);
+app.use('/auth',authLimiter, authRoutes);
 app.use('/users', userRoutes);
 app.use('/notes', noteRoutes);
 app.use('/requests', requestRoutes);
@@ -32,6 +44,7 @@ app.use('/staff', staffRoutes);
 app.use('/conversations',
     conversationRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/notifications', notificationRoutes);
 
 
 module.exports = app;

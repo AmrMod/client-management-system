@@ -36,6 +36,7 @@ export const getAllStaff = async (
             )}&sortBy=${sortBy}&order=${order}`,
             {
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 

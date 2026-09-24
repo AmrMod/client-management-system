@@ -53,6 +53,7 @@ import Students from "./Students";
 import Staff from "./Staff";
 import CreateUserByAdmin from "./createUserByAdmin";
 import AdminConversationUI from "./AdminConversationUI";
+import AdminDashboardHome from "./AdminDashboardHome";
 
 // import { getTotalUsers } from "@/api/userapi";
 import { getDashboardStats } from "@/api/userapi";
@@ -266,111 +267,112 @@ export default function AdminDashboard() {
   const renderTabContent = () => {
     switch (activeTab) {
       case "Dashboard":
-        return (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Admin Dashboard
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                System Overview, metrics, and administration metrics.
-              </p>
-            </div>
+         return (
+        //   <div className="space-y-8 animate-in fade-in duration-300">
+        //     <div>
+        //       <h1 className="text-3xl font-bold tracking-tight text-foreground">
+        //         Admin Dashboard
+        //       </h1>
+        //       <p className="text-muted-foreground mt-1">
+        //         System Overview, metrics, and administration metrics.
+        //       </p>
+        //     </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                  <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totalUsers}</div>
-                  <p className="text-xs text-muted-foreground mt-1">{growthRate}% this month</p>
-                </CardContent>
-              </Card>
+        //     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        //       <Card>
+        //         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        //           <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+        //           <UsersIcon className="h-4 w-4 text-muted-foreground" />
+        //         </CardHeader>
+        //         <CardContent>
+        //           <div className="text-2xl font-bold">{totalUsers}</div>
+        //           <p className="text-xs text-muted-foreground mt-1">{growthRate}% this month</p>
+        //         </CardContent>
+        //       </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Clients</CardTitle>
-                  <Briefcase className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">42</div>
-                  <p className="text-xs text-muted-foreground mt-1">4 added this week</p>
-                </CardContent>
-              </Card>
+        //       <Card>
+        //         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        //           <CardTitle className="text-sm font-medium">Active Clients</CardTitle>
+        //           <Briefcase className="h-4 w-4 text-muted-foreground" />
+        //         </CardHeader>
+        //         <CardContent>
+        //           <div className="text-2xl font-bold">42</div>
+        //           <p className="text-xs text-muted-foreground mt-1">4 added this week</p>
+        //         </CardContent>
+        //       </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">$48,250</div>
-                  <p className="text-xs text-muted-foreground mt-1">+8.2% vs last month</p>
-                </CardContent>
-              </Card>
+        //       <Card>
+        //         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        //           <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+        //           <DollarSign className="h-4 w-4 text-muted-foreground" />
+        //         </CardHeader>
+        //         <CardContent>
+        //           <div className="text-2xl font-bold">$48,250</div>
+        //           <p className="text-xs text-muted-foreground mt-1">+8.2% vs last month</p>
+        //         </CardContent>
+        //       </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
-                  <ClipboardList className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">18</div>
-                  <p className="text-xs text-muted-foreground mt-1">5 marked as high priority</p>
-                </CardContent>
-              </Card>
-            </div>
+        //       <Card>
+        //         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        //           <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+        //           <ClipboardList className="h-4 w-4 text-muted-foreground" />
+        //         </CardHeader>
+        //         <CardContent>
+        //           <div className="text-2xl font-bold">18</div>
+        //           <p className="text-xs text-muted-foreground mt-1">5 marked as high priority</p>
+        //         </CardContent>
+        //       </Card>
+        //     </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">System Audit Trail</CardTitle>
-                  <CardDescription>Recent actions performed by system administrators.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {activityLogs.map((log) => (
-                      <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                            <Activity className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-sm text-foreground">{log.action}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">By {log.user}</p>
-                          </div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">{log.time}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+        //     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        //       <Card className="lg:col-span-2">
+        //         <CardHeader>
+        //           <CardTitle className="text-base font-semibold">System Audit Trail</CardTitle>
+        //           <CardDescription>Recent actions performed by system administrators.</CardDescription>
+        //         </CardHeader>
+        //         <CardContent>
+        //           <div className="space-y-4">
+        //             {activityLogs.map((log) => (
+        //               <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
+        //                 <div className="flex items-center gap-3">
+        //                   <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+        //                     <Activity className="h-4 w-4" />
+        //                   </div>
+        //                   <div>
+        //                     <p className="font-semibold text-sm text-foreground">{log.action}</p>
+        //                     <p className="text-xs text-muted-foreground mt-0.5">By {log.user}</p>
+        //                   </div>
+        //                 </div>
+        //                 <span className="text-xs text-muted-foreground">{log.time}</span>
+        //               </div>
+        //             ))}
+        //           </div>
+        //         </CardContent>
+        //       </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">Service Status</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center pb-2 border-b">
-                    <span className="text-sm font-medium">Database Node</span>
-                    <span className="text-xs text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">Operational</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-2 border-b">
-                    <span className="text-sm font-medium">Core Authentication API</span>
-                    <span className="text-xs text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">Operational</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">SMTP Email Server</span>
-                    <span className="text-xs text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">Operational</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        );
+        //       <Card>
+        //         <CardHeader>
+        //           <CardTitle className="text-base font-semibold">Service Status</CardTitle>
+        //         </CardHeader>
+        //         <CardContent className="space-y-4">
+        //           <div className="flex justify-between items-center pb-2 border-b">
+        //             <span className="text-sm font-medium">Database Node</span>
+        //             <span className="text-xs text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">Operational</span>
+        //           </div>
+        //           <div className="flex justify-between items-center pb-2 border-b">
+        //             <span className="text-sm font-medium">Core Authentication API</span>
+        //             <span className="text-xs text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">Operational</span>
+        //           </div>
+        //           <div className="flex justify-between items-center">
+        //             <span className="text-sm font-medium">SMTP Email Server</span>
+        //             <span className="text-xs text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">Operational</span>
+        //           </div>
+        //         </CardContent>
+        //       </Card>
+        //     </div>
+        //   </div>
+        // );
+
 
       // case "Users":
       //   return (
@@ -389,7 +391,7 @@ export default function AdminDashboard() {
               
       //       </Card>
       //     </div>
-      //   );
+      <AdminDashboardHome />   );
 
       case "Staff":
         return <Staff />;

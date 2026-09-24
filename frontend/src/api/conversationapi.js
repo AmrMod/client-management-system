@@ -12,6 +12,7 @@ export const createConversation = async (supportUnitId) => {
         const res = await fetch(`${API_BASE}/conversations`, {
             method: "POST",
             headers: authHeaders(),
+            credentials: "include",
             body: JSON.stringify({
                 supportUnitId,
             }),
@@ -41,6 +42,7 @@ export const getMyConversations = async () => {
         const res = await fetch(`${API_BASE}/conversations`, {
             method: "GET",
             headers: authHeaders(),
+            credentials: "include",
         });
 
         const data = await res.json();
@@ -67,6 +69,7 @@ export const getStaffConversations = async () => {
             {
                 method: "GET",
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 
@@ -95,6 +98,7 @@ export const createMessage = async (conversationId, content) => {
             {
                 method: "POST",
                 headers: authHeaders(),
+                credentials: "include",
                 body: JSON.stringify({
                     content,
                 }),
@@ -127,6 +131,7 @@ export const getMessages = async (conversationId) => {
             {
                 method: "GET",
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 
@@ -153,6 +158,7 @@ export const getAllConversations = async () => {
             {
                 method: "GET",
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 

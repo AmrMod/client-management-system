@@ -13,6 +13,7 @@ export const getAllStudents = async (
             `${API_BASE}/students?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&sortBy=${sortBy}&order=${order}`,
             {
                 headers: authHeaders(),
+                credentials: "include",
             }
         );
 

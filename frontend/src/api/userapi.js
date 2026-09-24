@@ -6,6 +6,7 @@ export const loginUser = async (email, password, role) => {
         const res = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ email, password, role }),
         });
         const data = await res.json();
@@ -41,25 +42,43 @@ export const registerUser = async (name, email, password) => {
 };
 
 
-export const getCurrentUser = async () => {
-    const token = localStorage.getItem("token");
+// export const getCurrentUser = async () => {
+//     const token = localStorage.getItem("token");
 
-    if (!token) {
-        throw new Error("No authentication token");
-    }
+//     if (!token) {
+//         throw new Error("No authentication token");
+//     }
+
+//     const res = await fetch(`${API_BASE}/users/me`, {
+//         method: "GET",
+//         headers: {
+//             Authorization: `Bearer ${token}`,
+//         },
+//     });
+
+    
+    
+
+//     const data = await res.json();
+    
+
+//     if (!res.ok) {
+//         throw new Error(
+//             data.error || "Failed to get current user"
+//         );
+//     }
+
+//     return data;
+// };
+
+export const getCurrentUser = async () => {
 
     const res = await fetch(`${API_BASE}/users/me`, {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
     });
 
-    
-    
-
     const data = await res.json();
-    
 
     if (!res.ok) {
         throw new Error(
