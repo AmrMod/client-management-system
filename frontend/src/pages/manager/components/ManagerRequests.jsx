@@ -324,6 +324,7 @@ import {
     getManagerRequests,
     getSupportStaff,
     assignRequest,
+    downloadRequestAttachment,
 } from "@/api/requestapi";
 
 
@@ -1040,6 +1041,10 @@ const ManagerRequests = () => {
                                     </TableHead>
 
                                     <TableHead>
+                                        Attachment
+                                    </TableHead>
+
+                                    <TableHead>
                                         Priority
                                     </TableHead>
 
@@ -1067,7 +1072,7 @@ const ManagerRequests = () => {
                                     <TableRow>
 
                                         <TableCell
-                                            colSpan={7}
+                                            colSpan={8}
                                             className="h-32 text-center"
                                         >
 
@@ -1119,6 +1124,33 @@ const ManagerRequests = () => {
 
                                             <TableCell>
                                                 {request.title}
+                                            </TableCell>
+
+                                            {/* <TableCell>
+                                                {request.attachments?.length > 0
+                                                    ? `📎 ${request.attachments[0].fileName}`
+                                                    : "None"
+                                                }
+                                            </TableCell> */}
+
+                                            <TableCell>
+                                                {request.attachments?.length > 0 ? (
+                                                    <Button
+                                                        variant="link"
+                                                        className="p-0 h-auto"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await downloadRequestAttachment(request.id);
+                                                            } catch (error) {
+                                                                console.error(error);
+                                                            }
+                                                        }}
+                                                    >
+                                                        📎 {request.attachments[0].fileName}
+                                                    </Button>
+                                                ) : (
+                                                    "None"
+                                                )}
                                             </TableCell>
 
 

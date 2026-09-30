@@ -53,7 +53,7 @@ export default function Dashboard() {
   
 
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { user, logout, updateUser, loading: authLoading } = useAuth();
   
 
@@ -124,12 +124,12 @@ export default function Dashboard() {
 });
 
   // Documents state
-  const [documents, setDocuments] = useState([
-    { name: "Service_Agreement_2026.pdf", size: "2.4 MB", type: "PDF", date: "2026-06-01" },
-    { name: "Project_Requirements.docx", size: "840 KB", type: "DOCX", date: "2026-06-15" },
-    { name: "Homepage_Design_v2.png", size: "5.1 MB", type: "Image", date: "2026-07-02" },
-  ]);
-  const [uploadingDoc, setUploadingDoc] = useState(false);
+  // const [documents, setDocuments] = useState([
+  //   { name: "Service_Agreement_2026.pdf", size: "2.4 MB", type: "PDF", date: "2026-06-01" },
+  //   { name: "Project_Requirements.docx", size: "840 KB", type: "DOCX", date: "2026-06-15" },
+  //   { name: "Homepage_Design_v2.png", size: "5.1 MB", type: "Image", date: "2026-07-02" },
+  // ]);
+  // const [uploadingDoc, setUploadingDoc] = useState(false);
 
   // useEffect(() => {
   //   const storedUser = localStorage.getItem("user");
@@ -179,11 +179,11 @@ export default function Dashboard() {
   // }, [navigate]);
 
   // NEW: Redirect if not authenticated (using AuthContext)
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/login");
-    }
-  }, [user, authLoading, navigate]);
+  // useEffect(() => {
+  //   if (!authLoading && !user) {
+  //     navigate("/login");
+  //   }
+  // }, [user, authLoading, navigate]);
 
   // NEW: Sync profile fields when user loads from context
   // useEffect(() => {
@@ -633,20 +633,20 @@ export default function Dashboard() {
   //   setNotifications([]);
   // };
 
-  const handleAddDocMock = () => {
-    setUploadingDoc(true);
-    setTimeout(() => {
-      const mockDoc = {
-        name: `Uploaded_Doc_${Math.floor(100 + Math.random() * 900)}.pdf`,
-        size: "1.2 MB",
-        type: "PDF",
-        date: new Date().toISOString().split("T")[0]
-      };
-      setDocuments(prev => [mockDoc, ...prev]);
-      setUploadingDoc(false);
-      addSystemNotification("Document Uploaded", `Document "${mockDoc.name}" has been uploaded.`);
-    }, 1000);
-  };
+  // const handleAddDocMock = () => {
+  //   setUploadingDoc(true);
+  //   setTimeout(() => {
+  //     const mockDoc = {
+  //       name: `Uploaded_Doc_${Math.floor(100 + Math.random() * 900)}.pdf`,
+  //       size: "1.2 MB",
+  //       type: "PDF",
+  //       date: new Date().toISOString().split("T")[0]
+  //     };
+  //     setDocuments(prev => [mockDoc, ...prev]);
+  //     setUploadingDoc(false);
+  //     addSystemNotification("Document Uploaded", `Document "${mockDoc.name}" has been uploaded.`);
+  //   }, 1000);
+  // };
 
   const toggleDark = () => {
     const nextDark = !isDark;
@@ -667,7 +667,7 @@ export default function Dashboard() {
     { name: "New Request", icon: PlusCircle },
     { name: "Messages", icon: MessageSquare, badge: 3 },
     { name: "Notifications", icon: Bell, badge: notifications.filter(n => !n.read).length },
-    { name: "Documents", icon: Folder },
+    // { name: "Documents", icon: Folder },
     { name: "Settings", icon: Settings },
   ];
 
@@ -1147,42 +1147,42 @@ export default function Dashboard() {
         <NotificationUI notifications={notifications}  />
         );
 
-      case "Documents":
-        return (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">Documents</h1>
-                <p className="text-muted-foreground mt-1">Access all your contracts, receipts, and agreements.</p>
-              </div>
-              <Button onClick={handleAddDocMock} disabled={uploadingDoc}>
-                {uploadingDoc ? "Uploading..." : "Upload Document"}
-              </Button>
-            </div>
+      // case "Documents":
+      //   return (
+      //     <div className="space-y-8 animate-in fade-in duration-300">
+      //       <div className="flex items-center justify-between">
+      //         <div>
+      //           <h1 className="text-3xl font-bold tracking-tight text-foreground">Documents</h1>
+      //           <p className="text-muted-foreground mt-1">Access all your contracts, receipts, and agreements.</p>
+      //         </div>
+      //         <Button onClick={handleAddDocMock} disabled={uploadingDoc}>
+      //           {uploadingDoc ? "Uploading..." : "Upload Document"}
+      //         </Button>
+      //       </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {documents.map((doc, idx) => (
-                <Card key={idx} className="hover:shadow-md transition">
-                  <CardHeader className="flex flex-row items-center gap-3 pb-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                      {doc.type}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <CardTitle className="text-sm font-semibold truncate">{doc.name}</CardTitle>
-                      <CardDescription className="text-xs">{doc.size}</CardDescription>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex items-center justify-between border-t border-border pt-4">
-                    <span className="text-xs text-muted-foreground">Uploaded: {doc.date}</span>
-                    <Button variant="ghost" size="sm" className="h-7 text-xs">
-                      Download
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        );
+      //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      //         {documents.map((doc, idx) => (
+      //           <Card key={idx} className="hover:shadow-md transition">
+      //             <CardHeader className="flex flex-row items-center gap-3 pb-3">
+      //               <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+      //                 {doc.type}
+      //               </div>
+      //               <div className="min-w-0 flex-1">
+      //                 <CardTitle className="text-sm font-semibold truncate">{doc.name}</CardTitle>
+      //                 <CardDescription className="text-xs">{doc.size}</CardDescription>
+      //               </div>
+      //             </CardHeader>
+      //             <CardContent className="flex items-center justify-between border-t border-border pt-4">
+      //               <span className="text-xs text-muted-foreground">Uploaded: {doc.date}</span>
+      //               <Button variant="ghost" size="sm" className="h-7 text-xs">
+      //                 Download
+      //               </Button>
+      //             </CardContent>
+      //           </Card>
+      //         ))}
+      //       </div>
+      //     </div>
+      //   );
 
       case "Settings":
         return (

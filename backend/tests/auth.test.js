@@ -22,6 +22,25 @@ describe("POST /auth/login", () => {
         expect(response.body.error).toBe("Invalid credentials");
     });
 
+    //local storage token - before http only cookie storage
+    // test("should login successfully with valid credentials", async () => {
+    //     const response = await request(app)
+    //         .post("/auth/login")
+    //         .send({
+    //             email: "test@example.com",
+    //             password: "TestPassword123",
+    //         });
+
+    //     expect(response.statusCode).toBe(200);
+    //     expect(response.body).toHaveProperty("user");
+    //     expect(response.body).toHaveProperty("token");
+
+    //     expect(response.body.user.email).toBe("test@example.com");
+    //     expect(response.body.user.role).toBe("STUDENT");
+    //     expect(typeof response.body.token).toBe("string");
+    // });
+
+    //after http only cookie
     test("should login successfully with valid credentials", async () => {
         const response = await request(app)
             .post("/auth/login")
@@ -31,11 +50,15 @@ describe("POST /auth/login", () => {
             });
 
         expect(response.statusCode).toBe(200);
-        expect(response.body).toHaveProperty("user");
-        expect(response.body).toHaveProperty("token");
 
-        expect(response.body.user.email).toBe("test@example.com");
-        expect(response.body.user.role).toBe("STUDENT");
-        expect(typeof response.body.token).toBe("string");
+        expect(response.body.email).toBe("test@example.com");
+        expect(response.body.role).toBe("STUDENT");
+        expect(response.body).toHaveProperty("id");
+        expect(response.body).toHaveProperty("createdAt");
+
+        const cookies = response.headers["set-cookie"];
+
+        expect(cookies).toBeDefined();
+        expect(cookies.some((cookie) => cookie.startsWith("token="))).toBe(true);
     });
 });

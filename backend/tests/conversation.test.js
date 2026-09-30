@@ -1,3 +1,56 @@
+// const request = require("supertest");
+// const app = require("../app");
+
+// const { PrismaClient } = require("@prisma/client");
+
+// const prisma = new PrismaClient();
+
+// describe("POST /conversations/:id/messages", () => {
+//     test("should allow a STUDENT to create and send a message", async () => {
+//         const supportUnit = await prisma.supportUnit.findUnique({
+//             where: {
+//                 name: "Test Support Unit",
+//             },
+//         });
+
+//         const loginResponse = await request(app)
+//             .post("/auth/login")
+//             .send({
+//                 email: "test@example.com",
+//                 password: "TestPassword123",
+//             });
+
+//         expect(loginResponse.statusCode).toBe(200);
+
+//         const token = loginResponse.body.token;
+
+//         const conversationResponse = await request(app)
+//             .post("/conversations")
+//             .set("Authorization", `Bearer ${token}`)
+//             .send({
+//                 supportUnitId: supportUnit.id,
+//             });
+
+//         expect(conversationResponse.statusCode).toBe(201);
+
+//         const conversationId = conversationResponse.body.id;
+
+//         const messageResponse = await request(app)
+//             .post(`/conversations/${conversationId}/messages`)
+//             .set("Authorization", `Bearer ${token}`)
+//             .send({
+//                 content: "Hello, I need help with my request.",
+//             });
+
+//         expect(messageResponse.statusCode).toBe(201);
+//         expect(messageResponse.body.conversationId).toBe(conversationId);
+//         expect(messageResponse.body.content).toBe(
+//             "Hello, I need help with my request."
+//         );
+//         expect(messageResponse.body.senderType).toBe("student");
+//     });
+// });
+
 const request = require("supertest");
 const app = require("../app");
 
@@ -13,7 +66,9 @@ describe("POST /conversations/:id/messages", () => {
             },
         });
 
-        const loginResponse = await request(app)
+        const agent = request.agent(app);
+
+        const loginResponse = await agent
             .post("/auth/login")
             .send({
                 email: "test@example.com",
@@ -22,11 +77,8 @@ describe("POST /conversations/:id/messages", () => {
 
         expect(loginResponse.statusCode).toBe(200);
 
-        const token = loginResponse.body.token;
-
-        const conversationResponse = await request(app)
+        const conversationResponse = await agent
             .post("/conversations")
-            .set("Authorization", `Bearer ${token}`)
             .send({
                 supportUnitId: supportUnit.id,
             });
@@ -35,9 +87,8 @@ describe("POST /conversations/:id/messages", () => {
 
         const conversationId = conversationResponse.body.id;
 
-        const messageResponse = await request(app)
+        const messageResponse = await agent
             .post(`/conversations/${conversationId}/messages`)
-            .set("Authorization", `Bearer ${token}`)
             .send({
                 content: "Hello, I need help with my request.",
             });

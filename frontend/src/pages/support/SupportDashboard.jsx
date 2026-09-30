@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,7 +50,7 @@ import SupportDashboardHome from "./components/SupportDashboardHome";
 
 
 export default function SupportDashboard() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
    const { user, logout, updateUser, loading: authLoading } = useAuth();
 
@@ -176,14 +176,14 @@ export default function SupportDashboard() {
   //     document.documentElement.classList.remove("dark");
   //   }
   // }, [navigate]);
- useEffect(() => {
-        if (!authLoading && !user) {
-          navigate("/login");
-        }
-      }, [user, authLoading, navigate]);
+//  useEffect(() => {
+//         if (!authLoading && !user) {
+//           navigate("/login");
+//         }
+//       }, [user, authLoading, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logout();
     navigate("/login");
   };
 

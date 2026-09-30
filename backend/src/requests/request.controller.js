@@ -5,14 +5,18 @@ const createRequest = async (req, res) => {
         const { supportUnitId, title, description, priority } = req.validated.body;
         const userId = req.user.userId;
 
+         const file = req.file;
         
+
+
 
         const newRequest = await requestService.createRequest({
             userId,
             supportUnitId,
             title,
             description,
-            priority
+            priority,
+            file
         });
 
         res.status(201).json(newRequest);
@@ -28,6 +32,10 @@ const createRequest = async (req, res) => {
         });
     }
 };
+
+
+
+
 
 // const getMyRequests = async (req, res) => {
 //     try {
@@ -422,6 +430,39 @@ const updateRequestStatus = async (req, res) => {
     }
 };
 
+const downloadAttachment = async (req, res) => {
+    try {
+        const requestId = Number(req.params.id);
+        const userId = req.user.userId;
+
+        const attachment =
+            await requestService.getRequestAttachment(
+                requestId,
+                userId,
+                req.user.role
+            );
+
+        res.download(
+            attachment.fileUrl,
+            attachment.fileName
+        );
+
+    } catch (error) {
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+};
+
+
+
 
 
 module.exports = {
@@ -432,5 +473,6 @@ module.exports = {
     getSupportStaff,
     assignRequest,
     getSupportRequests,
-    updateRequestStatus
+    updateRequestStatus,
+    downloadAttachment
 };

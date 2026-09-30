@@ -16,11 +16,14 @@ const {
     supportRequestsSchema
 } = require("./request.validation");
 
+const upload = require("../middleware/upload.middleware");
+
 
 router.post(
     '/',
     authenticate,
     requireRole("STUDENT"),
+    upload.single("attachment"),
     validate(createRequestSchema),
     requestController.createRequest
 );
@@ -79,6 +82,15 @@ router.patch(
 //     requestController.getSupportRequests
 // );
 
+
+router.get(
+    '/:id/attachment',
+    authenticate,
+    requireRole("STUDENT", "STAFF"),
+    requestController.downloadAttachment
+);
+
+
 router.get(
     '/my-assigned',
     authenticate,
@@ -95,6 +107,7 @@ router.patch(
     requireStaffRole('SUPPORT_STAFF'),
     requestController.updateRequestStatus
 );
+
 
 
 module.exports = router;

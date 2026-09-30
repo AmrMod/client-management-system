@@ -166,7 +166,7 @@ import {
     useState
 } from "react";
 
-import { getCurrentUser } from "../api/userapi";
+import { getCurrentUser, logoutUser } from "../api/userapi";
 
 const AuthContext = createContext(null);
 
@@ -208,8 +208,8 @@ export const AuthProvider = ({ children }) => {
     };
 
 
-    const logout = () => {
-
+    const logout = async  () => {
+        await logoutUser();
         setUser(null);
     };
 

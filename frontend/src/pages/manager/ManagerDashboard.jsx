@@ -1,6 +1,6 @@
 
 
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -45,7 +45,7 @@ import ManagerDashboardHome from "./components/ManagerDashboardHome";
 
 
 export default function ManagerDashboard() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
       const { user, logout, updateUser, loading: authLoading } = useAuth();
       console.log("AUTH USER:", user);
@@ -82,15 +82,15 @@ export default function ManagerDashboard() {
     //     }
     // }, [navigate]);
 
-    useEffect(() => {
-        if (!authLoading && !user) {
-          navigate("/login");
-        }
-      }, [user, authLoading, navigate]);
+    // useEffect(() => {
+    //     if (!authLoading && !user) {
+    //       navigate("/login");
+    //     }
+    //   }, [user, authLoading, navigate]);
     
       
     const handleLogout = () => {
-        localStorage.removeItem("user");
+        logout();
         navigate("/login");
     };
 

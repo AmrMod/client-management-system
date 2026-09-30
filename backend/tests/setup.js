@@ -16,6 +16,7 @@ beforeAll(async () => {
     await prisma.studentProfile.deleteMany();
     await prisma.staffProfile.deleteMany();
     await prisma.supportUnit.deleteMany();
+    await prisma.notification.deleteMany();
 
     await prisma.user.deleteMany({
         where: {
@@ -92,6 +93,7 @@ afterAll(async () => {
     await prisma.studentProfile.deleteMany();
     await prisma.staffProfile.deleteMany();
     await prisma.supportUnit.deleteMany();
+    await prisma.notification.deleteMany();
 
     await prisma.user.deleteMany({
         where: {

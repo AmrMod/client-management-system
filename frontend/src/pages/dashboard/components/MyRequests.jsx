@@ -193,7 +193,7 @@ import {
     Search,
 } from "lucide-react";
 
-import { getMyRequests } from "@/api/requestapi";
+import { getMyRequests, downloadRequestAttachment } from "@/api/requestapi";
 
 
 const MyRequests = ({ setActiveTab }) => {
@@ -484,6 +484,10 @@ const MyRequests = ({ setActiveTab }) => {
                                     </TableHead>
 
                                     <TableHead>
+                                        Attachment
+                                    </TableHead>
+
+                                    <TableHead>
                                         Support Unit
                                     </TableHead>
 
@@ -516,9 +520,37 @@ const MyRequests = ({ setActiveTab }) => {
                                         </TableCell>
 
 
-                                        <TableCell>
+                                         <TableCell>
                                             {req.title}
+                                        </TableCell> 
+
+                                        {/* <TableCell>
+                                            {req.attachments?.length > 0
+                                                ? `📎 ${req.attachments[0].fileName}`
+                                                : "None"
+                                            }
+                                        </TableCell> */}
+                                        <TableCell>
+                                            {req.attachments?.length > 0 ? (
+                                                <Button
+                                                    variant="link"
+                                                    className="p-0 h-auto"
+                                                    onClick={async () => {
+                                                        try {
+                                                            await downloadRequestAttachment(req.id);
+                                                        } catch (error) {
+                                                            console.error(error);
+                                                        }
+                                                    }}
+                                                >
+                                                    📎 {req.attachments[0].fileName}
+                                                </Button>
+                                            ) : (
+                                                "None"
+                                            )}
                                         </TableCell>
+
+                                        
 
 
                                         <TableCell>

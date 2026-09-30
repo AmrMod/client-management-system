@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet'); //security headers protection
 
 
 const authRoutes = require('./src/auth/auth.routes');
@@ -22,12 +23,14 @@ const notificationRoutes = require('./src/notifications/notification.routes');
 
 const app = express();
 
+app.use(helmet());
+
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:5174'], // allow React app
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true, // Allow cookies
 }));
-app.use(express.json());
+app.use(express.json( {limit: '10kb'}));
 
 app.use(cookieParser());
 

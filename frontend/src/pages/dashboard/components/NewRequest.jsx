@@ -23,6 +23,7 @@ const NewRequest = ({
     const [newReqSupportUnit, setNewReqSupportUnit] = useState("");
     const [newReqPriority, setNewReqPriority] = useState("MEDIUM");
     const [newReqDesc, setNewReqDesc] = useState("");
+    const [attachment, setAttachment] = useState(null);
 
     const [requestLoading, setRequestLoading] = useState(false);
     const [requestMessage, setRequestMessage] = useState("");
@@ -46,13 +47,15 @@ const NewRequest = ({
                 Number(newReqSupportUnit),
                 newReqTitle,
                 newReqDesc,
-                newReqPriority
+                newReqPriority,
+                attachment
             );
 
             setRequests(prev => [newReq, ...prev]);
 
             setNewReqTitle("");
             setNewReqDesc("");
+            setAttachment(null);
 
             if (supportUnits.length > 0) {
                 setNewReqSupportUnit(String(supportUnits[0].id));
@@ -211,6 +214,27 @@ const NewRequest = ({
                                 }
                             />
 
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="attachment">Attachment (optional)</Label>
+
+                            <Input
+                                id="attachment"
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                onChange={(e) => setAttachment(e.target.files[0] || null)}
+                            />
+
+                            <p className="text-xs text-muted-foreground">
+                                PDF, JPG, PNG, DOC or DOCX. Maximum size: 5 MB.
+                            </p>
+
+                            {attachment && (
+                                <p className="text-sm text-muted-foreground">
+                                    Selected: {attachment.name}
+                                </p>
+                            )}
                         </div>
 
                         <Button

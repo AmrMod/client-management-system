@@ -228,6 +228,7 @@ import { Button } from "@/components/ui/button";
 import {
     getSupportRequests,
     updateRequestStatus,
+    downloadRequestAttachment,
 } from "@/api/requestapi";
 
 import {
@@ -790,6 +791,10 @@ const SupportRequests = () => {
 
                                     </TableHead>
 
+                                    <TableHead>
+                                        Attachment
+                                    </TableHead>
+
 
                                     <TableHead>
 
@@ -856,7 +861,7 @@ const SupportRequests = () => {
                                     <TableRow>
 
                                         <TableCell
-                                            colSpan={7}
+                                            colSpan={8}
                                             className="h-32 text-center"
                                         >
 
@@ -917,6 +922,27 @@ const SupportRequests = () => {
                                                     {request.title}
                                                 </p>
 
+                                            </TableCell>
+
+
+                                            <TableCell>
+                                                {request.attachments?.length > 0 ? (
+                                                    <Button
+                                                        variant="link"
+                                                        className="p-0 h-auto"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await downloadRequestAttachment(request.id);
+                                                            } catch (error) {
+                                                                console.error(error);
+                                                            }
+                                                        }}
+                                                    >
+                                                        📎 {request.attachments[0].fileName}
+                                                    </Button>
+                                                ) : (
+                                                    "None"
+                                                )}
                                             </TableCell>
 
 

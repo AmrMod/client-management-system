@@ -19,7 +19,8 @@ const createRequest = async ({
     supportUnitId,
     title,
     description,
-    priority
+    priority,
+    file
 }) => {
 
     //zod has taken care of this - No need for this anymore
@@ -57,7 +58,7 @@ const createRequest = async ({
 
 
 
-            
+
             //if priority is optional.
             // if (priority) {
             //     data.priority = priority;
@@ -67,6 +68,18 @@ const createRequest = async ({
         }
     });
 
+    if (file) {
+        await prisma.requestAttachment.create({
+            data: {
+                requestId: newRequest.id,
+                fileName: file.originalname,
+                fileUrl: file.path,
+                fileType: file.mimetype,
+                fileSize: file.size
+            }
+        });
+    }
+
     await notificationService.createNotification(
         userId,
         "Request Submitted",
@@ -75,6 +88,8 @@ const createRequest = async ({
 
     return newRequest;
 };
+
+
 
 // const getRequestsByUserId = async (userId) => {
 
@@ -204,6 +219,15 @@ const getRequestsByUserId = async (
                 supportUnit: {
                     select: {
                         name: true
+                    }
+                },
+
+                attachments: {
+                    select: {
+                        id: true,
+                        fileName: true,
+                        fileType: true,
+                        fileSize: true
                     }
                 }
             }
@@ -401,6 +425,15 @@ const getRequestsByManager = async ({
                     select: {
                         id: true,
                         name: true
+                    }
+                },
+
+                attachments: {
+                    select: {
+                        id: true,
+                        fileName: true,
+                        fileType: true,
+                        fileSize: true
                     }
                 }
             }
@@ -708,6 +741,15 @@ const getSupportRequests = async ({
                         name: true,
                         studentId: true
                     }
+                },
+
+                attachments: {
+                    select: {
+                        id: true,
+                        fileName: true,
+                        fileType: true,
+                        fileSize: true
+                    }
                 }
             }
         }),
@@ -834,6 +876,183 @@ const updateRequestStatus = async (
     return updatedRequest;
 };
 
+// const getRequestAttachment = async (requestId, userId) => {
+//     const student = await prisma.studentProfile.findUnique({
+//         where: {
+//             userId
+//         },
+//         select: {
+//             id: true
+//         }
+//     });
+
+//     if (!student) {
+//         const error = new Error("Student profile not found");
+//         error.status = 404;
+//         throw error;
+//     }
+
+//     const request = await prisma.request.findFirst({
+//         where: {
+//             id: requestId,
+//             studentId: student.id
+//         },
+//         select: {
+//             attachments: {
+//                 take: 1,
+//                 select: {
+//                     fileName: true,
+//                     fileUrl: true
+//                 }
+//             }
+//         }
+//     });
+
+//     if (!request) {
+//         const error = new Error("Request not found");
+//         error.status = 404;
+//         throw error;
+//     }
+
+//     const attachment = request.attachments[0];
+
+//     if (!attachment) {
+//         const error = new Error("No attachment found");
+//         error.status = 404;
+//         throw error;
+//     }
+
+//     return attachment;
+// };
+
+const getRequestAttachment = async (requestId, userId, role) => {
+
+    let requestWhere;
+
+    // =========================
+    // STUDENT
+    // =========================
+
+    if (role === "STUDENT") {
+
+        const student = await prisma.studentProfile.findUnique({
+            where: {
+                userId
+            },
+            select: {
+                id: true
+            }
+        });
+
+        if (!student) {
+            const error = new Error("Student profile not found");
+            error.status = 404;
+            throw error;
+        }
+
+        requestWhere = {
+            id: requestId,
+            studentId: student.id
+        };
+    }
+
+
+    // =========================
+    // STAFF
+    // =========================
+
+    else if (role === "STAFF") {
+
+        const staff = await prisma.staffProfile.findUnique({
+            where: {
+                userId
+            },
+            select: {
+                id: true,
+                staffRole: true,
+                supportUnitId: true
+            }
+        });
+
+        if (!staff) {
+            const error = new Error("Staff profile not found");
+            error.status = 404;
+            throw error;
+        }
+
+
+        // MANAGER
+        if (staff.staffRole === "MANAGER") {
+
+            requestWhere = {
+                id: requestId,
+                supportUnitId: staff.supportUnitId
+            };
+        }
+
+
+        // SUPPORT STAFF
+        else if (staff.staffRole === "SUPPORT_STAFF") {
+
+            requestWhere = {
+                id: requestId,
+                assignedStaffId: staff.id
+            };
+        }
+
+
+        else {
+            const error = new Error("Access denied");
+            error.status = 403;
+            throw error;
+        }
+    }
+
+
+    else {
+        const error = new Error("Access denied");
+        error.status = 403;
+        throw error;
+    }
+
+
+    // =========================
+    // FIND REQUEST + ATTACHMENT
+    // =========================
+
+    const request = await prisma.request.findFirst({
+        where: requestWhere,
+        select: {
+            attachments: {
+                take: 1,
+                select: {
+                    fileName: true,
+                    fileUrl: true
+                }
+            }
+        }
+    });
+
+    if (!request) {
+        const error = new Error("Request not found");
+        error.status = 404;
+        throw error;
+    }
+
+
+    const attachment = request.attachments[0];
+
+    if (!attachment) {
+        const error = new Error("No attachment found");
+        error.status = 404;
+        throw error;
+    }
+
+    return attachment;
+};
+
+
+
 module.exports = {
     createRequest,
     getRequestsByManager,
@@ -842,5 +1061,6 @@ module.exports = {
     getSupportStaffByManager,
     assignRequest,
     getSupportRequests,
-    updateRequestStatus
+    updateRequestStatus, 
+    getRequestAttachment
 };

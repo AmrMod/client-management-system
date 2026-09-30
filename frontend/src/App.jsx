@@ -35,11 +35,13 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/AdminDashboard" element={<AdminDashboard />} />
               
-            </Route>
-            <Route path="/SupportDashboard" element={<SupportDashboard />} />
+            
+              <Route path="/SupportDashboard" element={<SupportDashboard />} />
 
               
-            <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+              <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+
+            </Route>
 
             
 

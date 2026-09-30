@@ -1,5 +1,5 @@
 
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,7 +59,7 @@ import AdminDashboardHome from "./AdminDashboardHome";
 import { getDashboardStats } from "@/api/userapi";
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { user: adminUser, logout, loading: authLoading } = useAuth();
   // const [adminUser, setAdminUser] = useState(null); // Replaced by useAuth() context
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -159,11 +159,11 @@ export default function AdminDashboard() {
   // }, [navigate]);
 
   // NEW: Redirect if not authenticated (using AuthContext)
-  useEffect(() => {
-    if (!authLoading && !adminUser) {
-      navigate("/login");
-    }
-  }, [adminUser, authLoading, navigate]);
+  // useEffect(() => {
+  //   if (!authLoading && !adminUser) {
+  //     navigate("/login");
+  //   }
+  // }, [adminUser, authLoading, navigate]);
 
   // NEW: Theme initialization (no longer tied to user loading)
   useEffect(() => {

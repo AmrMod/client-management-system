@@ -3,43 +3,85 @@
 const API_BASE = 'http://localhost:3000';
 import { authHeaders } from "./apiutils";
 
-export const createRequest = async (
+// export const createRequest = async (
   
+//   supportUnitId,
+//   title,
+//   description,
+//   priority
+
+  
+
+// ) => {
+//   try {
+//     const res = await fetch(`${API_BASE}/requests`, {
+//       method: "POST",
+//       headers: authHeaders(),
+//       credentials: "include",
+//       body: JSON.stringify({
+//         supportUnitId,
+//         title,
+//         description,
+//         priority,
+//       }),
+//     });
+
+//     const data = await res.json();
+
+//     // if (!res.ok) {
+//     //     console.log("Validation response:", data);
+
+//     //   throw new Error(data.error || "Failed to create request");
+//     // }
+//     if (!res.ok) {
+//             throw new Error(
+//                 data.details?.[0]?.message ||
+//                 data.error ||
+//                 'Failed to create request'
+//             );
+//         }
+
+//     return data;
+//   } catch (err) {
+//     throw err;
+//   }
+// };
+
+//with attachemnt 
+export const createRequest = async (
   supportUnitId,
   title,
   description,
-  priority
-
-  
-
+  priority,
+  attachment
 ) => {
   try {
+    const formData = new FormData();
+
+    formData.append("supportUnitId", supportUnitId);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("priority", priority);
+
+    if (attachment) {
+      formData.append("attachment", attachment);
+    }
+
     const res = await fetch(`${API_BASE}/requests`, {
       method: "POST",
-      headers: authHeaders(),
       credentials: "include",
-      body: JSON.stringify({
-        supportUnitId,
-        title,
-        description,
-        priority,
-      }),
+      body: formData,
     });
 
     const data = await res.json();
 
-    // if (!res.ok) {
-    //     console.log("Validation response:", data);
-
-    //   throw new Error(data.error || "Failed to create request");
-    // }
     if (!res.ok) {
-            throw new Error(
-                data.details?.[0]?.message ||
-                data.error ||
-                'Failed to create request'
-            );
-        }
+      throw new Error(
+        data.details?.[0]?.message ||
+        data.error ||
+        "Failed to create request"
+      );
+    }
 
     return data;
   } catch (err) {
@@ -331,4 +373,32 @@ export const updateRequestStatus = async (requestId, status) => {
     } catch (err) {
         throw err;
     }
+};
+
+export const downloadRequestAttachment = async (requestId) => {
+    const res = await fetch(
+        `${API_BASE}/requests/${requestId}/attachment`,
+        {
+            method: "GET",
+            credentials: "include",
+        }
+    );
+
+    if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to download attachment");
+    }
+
+    const blob = await res.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "attachment";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
 };

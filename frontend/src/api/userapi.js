@@ -24,6 +24,23 @@ export const loginUser = async (email, password, role) => {
     }
 };
 
+export const logoutUser = async () => {
+    const res = await fetch(`${API_BASE}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.error || "Logout failed"
+        );
+    }
+
+    return data;
+};
+
 export const registerUser = async (name, email, password) => {
  
     try {
