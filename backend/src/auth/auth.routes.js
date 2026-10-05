@@ -10,10 +10,7 @@ const {
 } = require('./auth.validation');
 
 
-router.post(
-    '/register',
-    authController.register
-);
+
 
 router.post(
     '/login',

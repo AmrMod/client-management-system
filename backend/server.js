@@ -48,7 +48,6 @@ initSocket(io);
 //handle connection, join a conversation room
 io.on("connection", (socket) => {
 
-    console.log("Client connected:", socket.id);
     
 
 

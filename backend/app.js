@@ -6,7 +6,6 @@ const helmet = require('helmet'); //security headers protection
 
 const authRoutes = require('./src/auth/auth.routes');
 const userRoutes = require('./src/users/user.routes');
-const noteRoutes = require('./src/notes/note.routes');
 const requestRoutes = require('./src/requests/request.routes');
 const studentRoutes = require('./src/students/student.routes');
 const staffRoutes = require('./src/staff/staff.routes');
@@ -40,7 +39,6 @@ app.use(generalLimiter);
 // Routes
 app.use('/auth',authLimiter, authRoutes);
 app.use('/users', userRoutes);
-app.use('/notes', noteRoutes);
 app.use('/requests', requestRoutes);
 app.use('/students', studentRoutes);
 app.use('/staff', staffRoutes);

@@ -1,31 +1,4 @@
-// const staffService = require("./staff.service");
 
-// const getAllStaff = async (req, res) => {
-//     try {
-//         const { page, limit } = req.query;
-
-//         const parsedPage = parseInt(page, 10);
-//         const parsedLimit = parseInt(limit, 10);
-
-//         const result = await staffService.getAllStaff(
-//             parsedPage,
-//             parsedLimit
-//         );
-
-//         res.status(200).json(result);
-
-//     } catch (error) {
-//         console.error(error);
-
-//         res.status(500).json({
-//             error: "Failed to fetch staff",
-//         });
-//     }
-// };
-
-// module.exports = {
-//     getAllStaff,
-// };
 
 const staffService = require("./staff.service");
 

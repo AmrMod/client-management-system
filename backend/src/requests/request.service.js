@@ -23,15 +23,7 @@ const createRequest = async ({
     file
 }) => {
 
-    //zod has taken care of this - No need for this anymore
-    // if (!userId || !title || !description || !supportUnitId) {
-    //     const error = new Error(
-    //         'Support unit, title, and description are required'
-    //     );
-
-    //     error.status = 400;
-    //     throw error;
-    // }
+    
 
     // Find the student's profile using the authenticated user's ID
     const student = await prisma.studentProfile.findUnique({
@@ -137,6 +129,7 @@ const getRecentRequests = async (userId) => {
             studentId: student.id
         },
         select: {
+            id: true,
             title: true,
             status: true,
         },
@@ -277,56 +270,7 @@ const getRequestsByUserId = async (
     };
 };
 
-// const getRequestsByManager = async (userId) => {
 
-//     const manager = await prisma.staffProfile.findUnique({
-//         where: {
-//             userId
-//         },
-//         select: {
-//             id: true,
-//             supportUnitId: true
-//         }
-//     });
-
-//     if (!manager) {
-//         const error = new Error('Staff profile not found');
-
-//         error.status = 404;
-//         throw error;
-//     }
-
-//     const requests = await prisma.request.findMany({
-//         where: {
-//             supportUnitId: manager.supportUnitId
-//         },
-//         select: {
-//             id: true,
-//             title: true,
-//             priority: true,
-//             status: true,
-//             createdAt: true,
-
-//             student: {
-//                 select: {
-//                     name: true,
-//                     studentId: true
-//                 }
-//             },
-
-//             assignedStaff: {
-//                 select: {
-//                     name: true
-//                 }
-//             }
-//         },
-//         orderBy: {
-//             createdAt: 'desc'
-//         }
-//     });
-
-//     return requests;
-// };
 
 const getRequestsByManager = async ({
     userId,
@@ -644,47 +588,7 @@ const assignRequest = async (requestId, staffId, managerUserId) => {
     return updatedRequest;
 };
 
-// const getSupportRequests = async (userId) => {
 
-//     const staff = await prisma.staffProfile.findUnique({
-//         where: {
-//             userId
-//         },
-//         select: {
-//             id: true
-//         }
-//     });
-
-//     if (!staff) {
-//         const error = new Error('Staff profile not found');
-
-//         error.status = 404;
-//         throw error;
-//     }
-
-//     return await prisma.request.findMany({
-//         where: {
-//             assignedStaffId: staff.id
-//         },
-//         select: {
-//             id: true,
-//             title: true,
-//             priority: true,
-//             status: true,
-//             createdAt: true,
-
-//             student: {
-//                 select: {
-//                     name: true,
-//                     studentId: true
-//                 }
-//             }
-//         },
-//         orderBy: {
-//             createdAt: 'desc'
-//         }
-//     });
-// };
 
 const getSupportRequests = async ({
     userId,
@@ -920,54 +824,7 @@ const updateRequestStatus = async (
     return updatedRequest;
 };
 
-// const getRequestAttachment = async (requestId, userId) => {
-//     const student = await prisma.studentProfile.findUnique({
-//         where: {
-//             userId
-//         },
-//         select: {
-//             id: true
-//         }
-//     });
 
-//     if (!student) {
-//         const error = new Error("Student profile not found");
-//         error.status = 404;
-//         throw error;
-//     }
-
-//     const request = await prisma.request.findFirst({
-//         where: {
-//             id: requestId,
-//             studentId: student.id
-//         },
-//         select: {
-//             attachments: {
-//                 take: 1,
-//                 select: {
-//                     fileName: true,
-//                     fileUrl: true
-//                 }
-//             }
-//         }
-//     });
-
-//     if (!request) {
-//         const error = new Error("Request not found");
-//         error.status = 404;
-//         throw error;
-//     }
-
-//     const attachment = request.attachments[0];
-
-//     if (!attachment) {
-//         const error = new Error("No attachment found");
-//         error.status = 404;
-//         throw error;
-//     }
-
-//     return attachment;
-// };
 
 const getRequestAttachment = async (requestId, userId, role) => {
 

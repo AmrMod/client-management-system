@@ -103,117 +103,7 @@ const getMyRequests = async (req, res) => {
     }
 };
 
-// const getManagerRequests = async (req, res) => {
-//     try {
-//         const userId = req.user.userId;
 
-//         const requests = await requestService.getRequestsByManager(userId);
-
-//         res.status(200).json(requests);
-//     } catch (error) {
-//         console.error(error);
-
-//         if (error.status) {
-//             return res.status(error.status).json({
-//                 error: error.message
-//             });
-//         }
-
-//         res.status(500).json({
-//             error: 'Internal server error'
-//         });
-//     }
-// };
-
-// const getManagerRequests = async (req, res) => {
-//     try {
-
-//         const userId = req.user.userId;
-
-//         const {
-//             page,
-//             limit,
-//             search,
-//             status,
-//             priority,
-//             sortBy,
-//             order
-//         } = req.query;
-
-//         const requests =
-//             await requestService.getRequestsByManager({
-//                 userId,
-//                 page,
-//                 limit,
-//                 search,
-//                 status,
-//                 priority,
-//                 sortBy,
-//                 order
-//             });
-
-//         res.status(200).json(requests);
-
-//     } catch (error) {
-
-//         console.error(error);
-
-//         if (error.status) {
-//             return res.status(error.status).json({
-//                 error: error.message
-//             });
-//         }
-
-//         res.status(500).json({
-//             error: 'Internal server error'
-//         });
-//     }
-// };
-
-// const getManagerRequests = async (req, res) => {
-//     try {
-
-//         const userId = req.user.userId;
-
-//         const {
-//             page,
-//             limit,
-//             search,
-//             status,
-//             priority,
-//             sortBy,
-//             order
-//         } = req.query;
-
-//         const requests =
-//             await requestService.getRequestsByManager({
-//                 userId,
-//                 page,
-//                 limit,
-//                 search,
-//                 status,
-//                 priority,
-//                 sortBy,
-//                 order
-//             });
-
-//         res.status(200).json(requests);
-
-//     } catch (error) {
-
-//         console.error(error);
-
-//         if (error.status) {
-//             return res.status(error.status).json({
-//                 error: error.message
-//             });
-//         }
-
-//         res.status(500).json({
-//             error: "Internal server error"
-//         });
-//     }
-// };
 
 const getManagerRequests = async (req, res) => {
     try {
@@ -333,29 +223,7 @@ const assignRequest = async (req, res) => {
     }
 };
 
-// const getSupportRequests = async (req, res) => {
-//     try {
-//         const userId = req.user.userId;
 
-//         const requests =
-//             await requestService.getSupportRequests(userId);
-
-//         res.status(200).json(requests);
-
-//     } catch (error) {
-//         console.error(error);
-
-//         if (error.status) {
-//             return res.status(error.status).json({
-//                 error: error.message
-//             });
-//         }
-
-//         res.status(500).json({
-//             error: 'Internal server error'
-//         });
-//     }
-// };
 
 const getSupportRequests = async (req, res) => {
     try {

@@ -1,21 +1,4 @@
-// const { z } = require("zod");
 
-
-// const createRequestSchema = z.object({
-//     supportUnitId: z.coerce.number().int().positive(),
-
-//     title: z.string().min(1),
-
-//     description: z.string().min(1),
-
-//     priority: z.enum([
-//         "LOW",
-//         "MEDIUM",
-//         "HIGH"
-//     ])
-// });
-
-// 
 
 const { z } = require("zod");
 

@@ -414,6 +414,9 @@ const getMessages = async ({
         senderType: message.senderType.toLowerCase()
     }));
 
+    //equivalent of 
+    //map above
+
     // const newMessages = [];
 
     // for (const message of messages) {

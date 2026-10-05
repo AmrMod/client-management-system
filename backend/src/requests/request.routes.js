@@ -31,10 +31,8 @@ router.post(
     requestController.createRequest
 );
 
-//before zod
-// router.get('/', authenticate, requireRole('STUDENT'), requestController.getMyRequests);
 
-//after zod
+
 router.get(
     "/",
     authenticate,
@@ -50,13 +48,7 @@ router.get(
     requestController.getRecentRequests
 );
 
-// router.get(
-//     '/manager',
-//     authenticate,
-//     requireRole('STAFF'),
-//     requireStaffRole('MANAGER'),
-//     requestController.getManagerRequests
-// );
+
 
 router.get(
     '/manager',
@@ -94,13 +86,7 @@ router.patch(
     requestController.assignRequest
 );
 
-// router.get(
-//     '/my-assigned',
-//     authenticate,
-//     requireRole('STAFF'),
-//     requireStaffRole('SUPPORT_STAFF'),
-//     requestController.getSupportRequests
-// );
+
 
 
 router.get(
