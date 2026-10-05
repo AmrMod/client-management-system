@@ -42,6 +42,11 @@ import {
   Lock
 } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import socket from "@/socket/socket";
+
+
+
 import DashboardHome from "./components/DashboardHome";
 import MyRequests from "./components/MyRequests";
 import NewRequest from "./components/NewRequest";
@@ -100,6 +105,11 @@ export default function Dashboard() {
 
   const [supportUnits, setSupportUnits] = useState([]);
   const [supportUnitLoading, setSupportUnitLoading] = useState(false);
+
+
+
+
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
 
 
@@ -223,6 +233,62 @@ export default function Dashboard() {
     user?.studentProfile?.status ||
     user?.staffProfile?.status ||
     "No status";
+
+
+
+  useEffect(() => {
+
+    socket.connect();
+
+    return () => {
+        socket.disconnect();
+    };
+
+}, []);
+
+
+
+  useEffect(() => {
+
+      const handleNewMessage = (message) => {
+
+          // Don't count messages while the user is
+          // already viewing the Messages page.
+          if (activeTab === "Messages") {
+              return;
+          }
+
+          setUnreadMessages(prev => prev + 1);
+
+      };
+
+      socket.on(
+          "new_message",
+          handleNewMessage
+      );
+
+      return () => {
+
+          socket.off(
+              "new_message",
+              handleNewMessage
+          );
+
+      };
+
+  }, [activeTab]);
+
+
+// When user opens Messages page, clear badge
+  useEffect(() => {
+
+      if (activeTab === "Messages") {
+          setUnreadMessages(0);
+      }
+
+  }, [activeTab]);
+
+
 
   useEffect(() => {
     const loadSupportUnits = async () => {
@@ -665,7 +731,7 @@ export default function Dashboard() {
     // { name: "My Profile", icon: User },
     { name: "My Requests", icon: ClipboardList },
     { name: "New Request", icon: PlusCircle },
-    { name: "Messages", icon: MessageSquare, badge: 3 },
+    { name: "Messages", icon: MessageSquare, badge: unreadMessages },
     { name: "Notifications", icon: Bell, badge: notifications.filter(n => !n.read).length },
     // { name: "Documents", icon: Folder },
     { name: "Settings", icon: Settings },
@@ -1215,7 +1281,7 @@ export default function Dashboard() {
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
+                  {/* <div className="flex items-center justify-between pb-4 border-b border-border">
                     <div>
                       <h4 className="text-sm font-semibold text-foreground">Email Notifications</h4>
                       <p className="text-xs text-muted-foreground">Receive daily summaries and ticket replies.</p>
@@ -1225,9 +1291,9 @@ export default function Dashboard() {
                       defaultChecked
                       className="rounded border-input text-primary focus:ring-ring h-4 w-4"
                     />
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center justify-between pb-4">
+                  {/* <div className="flex items-center justify-between pb-4">
                     <div>
                       <h4 className="text-sm font-semibold text-foreground">Two-Factor Authentication</h4>
                       <p className="text-xs text-muted-foreground">Add an extra layer of security to your client account.</p>
@@ -1235,11 +1301,11 @@ export default function Dashboard() {
                     <Button size="sm" variant="outline">
                       Configure
                     </Button>
-                  </div>
+                  </div> */}
                 </CardContent>
               </Card>
 
-              <Card className="md:col-span-3">
+              {/* <Card className="md:col-span-3">
                 <CardHeader className="flex flex-row items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                     <Lock className="h-4 w-4" />
@@ -1297,7 +1363,7 @@ export default function Dashboard() {
                     </Button>
                   </form>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         );

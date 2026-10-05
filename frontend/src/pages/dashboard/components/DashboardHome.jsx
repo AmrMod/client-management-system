@@ -16,6 +16,7 @@ import {
 
 import { useQuery } from "@tanstack/react-query";
 import { getStudentDashboardStats } from "@/api/dashboardapi";
+import { getRecentRequests } from "@/api/requestapi";
 
 
 const DashboardHome = ({
@@ -33,6 +34,16 @@ const DashboardHome = ({
         queryKey: ["student-dashboard-stats"],
         queryFn: getStudentDashboardStats,
     });
+
+       const {
+            data: recentRequests = [],
+            isLoading: isLoadingRequests,
+            isError: isErrorRequests,
+            error: errorRequests,
+        } = useQuery({
+            queryKey: ["recent-requests"],
+            queryFn: getRecentRequests,
+        });
 
     if (isLoading) {
         return <div>Loading dashboard statistics...</div>;
@@ -151,7 +162,7 @@ const DashboardHome = ({
 
                     <CardContent>
 
-                        {requests.length === 0 ? (
+                        {recentRequests?.length === 0 ? (
 
                             <div className="py-8 text-center">
 
@@ -167,7 +178,7 @@ const DashboardHome = ({
 
                             <div className="space-y-4">
 
-                                {requests.slice(0, 3).map((request) => (
+                                {recentRequests.map((request) => (
 
                                     <div
                                         key={request.id}

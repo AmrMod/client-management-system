@@ -84,8 +84,22 @@ const markNotificationAsRead = async (notificationId, userId) => {
     });
 };
 
+const getManagersBySupportUnit = async (supportUnitId) => {
+    return prisma.staffProfile.findMany({
+        where: {
+            supportUnitId,
+            staffRole: "MANAGER"
+        },
+        select: {
+            userId: true
+        }
+    });
+};
+
+
 module.exports = {
     createNotification,
     getNotificationsByUserId,
-    markNotificationAsRead
+    markNotificationAsRead,
+    getManagersBySupportUnit
 };

@@ -13,7 +13,10 @@ const {
     createRequestSchema,
     getMyRequestsSchema,
     managerRequestsSchema,
-    supportRequestsSchema
+    supportRequestsSchema,
+    managerStudentSummarySchema,
+    managerStaffSummarySchema,
+    adminRequestsSchema
 } = require("./request.validation");
 
 const upload = require("../middleware/upload.middleware");
@@ -38,6 +41,13 @@ router.get(
     requireRole("STUDENT"),
     validate(getMyRequestsSchema),
     requestController.getMyRequests
+);
+
+router.get(
+    '/recent',
+    authenticate,
+    requireRole('STUDENT'),
+    requestController.getRecentRequests
 );
 
 // router.get(
@@ -66,6 +76,16 @@ router.get(
     requireStaffRole('MANAGER'),
     requestController.getSupportStaff
 );
+
+router.get(
+    '/admin',
+    authenticate,
+    requireRole('ADMIN'),
+    validate(adminRequestsSchema),
+    requestController.getAllRequestsForAdmin
+);
+
+
 router.patch(
     '/:id/assign',
     authenticate,
@@ -106,6 +126,24 @@ router.patch(
     requireRole('STAFF'),
     requireStaffRole('SUPPORT_STAFF'),
     requestController.updateRequestStatus
+);
+
+router.get(
+    "/manager/student-summary",
+    authenticate,
+    requireRole("STAFF"),
+    requireStaffRole("MANAGER"),
+    validate(managerStudentSummarySchema),
+    requestController.getManagerStudentSummary
+);
+
+router.get(
+    "/manager/staff-summary",
+    authenticate,
+    requireRole("STAFF"),
+    requireStaffRole("MANAGER"),
+    validate(managerStaffSummarySchema),
+    requestController.getManagerStaffSummary
 );
 
 

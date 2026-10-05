@@ -19,7 +19,7 @@ import {
 import { getManagerDashboardData } from "@/api/dashboardapi";
 
 
-const ManagerDashboardHome = ({ activityLogs }) => {
+const ManagerDashboardHome = ({ notifications }) => {
 
     const {
         data: dashboardData,
@@ -128,7 +128,7 @@ const ManagerDashboardHome = ({ activityLogs }) => {
                         </div>
 
                         <p className="text-xs text-muted-foreground mt-1">
-                            Unique students with requests
+                            Students with requests
                         </p>
                     </CardContent>
                 </Card>
@@ -174,9 +174,9 @@ const ManagerDashboardHome = ({ activityLogs }) => {
                     <CardContent>
                         <div className="space-y-4">
 
-                            {activityLogs.map((log) => (
+                            {notifications.map((notification) => (
                                 <div
-                                    key={log.id}
+                                    key={notification.id}
                                     className="flex items-center justify-between border-b pb-3 last:border-0"
                                 >
 
@@ -187,13 +187,13 @@ const ManagerDashboardHome = ({ activityLogs }) => {
                                         </div>
 
                                         <p className="text-sm font-medium">
-                                            {log.action}
+                                            {notification.message}
                                         </p>
 
                                     </div>
 
                                     <span className="text-xs text-muted-foreground">
-                                        {log.time}
+                                        {notification.createdAt}
                                     </span>
 
                                 </div>
@@ -252,7 +252,7 @@ const ManagerDashboardHome = ({ activityLogs }) => {
                         </div>
 
 
-                        <div className="flex justify-between">
+                        {/* <div className="flex justify-between">
                             <span className="text-sm">
                                 Escalated
                             </span>
@@ -260,7 +260,7 @@ const ManagerDashboardHome = ({ activityLogs }) => {
                             <span className="font-semibold text-destructive">
                                 4
                             </span>
-                        </div>
+                        </div> */}
 
                     </CardContent>
 

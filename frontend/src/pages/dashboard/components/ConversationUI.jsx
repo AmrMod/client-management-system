@@ -68,15 +68,15 @@ const ConversationUI = ({ supportUnits }) => {
 // SOCKET CONNECTION
 // =========================
 
-useEffect(() => {
+// useEffect(() => {
 
-    socket.connect();
+//     socket.connect();
 
-    return () => {
-        socket.disconnect();
-    };
+//     return () => {
+//         socket.disconnect();
+//     };
 
-}, []);
+// }, []);
 
 
 // =========================

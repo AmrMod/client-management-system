@@ -40,8 +40,20 @@ import {
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ManagerRequests from "./components/ManagerRequests";
+import ManagerStudents from "./components/ManagerStudents";
 import SupportConversationUI from "../support/components/SupportConversationUI";
 import ManagerDashboardHome from "./components/ManagerDashboardHome";
+import NotificationUI from "../dashboard/components/NotificationUI";
+import ManagerStaffSummary from "./components/ManagerStaffSummary";
+
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { getMyNotifications } from "@/api/notificationapi";
+
+
+
+import socket from "@/socket/socket";
+
 
 
 export default function ManagerDashboard() {
@@ -54,6 +66,8 @@ export default function ManagerDashboard() {
     const [activeTab, setActiveTab] = useState("Dashboard");
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isDark, setIsDark] = useState(false);
+
+    const [unreadMessages, setUnreadMessages] = useState(0);
 
     // useEffect(() => {
     //     const storedUser = localStorage.getItem("user");
@@ -87,12 +101,80 @@ export default function ManagerDashboard() {
     //       navigate("/login");
     //     }
     //   }, [user, authLoading, navigate]);
+
+    const profileName =
+    user?.studentProfile?.name ||
+    user?.staffProfile?.name ||
+    "User";
     
-      
+
+    
+    const {
+        data: notifications = [],
+        isLoading: notificationsLoading,
+        isError: notificationsError
+    } = useQuery({
+        queryKey: ["notifications"],
+        queryFn: getMyNotifications
+    });
+
+
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
+
+     useEffect(() => {
+
+    socket.connect();
+
+    return () => {
+        socket.disconnect();
+    };
+
+}, []);
+
+
+
+  useEffect(() => {
+
+      const handleNewMessage = (message) => {
+
+          // Don't count messages while the user is
+          // already viewing the Messages page.
+          if (activeTab === "Messages") {
+              return;
+          }
+
+          setUnreadMessages(prev => prev + 1);
+
+      };
+
+      socket.on(
+          "new_message",
+          handleNewMessage
+      );
+
+      return () => {
+
+          socket.off(
+              "new_message",
+              handleNewMessage
+          );
+
+      };
+
+  }, [activeTab]);
+
+
+// When user opens Messages page, clear badge
+  useEffect(() => {
+
+      if (activeTab === "Messages") {
+          setUnreadMessages(0);
+      }
+
+  }, [activeTab]);
 
     const toggleDark = () => {
         const nextDark = !isDark;
@@ -125,17 +207,19 @@ export default function ManagerDashboard() {
             name: "Support Staff",
             icon: UserRoundCog,
         },
-        {
-            name: "Reports",
-            icon: BarChart3,
-        },
+        // {
+        //     name: "Reports",
+        //     icon: BarChart3,
+        // },
         {
             name: "Messages",
             icon: MessageSquare,
+            badge:unreadMessages,
         },
         {
             name: "Notifications",
             icon: Bell,
+            badge: notifications.filter(n => !n.read).length
         },
         {
             name: "Settings",
@@ -170,29 +254,7 @@ export default function ManagerDashboard() {
         },
     ];
 
-    const students = [
-        {
-            id: "STU-001",
-            name: "John Doe",
-            email: "john@example.com",
-            requests: 3,
-            status: "Active",
-        },
-        {
-            id: "STU-002",
-            name: "Mary James",
-            email: "mary@example.com",
-            requests: 1,
-            status: "Active",
-        },
-        {
-            id: "STU-003",
-            name: "Ahmed Musa",
-            email: "ahmed@example.com",
-            requests: 5,
-            status: "Active",
-        },
-    ];
+
 
     const supportStaff = [
         {
@@ -218,23 +280,23 @@ export default function ManagerDashboard() {
         },
     ];
 
-    const activityLogs = [
-        {
-            id: 1,
-            action: "Request REQ-1002 assigned to Student Affairs",
-            time: "10 mins ago",
-        },
-        {
-            id: 2,
-            action: "Request REQ-1003 marked as resolved",
-            time: "45 mins ago",
-        },
-        {
-            id: 3,
-            action: "New student request submitted",
-            time: "1 hour ago",
-        },
-    ];
+    // const activityLogs = [
+    //     {
+    //         id: 1,
+    //         action: "Request REQ-1002 assigned to Student Affairs",
+    //         time: "10 mins ago",
+    //     },
+    //     {
+    //         id: 2,
+    //         action: "Request REQ-1003 marked as resolved",
+    //         time: "45 mins ago",
+    //     },
+    //     {
+    //         id: 3,
+    //         action: "New student request submitted",
+    //         time: "1 hour ago",
+    //     },
+    // ];
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -429,7 +491,7 @@ export default function ManagerDashboard() {
                 //         </div>
                 //     </div>
 
-                    <ManagerDashboardHome activityLogs={activityLogs} />
+                    <ManagerDashboardHome notifications={notifications} />
 
                 );
 
@@ -439,119 +501,69 @@ export default function ManagerDashboard() {
                 );
             case "Students":
                 return (
-                    <div className="space-y-6">
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
-                                Students
-                            </h1>
-
-                            <p className="text-muted-foreground mt-1">
-                                View students and their support activity.
-                            </p>
-                        </div>
-
-                        <Card>
-                            <CardContent className="p-0">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Student ID</TableHead>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Requests</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-
-                                    <TableBody>
-                                        {students.map((student) => (
-                                            <TableRow key={student.id}>
-                                                <TableCell className="font-semibold">
-                                                    {student.id}
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {student.name}
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {student.email}
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {student.requests}
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {student.status}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
-                    </div>
+                    <ManagerStudents />
                 );
 
             case "Support Staff":
-                return (
-                    <div className="space-y-6">
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
-                                Support Staff
-                            </h1>
+                 return (
+                //     <div className="space-y-6">
+                //         <div>
+                //             <h1 className="text-3xl font-bold tracking-tight">
+                //                 Support Staff
+                //             </h1>
 
-                            <p className="text-muted-foreground mt-1">
-                                Monitor support staff workload and performance.
-                            </p>
-                        </div>
+                //             <p className="text-muted-foreground mt-1">
+                //                 Monitor support staff workload and performance.
+                //             </p>
+                //         </div>
 
-                        <Card>
-                            <CardContent className="p-0">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Staff</TableHead>
-                                            <TableHead>Support Unit</TableHead>
-                                            <TableHead>Requests</TableHead>
-                                            <TableHead>Resolved</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
+                //         <Card>
+                //             <CardContent className="p-0">
+                //                 <Table>
+                //                     <TableHeader>
+                //                         <TableRow>
+                //                             <TableHead>Staff</TableHead>
+                //                             <TableHead>Support Unit</TableHead>
+                //                             <TableHead>Requests</TableHead>
+                //                             <TableHead>Resolved</TableHead>
+                //                             <TableHead>Status</TableHead>
+                //                         </TableRow>
+                //                     </TableHeader>
 
-                                    <TableBody>
-                                        {supportStaff.map((staff) => (
-                                            <TableRow key={staff.name}>
-                                                <TableCell className="font-semibold">
-                                                    {staff.name}
-                                                </TableCell>
+                //                     <TableBody>
+                //                         {supportStaff.map((staff) => (
+                //                             <TableRow key={staff.name}>
+                //                                 <TableCell className="font-semibold">
+                //                                     {staff.name}
+                //                                 </TableCell>
 
-                                                <TableCell>
-                                                    {staff.unit}
-                                                </TableCell>
+                //                                 <TableCell>
+                //                                     {staff.unit}
+                //                                 </TableCell>
 
-                                                <TableCell>
-                                                    {staff.requests}
-                                                </TableCell>
+                //                                 <TableCell>
+                //                                     {staff.requests}
+                //                                 </TableCell>
 
-                                                <TableCell>
-                                                    {staff.resolved}
-                                                </TableCell>
+                //                                 <TableCell>
+                //                                     {staff.resolved}
+                //                                 </TableCell>
 
-                                                <TableCell>
-                                                    {staff.status}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
-                    </div>
+                //                                 <TableCell>
+                //                                     {staff.status}
+                //                                 </TableCell>
+                //                             </TableRow>
+                //                         ))}
+                //                     </TableBody>
+                //                 </Table>
+                //             </CardContent>
+                //         </Card>
+                //     </div>
+
+                <ManagerStaffSummary />
                 );
 
-            case "Reports":
+            // case "Reports":
                 return (
                     <div className="space-y-6">
                         <div>
@@ -635,19 +647,17 @@ export default function ManagerDashboard() {
                 return (
                     <div className="space-y-6">
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
-                                Notifications
-                            </h1>
 
-                            <p className="text-muted-foreground mt-1">
-                                View important support and system notifications.
-                            </p>
+                            
                         </div>
 
-                        <Card className="p-6 text-center text-muted-foreground">
+                        {/* <Card className="p-6 text-center text-muted-foreground">
                             Notifications will appear here.
-                        </Card>
-                    </div>
+                        </Card> */}
+
+                        <NotificationUI notifications={notifications} />
+
+                     </div>
                 );
 
             case "Settings":
@@ -696,8 +706,8 @@ export default function ManagerDashboard() {
         }
     };
 
-    const initials = managerUser?.name
-        ? managerUser.name
+    const initials = profileName
+        ? profileName
               .split(" ")
               .map((word) => word[0])
               .join("")
@@ -742,6 +752,13 @@ export default function ManagerDashboard() {
                             >
                                 <Icon className="h-4 w-4 flex-shrink-0" />
                                 <span>{item.name}</span>
+
+
+                                {item.badge > 0 && (
+                                <span className="min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                                    {item.badge}
+                                </span>
+                                )}
                             </button>
                         );
                     })}
@@ -755,7 +772,7 @@ export default function ManagerDashboard() {
 
                         <div className="min-w-0 flex-1">
                             <p className="text-xs font-semibold truncate">
-                                {managerUser?.name || "Manager"}
+                                {profileName || "Manager"}
                             </p>
 
                             <p className="text-[10px] text-muted-foreground truncate mt-0.5">
@@ -822,6 +839,12 @@ export default function ManagerDashboard() {
                                     >
                                         <Icon className="h-4 w-4" />
                                         <span>{item.name}</span>
+
+                                        {item.badge > 0 && (
+                                            <span className="min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                                                {item.badge}
+                                            </span>
+                                        )}
                                     </button>
                                 );
                             })}
@@ -835,7 +858,7 @@ export default function ManagerDashboard() {
 
                                 <div>
                                     <p className="text-xs font-semibold">
-                                        {managerUser?.name || "Manager"}
+                                        {profileName || "Manager"}
                                     </p>
 
                                     <p className="text-[10px] text-muted-foreground">
@@ -882,7 +905,7 @@ export default function ManagerDashboard() {
 
                         <div className="hidden sm:block">
                             <p className="text-xs font-semibold">
-                                {managerUser?.name || "Manager"}
+                                {profileName || "Manager"}
                             </p>
 
                             <p className="text-[9px] text-muted-foreground">

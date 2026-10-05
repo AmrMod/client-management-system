@@ -29,6 +29,8 @@ const SupportConversationUI = () => {
     const [typedMsg, setTypedMsg] = useState("");
 
     const [loading, setLoading] = useState(false);
+
+
     // const [messagesLoading, setMessagesLoading] =
     //     useState(false);
 
@@ -77,15 +79,15 @@ const SupportConversationUI = () => {
 
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        socket.connect();
+    //     socket.connect();
 
-        return () => {
-            socket.disconnect();
-        };
+    //     return () => {
+    //         socket.disconnect();
+    //     };
 
-    }, []);
+    // }, []);
 
     useEffect(() => {
 

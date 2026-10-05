@@ -108,6 +108,26 @@ export const createRequest = async (
 //   }
 // };
 
+export const getRecentRequests = async () => {
+  try {
+    const res = await fetch(`${API_BASE}/requests/recent`, {
+      method: "GET",
+      headers: authHeaders(),
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to fetch requests");
+    }
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getMyRequests = async (
     page,
     limit,
@@ -401,4 +421,134 @@ export const downloadRequestAttachment = async (requestId) => {
     a.remove();
 
     window.URL.revokeObjectURL(url);
+};
+
+export const getManagerStudentSummary = async ({
+    page = 1,
+    limit = 10,
+    search = ""
+} = {}) => {
+
+    const params = new URLSearchParams();
+
+    params.append("page", page);
+    params.append("limit", limit);
+
+    if (search) {
+        params.append("search", search);
+    }
+
+    const res = await fetch(
+        `${API_BASE}/requests/manager/student-summary?${params.toString()}`,
+        {
+            method: "GET",
+            headers: authHeaders(),
+            credentials: "include",
+        }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.error || "Failed to fetch student summary"
+        );
+    }
+
+    return data;
+};
+
+export const getManagerStaffSummary = async ({
+    page = 1,
+    limit = 10,
+    search = "",
+    sortBy = "name",
+    order = "asc"
+} = {}) => {
+
+    const params = new URLSearchParams();
+
+    params.append("page", page);
+    params.append("limit", limit);
+
+    if (search) {
+        params.append("search", search);
+    }
+
+    params.append("sortBy", sortBy);
+    params.append("order", order);
+
+    const res = await fetch(
+        `${API_BASE}/requests/manager/staff-summary?${params.toString()}`,
+        {
+            method: "GET",
+            headers: authHeaders(),
+            credentials: "include",
+        }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.error || "Failed to fetch staff summary"
+        );
+    }
+
+    return data;
+};
+
+export const getAdminRequests = async ({
+    page = 1,
+    limit = 10,
+    search = "",
+    status,
+    priority,
+    supportUnitId,
+    sortBy = "createdAt",
+    order = "desc"
+} = {}) => {
+
+    const params = new URLSearchParams();
+
+    params.append("page", page);
+    params.append("limit", limit);
+
+    if (search) {
+        params.append("search", search);
+    }
+
+    if (status) {
+        params.append("status", status);
+    }
+
+    if (priority) {
+        params.append("priority", priority);
+    }
+
+    if (supportUnitId) {
+        params.append("supportUnitId", supportUnitId);
+    }
+
+    params.append("sortBy", sortBy);
+    params.append("order", order);
+
+    const res = await fetch(
+        `${API_BASE}/requests/admin?${params.toString()}`,
+        {
+            method: "GET",
+            headers: authHeaders(),
+            credentials: "include",
+        }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.error || "Failed to fetch admin requests"
+        );
+    }
+
+    return data;
 };

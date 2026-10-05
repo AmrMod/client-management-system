@@ -1,5 +1,5 @@
 
-// import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +54,7 @@ import Staff from "./Staff";
 import CreateUserByAdmin from "./createUserByAdmin";
 import AdminConversationUI from "./AdminConversationUI";
 import AdminDashboardHome from "./AdminDashboardHome";
+import Allrequests from "./Allrequests";
 
 // import { getTotalUsers } from "@/api/userapi";
 import { getDashboardStats } from "@/api/userapi";
@@ -246,18 +247,18 @@ export default function AdminDashboard() {
     subItems: [
         { name: "Students", icon: User },
         { name: "Staff", icon: Briefcase },
-        { name: "Roles", icon: ShieldCheck },
+        // { name: "Roles", icon: ShieldCheck },
     ]
 },
 
-{ name: "Support Staff", icon: UsersIcon },
-{ name: "Support Units", icon: Briefcase },
+// { name: "Support Staff", icon: UsersIcon },
+// { name: "Support Units", icon: Briefcase },
 
 { name: "Requests", icon: ClipboardList },
-{ name: "Documents", icon: FolderOpen },
+// { name: "Documents", icon: FolderOpen },
 { name: "Messages", icon: MessageSquare },
-{ name: "Notifications", icon: Bell },
-{ name: "Activity Logs", icon: History },
+// { name: "Notifications", icon: Bell },
+// { name: "Activity Logs", icon: History },
 { name: "Settings", icon: Settings },
 
 
@@ -414,189 +415,198 @@ export default function AdminDashboard() {
           </div>
         );
 
-      case "Roles":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Role Permissions</h1>
-              <p className="text-muted-foreground mt-1">Configure security levels and system user roles.</p>
-            </div>
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Role Name</TableHead>
-                      <TableHead>Members</TableHead>
-                      <TableHead>Description</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {roles.map((role, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell className="font-semibold">{role.name}</TableCell>
-                        <TableCell>{role.usersCount} users</TableCell>
-                        <TableCell className="text-muted-foreground">{role.description}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
-        );
+      // case "Roles":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">Role Permissions</h1>
+      //         <p className="text-muted-foreground mt-1">Configure security levels and system user roles.</p>
+      //       </div>
+      //       <Card>
+      //         <CardContent className="p-0">
+      //           <Table>
+      //             <TableHeader>
+      //               <TableRow>
+      //                 <TableHead>Role Name</TableHead>
+      //                 <TableHead>Members</TableHead>
+      //                 <TableHead>Description</TableHead>
+      //               </TableRow>
+      //             </TableHeader>
+      //             <TableBody>
+      //               {roles.map((role, idx) => (
+      //                 <TableRow key={idx}>
+      //                   <TableCell className="font-semibold">{role.name}</TableCell>
+      //                   <TableCell>{role.usersCount} users</TableCell>
+      //                   <TableCell className="text-muted-foreground">{role.description}</TableCell>
+      //                 </TableRow>
+      //               ))}
+      //             </TableBody>
+      //           </Table>
+      //         </CardContent>
+      //       </Card>
+      //     </div>
+      //   );
 
-      // case "Client Management":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Client Management</h1>
-              <p className="text-muted-foreground mt-1">Directory of company clients and statuses.</p>
-            </div>
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Client ID</TableHead>
-                      <TableHead>Company Name</TableHead>
-                      <TableHead>Contact Representative</TableHead>
-                      <TableHead>Email Address</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {clients.map((client) => (
-                      <TableRow key={client.id}>
-                        <TableCell className="font-semibold">{client.id}</TableCell>
-                        <TableCell>{client.name}</TableCell>
-                        <TableCell>{client.contact}</TableCell>
-                        <TableCell>{client.email}</TableCell>
-                        <TableCell>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            client.status === "Active" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300" :
-                            "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                          }`}>
-                            {client.status}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
-        );
+      // // case "Client Management":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">Client Management</h1>
+      //         <p className="text-muted-foreground mt-1">Directory of company clients and statuses.</p>
+      //       </div>
+      //       <Card>
+      //         <CardContent className="p-0">
+      //           <Table>
+      //             <TableHeader>
+      //               <TableRow>
+      //                 <TableHead>Client ID</TableHead>
+      //                 <TableHead>Company Name</TableHead>
+      //                 <TableHead>Contact Representative</TableHead>
+      //                 <TableHead>Email Address</TableHead>
+      //                 <TableHead>Status</TableHead>
+      //               </TableRow>
+      //             </TableHeader>
+      //             <TableBody>
+      //               {clients.map((client) => (
+      //                 <TableRow key={client.id}>
+      //                   <TableCell className="font-semibold">{client.id}</TableCell>
+      //                   <TableCell>{client.name}</TableCell>
+      //                   <TableCell>{client.contact}</TableCell>
+      //                   <TableCell>{client.email}</TableCell>
+      //                   <TableCell>
+      //                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+      //                       client.status === "Active" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300" :
+      //                       "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+      //                     }`}>
+      //                       {client.status}
+      //                     </span>
+      //                   </TableCell>
+      //                 </TableRow>
+      //               ))}
+      //             </TableBody>
+      //           </Table>
+      //         </CardContent>
+      //       </Card>
+      //     </div>
+      //   );
 
-      // case "Projects":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Projects</h1>
-              <p className="text-muted-foreground mt-1">Track company contract projects and developmental stages.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((prj) => (
-                <Card key={prj.id}>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-semibold">{prj.name}</CardTitle>
-                    <CardDescription>{prj.client}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Progress</span>
-                        <span className="font-medium">{prj.progress}%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-primary h-2 rounded-full" style={{ width: `${prj.progress}%` }} />
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center border-t pt-3">
-                      <span className="text-xs text-muted-foreground">{prj.id}</span>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                        prj.status === "Completed" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300" :
-                        "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                      }`}>
-                        {prj.status}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        );
+      // // case "Projects":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">Projects</h1>
+      //         <p className="text-muted-foreground mt-1">Track company contract projects and developmental stages.</p>
+      //       </div>
+      //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      //         {projects.map((prj) => (
+      //           <Card key={prj.id}>
+      //             <CardHeader className="pb-2">
+      //               <CardTitle className="text-base font-semibold">{prj.name}</CardTitle>
+      //               <CardDescription>{prj.client}</CardDescription>
+      //             </CardHeader>
+      //             <CardContent className="space-y-4">
+      //               <div className="space-y-2">
+      //                 <div className="flex justify-between text-xs">
+      //                   <span className="text-muted-foreground">Progress</span>
+      //                   <span className="font-medium">{prj.progress}%</span>
+      //                 </div>
+      //                 <div className="w-full bg-muted rounded-full h-2">
+      //                   <div className="bg-primary h-2 rounded-full" style={{ width: `${prj.progress}%` }} />
+      //                 </div>
+      //               </div>
+      //               <div className="flex justify-between items-center border-t pt-3">
+      //                 <span className="text-xs text-muted-foreground">{prj.id}</span>
+      //                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
+      //                   prj.status === "Completed" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300" :
+      //                   "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+      //                 }`}>
+      //                   {prj.status}
+      //                 </span>
+      //               </div>
+      //             </CardContent>
+      //           </Card>
+      //         ))}
+      //       </div>
+      //     </div>
+      //   );
 
-      case "Support Staff":
-return (
-<div className="space-y-6 animate-in fade-in duration-300">
-<div>
-<h1 className="text-3xl font-bold tracking-tight text-foreground">
-Support Staff
-</h1>
-<p className="text-muted-foreground mt-1">
-Manage staff members responsible for handling student support requests.
-</p>
-</div>
+//       case "Support Staff":
+// return (
+// <div className="space-y-6 animate-in fade-in duration-300">
+// <div>
+// <h1 className="text-3xl font-bold tracking-tight text-foreground">
+// Support Staff
+// </h1>
+// <p className="text-muted-foreground mt-1">
+// Manage staff members responsible for handling student support requests.
+// </p>
+// </div>
 
-        <Card className="p-6 text-center text-muted-foreground">
-            Support staff directory will appear here.
-        </Card>
-    </div>
-);
+//         <Card className="p-6 text-center text-muted-foreground">
+//             Support staff directory will appear here.
+//         </Card>
+//     </div>
+// );
 
-      case "Support Units":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Support Units
-              </h1>
+      // case "Support Units":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">
+      //           Support Units
+      //         </h1>
 
-              <p className="text-muted-foreground mt-1">
-                Support departments available to students.
-              </p>
-            </div>
+      //         <p className="text-muted-foreground mt-1">
+      //           Support departments available to students.
+      //         </p>
+      //       </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {supportUnits.map((unit) => (
-                <Card key={unit.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <Building2 className="h-5 w-5 text-primary" />
+      //       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      //         {supportUnits.map((unit) => (
+      //           <Card key={unit.id}>
+      //             <CardHeader>
+      //               <div className="flex items-center justify-between">
+      //                 <Building2 className="h-5 w-5 text-primary" />
 
-                      <span className="text-xs text-emerald-600 font-medium">
-                        {unit.status}
-                      </span>
-                    </div>
+      //                 <span className="text-xs text-emerald-600 font-medium">
+      //                   {unit.status}
+      //                 </span>
+      //               </div>
 
-                    <CardTitle className="text-base">
-                      {unit.name}
-                    </CardTitle>
+      //               <CardTitle className="text-base">
+      //                 {unit.name}
+      //               </CardTitle>
 
-                    <CardDescription>
-                      {unit.requests} active requests
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          </div>
-        );
+      //               <CardDescription>
+      //                 {unit.requests} active requests
+      //               </CardDescription>
+      //             </CardHeader>
+      //           </Card>
+      //         ))}
+      //       </div>
+      //     </div>
+      //   );
       
       case "Requests":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
+            {/* <div>
               <h1 className="text-3xl font-bold tracking-tight text-foreground">Support Requests Queue</h1>
               <p className="text-muted-foreground mt-1">Manage ticket issues raised by clients.</p>
-            </div>
-            <Card className="p-6 text-center text-muted-foreground">
-              Requests module database queue display here.
-            </Card>
+            </div> */}
+            {/* <Card className="p-6 text-center text-muted-foreground">
+              
+            </Card> */}
+
+            <Allrequests />
+
+            
           </div>
+
+
+          
+
+
         );
 
       // case "Tasks":
@@ -641,18 +651,18 @@ Manage staff members responsible for handling student support requests.
           </div>
         );
 
-      case "Documents":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Documents Library</h1>
-              <p className="text-muted-foreground mt-1">Manage system uploads and configurations.</p>
-            </div>
-            <Card className="p-6 text-center text-muted-foreground">
-              Document archives database explorer here.
-            </Card>
-          </div>
-        );
+      // case "Documents":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">Documents Library</h1>
+      //         <p className="text-muted-foreground mt-1">Manage system uploads and configurations.</p>
+      //       </div>
+      //       <Card className="p-6 text-center text-muted-foreground">
+      //         Document archives database explorer here.
+      //       </Card>
+      //     </div>
+      //   );
 
       case "Messages":
         return (
@@ -673,18 +683,18 @@ Manage staff members responsible for handling student support requests.
         </div>
     );
 
-      case "Notifications":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Notifications Log</h1>
-              <p className="text-muted-foreground mt-1">View system event alerts and dispatch logs.</p>
-            </div>
-            <Card className="p-6 text-center text-muted-foreground">
-              SMTP dispatch logs and dynamic updates.
-            </Card>
-          </div>
-        );
+      // case "Notifications":
+      //   return (
+      //     <div className="space-y-6 animate-in fade-in duration-300">
+      //       <div>
+      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">Notifications Log</h1>
+      //         <p className="text-muted-foreground mt-1">View system event alerts and dispatch logs.</p>
+      //       </div>
+      //       <Card className="p-6 text-center text-muted-foreground">
+      //         SMTP dispatch logs and dynamic updates.
+      //       </Card>
+      //     </div>
+      //   );
 
       // case "Reports":
         return (
@@ -742,7 +752,7 @@ Manage staff members responsible for handling student support requests.
           </div>
         );
 
-      case "Activity Logs":
+      // case "Activity Logs":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div>

@@ -50,9 +50,7 @@ const NotificationUI = ({notifications}) => {
         
           <div className="space-y-8 animate-in fade-in duration-300">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Notifications</h1>
-              <p className="text-muted-foreground mt-1">Keep track of alerts, replies, and billing updates.</p>
-            </div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">Notifications</h1>            </div>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-border">

@@ -37,27 +37,29 @@ const createRequest = async (req, res) => {
 
 
 
-// const getMyRequests = async (req, res) => {
-//     try {
-//         const userId = req.user.userId;
 
-//         const requests = await requestService.getRequestsByUserId(userId);
 
-//         res.status(200).json(requests);
-//     } catch (error) {
-//         console.error(error);
+const getRecentRequests = async (req, res) => {
+    try {
+        const userId = req.user.userId;
 
-//         if (error.status) {
-//             return res.status(error.status).json({
-//                 error: error.message
-//             });
-//         }
+        const requests = await requestService.getRecentRequests(userId);
 
-//         res.status(500).json({
-//             error: 'Internal server error'
-//         });
-//     }
-// };
+        res.status(200).json(requests);
+    } catch (error) {
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
 
 const getMyRequests = async (req, res) => {
 
@@ -461,6 +463,129 @@ const downloadAttachment = async (req, res) => {
     }
 };
 
+const getManagerStudentSummary = async (req, res) => {
+    try {
+
+        const userId = req.user.userId;
+
+        const {
+            page,
+            limit,
+            search
+        } = req.validated.query;
+
+        const summary =
+            await requestService.getManagerStudentSummary({
+                userId,
+                page,
+                limit,
+                search
+            });
+
+        res.status(200).json(summary);
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+};
+
+const getManagerStaffSummary = async (req, res) => {
+    try {
+
+        const userId = req.user.userId;
+
+        const {
+            page,
+            limit,
+            search,
+            sortBy,
+            order
+        } = req.validated.query;
+
+        const summary =
+            await requestService.getManagerStaffSummary({
+                userId,
+                page,
+                limit,
+                search,
+                sortBy,
+                order
+            });
+
+        res.status(200).json(summary);
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+};
+
+const getAllRequestsForAdmin = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const {
+            page,
+            limit,
+            search,
+            status,
+            priority,
+            supportUnitId,
+            sortBy,
+            order
+        } = req.validated.query;
+
+        const requests =
+            await requestService.getAllRequestsForAdmin({
+                userId,
+                page,
+                limit,
+                search,
+                status,
+                priority,
+                supportUnitId,
+                sortBy,
+                order
+            });
+
+        res.status(200).json(requests);
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+};
+
 
 
 
@@ -474,5 +599,9 @@ module.exports = {
     assignRequest,
     getSupportRequests,
     updateRequestStatus,
-    downloadAttachment
+    downloadAttachment,
+    getRecentRequests,
+    getManagerStudentSummary,
+    getManagerStaffSummary,
+    getAllRequestsForAdmin
 };
