@@ -11,7 +11,6 @@ import {
 import {
   GraduationCap,
   Search,
-  Plus,
   MoreHorizontal,
 } from "lucide-react";
 
@@ -46,32 +45,7 @@ export default function Students() {
   const [sortBy, setSortBy] = useState("id");
   const [order, setOrder] = useState("asc");
 
-  // useEffect(() => {
-  //   const fetchStudents = async () => {
-  //     try {
-  //       setLoading(true);
-  //       setError("");
-
-  //       const data = await getAllStudents(currentPage, limit);
-
-  //       setStudents(data.students);
-  //       setTotalPages(data.totalPages);
-
-  //     } catch (error) {
-  //       setError(error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchStudents();
-  // }, [currentPage]);
-
-  // const filteredStudents = students.filter((student) =>
-  //   `${student.name} ${student.studentId} ${student.department}`
-  //     .toLowerCase()
-  //     .includes(search.toLowerCase())
-  // );
+ 
 
   useEffect(() => {
     const timer = setTimeout(() => {

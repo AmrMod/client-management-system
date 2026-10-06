@@ -252,15 +252,7 @@ const ManagerDashboardHome = ({ notifications }) => {
                         </div>
 
 
-                        {/* <div className="flex justify-between">
-                            <span className="text-sm">
-                                Escalated
-                            </span>
-
-                            <span className="font-semibold text-destructive">
-                                4
-                            </span>
-                        </div> */}
+                        
 
                     </CardContent>
 

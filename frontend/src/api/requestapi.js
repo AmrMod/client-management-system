@@ -3,49 +3,7 @@
 const API_BASE = 'http://localhost:3000';
 import { authHeaders } from "./apiutils";
 
-// export const createRequest = async (
-  
-//   supportUnitId,
-//   title,
-//   description,
-//   priority
 
-  
-
-// ) => {
-//   try {
-//     const res = await fetch(`${API_BASE}/requests`, {
-//       method: "POST",
-//       headers: authHeaders(),
-//       credentials: "include",
-//       body: JSON.stringify({
-//         supportUnitId,
-//         title,
-//         description,
-//         priority,
-//       }),
-//     });
-
-//     const data = await res.json();
-
-//     // if (!res.ok) {
-//     //     console.log("Validation response:", data);
-
-//     //   throw new Error(data.error || "Failed to create request");
-//     // }
-//     if (!res.ok) {
-//             throw new Error(
-//                 data.details?.[0]?.message ||
-//                 data.error ||
-//                 'Failed to create request'
-//             );
-//         }
-
-//     return data;
-//   } catch (err) {
-//     throw err;
-//   }
-// };
 
 //with attachemnt 
 export const createRequest = async (
@@ -89,24 +47,7 @@ export const createRequest = async (
   }
 };
 
-// export const getMyRequests = async () => {
-//   try {
-//     const res = await fetch(`${API_BASE}/requests`, {
-//       method: "GET",
-//       headers: authHeaders(),
-//     });
 
-//     const data = await res.json();
-
-//     if (!res.ok) {
-//       throw new Error(data.error || "Failed to fetch requests");
-//     }
-
-//     return data;
-//   } catch (err) {
-//     throw err;
-//   }
-// };
 
 export const getRecentRequests = async () => {
   try {
@@ -160,27 +101,7 @@ export const getMyRequests = async (
     }
 };
 
-// export const getManagerRequests = async () => {
-//     try {
-//         const res = await fetch(`${API_BASE}/requests/manager`, {
-//             method: "GET",
-//             headers: authHeaders(),
-//         });
 
-//         const data = await res.json();
-
-//         if (!res.ok) {
-//             throw new Error(
-//                 data.error || "Failed to fetch requests"
-//             );
-//         }
-
-//         return data;
-
-//     } catch (err) {
-//         throw err;
-//     }
-// };
 
 export const getManagerRequests = async ({
     page = 1,
@@ -292,27 +213,7 @@ export const assignRequest = async (requestId, staffId) => {
     }
 };
 
-// export const getSupportRequests = async () => {
-//     try {
-//         const res = await fetch(`${API_BASE}/requests/my-assigned`, {
-//             method: "GET",
-//             headers: authHeaders(),
-//         });
 
-//         const data = await res.json();
-
-//         if (!res.ok) {
-//             throw new Error(
-//                 data.error || "Failed to fetch assigned requests"
-//             );
-//         }
-
-//         return data;
-
-//     } catch (err) {
-//         throw err;
-//     }
-// };
 
 export const getSupportRequests = async ({
     page = 1,

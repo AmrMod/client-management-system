@@ -7,32 +7,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
+
 
 import {
   LayoutDashboard,
   LogOut,
   ClipboardList,
-  Users,
   MessageSquare,
   Bell,
   Settings,
   Menu,
   X,
-  History,
-  Building2,
-  Activity,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  User,
+ 
 } from "lucide-react";
 
 
@@ -51,9 +37,11 @@ import SupportDashboardHome from "./components/SupportDashboardHome";
 import NotificationUI from "../dashboard/components/NotificationUI";
 
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { getMyNotifications } from "@/api/notificationapi";
+
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -61,11 +49,10 @@ import socket from "@/socket/socket";
 
 
 export default function SupportDashboard() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
    const { user, logout, updateUser, loading: authLoading } = useAuth();
 
-  const [supportUser, setSupportUser] = useState(null);
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -75,130 +62,7 @@ export default function SupportDashboard() {
 const [unreadMessages, setUnreadMessages] = useState(0);
 
 
-  // const [requests] = useState([
-  //   {
-  //     id: "REQ-101",
-  //     student: "John Doe",
-  //     subject: "Unable to access student portal",
-  //     unit: "IT Support",
-  //     priority: "High",
-  //     status: "Open",
-  //   },
-  //   {
-  //     id: "REQ-102",
-  //     student: "Aisha Mohammed",
-  //     subject: "Course registration issue",
-  //     unit: "Academic Support",
-  //     priority: "Medium",
-  //     status: "In Progress",
-  //   },
-  //   {
-  //     id: "REQ-103",
-  //     student: "Daniel James",
-  //     subject: "Payment confirmation problem",
-  //     unit: "Finance Support",
-  //     priority: "Low",
-  //     status: "Resolved",
-  //   },
-  // ]);
 
-  // const [students] = useState([
-  //   {
-  //     id: "STU-001",
-  //     name: "John Doe",
-  //     email: "john@example.com",
-  //     department: "Computer Science",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: "STU-002",
-  //     name: "Aisha Mohammed",
-  //     email: "aisha@example.com",
-  //     department: "Accounting",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: "STU-003",
-  //     name: "Daniel James",
-  //     email: "daniel@example.com",
-  //     department: "Business Administration",
-  //     status: "Active",
-  //   },
-  // ]);
-
-  // const [supportUnits] = useState([
-  //   {
-  //     id: 1,
-  //     name: "IT Support",
-  //     requests: 12,
-  //     status: "Operational",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Academic Support",
-  //     requests: 8,
-  //     status: "Operational",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Finance Support",
-  //     requests: 5,
-  //     status: "Operational",
-  //   },
-  // ]);
-
-
-
-  // const [activityLogs] = useState([
-  //   {
-  //     id: 1,
-  //     action: "Resolved request REQ-103",
-  //     time: "10 mins ago",
-  //   },
-  //   {
-  //     id: 2,
-  //     action: "Updated request REQ-102",
-  //     time: "45 mins ago",
-  //   },
-  //   {
-  //     id: 3,
-  //     action: "Responded to John Doe",
-  //     time: "1 hour ago",
-  //   },
-  // ]);
-
-  // useEffect(() => {
-  //   const storedUser = localStorage.getItem("user");
-
-  //   if (!storedUser) {
-  //     navigate("/login");
-  //     return;
-  //   }
-
-  //   const parsed = JSON.parse(storedUser);
-  //   setSupportUser(parsed);
-
-  //   const savedTheme = localStorage.getItem("theme");
-  //   const systemDark = window.matchMedia(
-  //     "(prefers-color-scheme: dark)"
-  //   ).matches;
-
-  //   const initialDark =
-  //     savedTheme === "dark" || (!savedTheme && systemDark);
-
-  //   setIsDark(initialDark);
-
-  //   if (initialDark) {
-  //     document.documentElement.classList.add("dark");
-  //   } else {
-  //     document.documentElement.classList.remove("dark");
-  //   }
-  // }, [navigate]);
-//  useEffect(() => {
-//         if (!authLoading && !user) {
-//           navigate("/login");
-//         }
-//       }, [user, authLoading, navigate]);
 
 const profileName =
     user?.studentProfile?.name ||
@@ -295,14 +159,7 @@ const profileName =
       name: "Requests",
       icon: ClipboardList,
     },
-    // {
-    //   name: "Students",
-    //   icon: Users,
-    // },
-    // {
-    //   name: "Support Units",
-    //   icon: Building2,
-    // },
+    
     {
       name: "Messages",
       icon: MessageSquare,
@@ -313,10 +170,7 @@ const profileName =
       icon: Bell,
       badge: notifications.filter(n => !n.read).length
     },
-    // {
-    //   name: "Activity",
-    //   icon: History,
-    // },
+    
     {
       name: "Settings",
       icon: Settings,
@@ -327,157 +181,7 @@ const profileName =
     switch (activeTab) {
       case "Dashboard":
         return (
-          // <div className="space-y-6 animate-in fade-in duration-300">
-          //   <div>
-          //     <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          //       Support Dashboard
-          //     </h1>
-
-          //     <p className="text-muted-foreground mt-1">
-          //       Manage student requests and provide support services.
-          //     </p>
-          //   </div>
-
-          //   {/* Statistics */}
-          //   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          //     <Card>
-          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
-          //         <CardTitle className="text-sm font-medium">
-          //           Open Requests
-          //         </CardTitle>
-
-          //         <ClipboardList className="h-4 w-4 text-muted-foreground" />
-          //       </CardHeader>
-
-          //       <CardContent>
-          //         <div className="text-2xl font-bold">18</div>
-
-          //         <p className="text-xs text-muted-foreground mt-1">
-          //           Requests waiting for action
-          //         </p>
-          //       </CardContent>
-          //     </Card>
-
-          //     <Card>
-          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
-          //         <CardTitle className="text-sm font-medium">
-          //           In Progress
-          //         </CardTitle>
-
-          //         <Clock className="h-4 w-4 text-muted-foreground" />
-          //       </CardHeader>
-
-          //       <CardContent>
-          //         <div className="text-2xl font-bold">9</div>
-
-          //         <p className="text-xs text-muted-foreground mt-1">
-          //           Currently being handled
-          //         </p>
-          //       </CardContent>
-          //     </Card>
-
-          //     <Card>
-          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
-          //         <CardTitle className="text-sm font-medium">
-          //           Resolved Today
-          //         </CardTitle>
-
-          //         <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-          //       </CardHeader>
-
-          //       <CardContent>
-          //         <div className="text-2xl font-bold">14</div>
-
-          //         <p className="text-xs text-muted-foreground mt-1">
-          //           Requests successfully resolved
-          //         </p>
-          //       </CardContent>
-          //     </Card>
-
-          //     <Card>
-          //       <CardHeader className="flex flex-row items-center justify-between pb-2">
-          //         <CardTitle className="text-sm font-medium">
-          //           High Priority
-          //         </CardTitle>
-
-          //         <AlertCircle className="h-4 w-4 text-muted-foreground" />
-          //       </CardHeader>
-
-          //       <CardContent>
-          //         <div className="text-2xl font-bold">5</div>
-
-          //         <p className="text-xs text-muted-foreground mt-1">
-          //           Require immediate attention
-          //         </p>
-          //       </CardContent>
-          //     </Card>
-          //   </div>
-
-          //   {/* Recent Requests */}
-          //   <Card>
-          //     <CardHeader>
-          //       <CardTitle className="text-base font-semibold">
-          //         Recent Requests
-          //       </CardTitle>
-
-          //       <CardDescription>
-          //         Latest student support requests requiring attention.
-          //       </CardDescription>
-          //     </CardHeader>
-
-          //     <CardContent className="p-0">
-          //       <Table>
-          //         <TableHeader>
-          //           <TableRow>
-          //             <TableHead>Request</TableHead>
-          //             <TableHead>Student</TableHead>
-          //             <TableHead>Support Unit</TableHead>
-          //             <TableHead>Priority</TableHead>
-          //             <TableHead>Status</TableHead>
-          //           </TableRow>
-          //         </TableHeader>
-
-          //         <TableBody>
-          //           {requests.map((request) => (
-          //             <TableRow key={request.id}>
-          //               <TableCell>
-          //                 <div>
-          //                   <p className="font-semibold">
-          //                     {request.subject}
-          //                   </p>
-
-          //                   <p className="text-xs text-muted-foreground">
-          //                     {request.id}
-          //                   </p>
-          //                 </div>
-          //               </TableCell>
-
-          //               <TableCell>{request.student}</TableCell>
-
-          //               <TableCell>{request.unit}</TableCell>
-
-          //               <TableCell>
-          //                 <span
-          //                   className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-          //                     request.priority === "High"
-          //                       ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-          //                       : request.priority === "Medium"
-          //                       ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-          //                       : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-          //                   }`}
-          //                 >
-          //                   {request.priority}
-          //                 </span>
-          //               </TableCell>
-
-          //               <TableCell>{request.status}</TableCell>
-          //             </TableRow>
-          //           ))}
-          //         </TableBody>
-          //       </Table>
-          //     </CardContent>
-          //   </Card>
-          // </div>
+   
 
           <SupportDashboardHome  />
 
@@ -486,167 +190,12 @@ const profileName =
       case "Requests":
          return (
           <SupportRequests />
-        //   <div className="space-y-6 animate-in fade-in duration-300">
-        //     <div>
-        //       <h1 className="text-3xl font-bold tracking-tight text-foreground">
-        //         Support Requests
-        //       </h1>
-
-        //       <p className="text-muted-foreground mt-1">
-        //         View and manage student support requests.
-        //       </p>
-        //     </div>
-
-        //     <Card>
-        //       <CardContent className="p-0">
-        //         <Table>
-        //           <TableHeader>
-        //             <TableRow>
-        //               <TableHead>Request</TableHead>
-        //               <TableHead>Student</TableHead>
-        //               <TableHead>Unit</TableHead>
-        //               <TableHead>Priority</TableHead>
-        //               <TableHead>Status</TableHead>
-        //             </TableRow>
-        //           </TableHeader>
-
-        //           <TableBody>
-        //             {requests.map((request) => (
-        //               <TableRow key={request.id}>
-        //                 <TableCell>
-        //                   <div>
-        //                     <p className="font-semibold">
-        //                       {request.subject}
-        //                     </p>
-
-        //                     <p className="text-xs text-muted-foreground">
-        //                       {request.id}
-        //                     </p>
-        //                   </div>
-        //                 </TableCell>
-
-        //                 <TableCell>{request.student}</TableCell>
-        //                 <TableCell>{request.unit}</TableCell>
-
-        //                 <TableCell>
-        //                   <span className="text-sm">
-        //                     {request.priority}
-        //                   </span>
-        //                 </TableCell>
-
-        //                 <TableCell>{request.status}</TableCell>
-        //               </TableRow>
-        //             ))}
-        //           </TableBody>
-        //         </Table>
-        //       </CardContent>
-        //     </Card>
-        //   </div>
+        
         );
 
-      //  case "Students":
-        // return (
-        //   <div className="space-y-6 animate-in fade-in duration-300">
-        //     <div>
-        //       <h1 className="text-3xl font-bold tracking-tight text-foreground">
-        //         Students
-        //       </h1>
+     
 
-        //       <p className="text-muted-foreground mt-1">
-        //         Students who have interacted with the support system.
-        //       </p>
-        //     </div>
-
-        //     <Card>
-        //       <CardContent className="p-0">
-        //         <Table>
-        //           <TableHeader>
-        //             <TableRow>
-        //               <TableHead>Student</TableHead>
-        //               <TableHead>Email</TableHead>
-        //               <TableHead>Department</TableHead>
-        //               <TableHead>Status</TableHead>
-        //             </TableRow>
-        //           </TableHeader>
-
-        //           <TableBody>
-        //             {students.map((student) => (
-        //               <TableRow key={student.id}>
-        //                 <TableCell>
-        //                   <div className="flex items-center gap-3">
-        //                     <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-        //                       <User className="h-4 w-4" />
-        //                     </div>
-
-        //                     <div>
-        //                       <p className="font-semibold">
-        //                         {student.name}
-        //                       </p>
-
-        //                       <p className="text-xs text-muted-foreground">
-        //                         {student.id}
-        //                       </p>
-        //                     </div>
-        //                   </div>
-        //                 </TableCell>
-
-        //                 <TableCell>{student.email}</TableCell>
-
-        //                 <TableCell>{student.department}</TableCell>
-
-        //                 <TableCell>
-        //                   <span className="text-emerald-600 text-sm font-medium">
-        //                     {student.status}
-        //                   </span>
-        //                 </TableCell>
-        //               </TableRow>
-        //             ))}
-        //           </TableBody>
-        //         </Table>
-        //       </CardContent>
-        //     </Card>
-        //   </div>
-        // );
-
-      // case "Support Units":
-      //   return (
-      //     <div className="space-y-6 animate-in fade-in duration-300">
-      //       <div>
-      //         <h1 className="text-3xl font-bold tracking-tight text-foreground">
-      //           Support Units
-      //         </h1>
-
-      //         <p className="text-muted-foreground mt-1">
-      //           Support departments available to students.
-      //         </p>
-      //       </div>
-
-      //       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      //         {supportUnits.map((unit) => (
-      //           <Card key={unit.id}>
-      //             <CardHeader>
-      //               <div className="flex items-center justify-between">
-      //                 <Building2 className="h-5 w-5 text-primary" />
-
-      //                 <span className="text-xs text-emerald-600 font-medium">
-      //                   {unit.status}
-      //                 </span>
-      //               </div>
-
-      //               <CardTitle className="text-base">
-      //                 {unit.name}
-      //               </CardTitle>
-
-      //               <CardDescription>
-      //                 {unit.requests} active requests
-      //               </CardDescription>
-      //             </CardHeader>
-      //           </Card>
-      //         ))}
-      //       </div>
-      //     </div>
-      //   );
-
+    
       case "Messages":
         return (
           <div className="space-y-6 animate-in fade-in duration-300">
@@ -660,9 +209,7 @@ const profileName =
               </p>
             </div>
 
-            {/* <Card className="p-6 text-center text-muted-foreground">
-              Student support conversations will appear here.
-            </Card> */}
+            
 
             <SupportConversationUI />
           </div>
@@ -670,21 +217,6 @@ const profileName =
 
       case "Notifications":
         return (
-          // <div className="space-y-6 animate-in fade-in duration-300">
-          //   <div>
-          //     <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          //       Notifications
-          //     </h1>
-
-          //     <p className="text-muted-foreground mt-1">
-          //       Important updates and request alerts.
-          //     </p>
-          //   </div>
-
-          //   <Card className="p-6 text-center text-muted-foreground">
-          //     Support notifications will appear here.
-          //   </Card>
-          // </div>
 
           notificationsLoading ? (
               <div className="p-8 text-center text-muted-foreground">
@@ -700,47 +232,7 @@ const profileName =
 
         );
 
-      // case "Activity":
-        return (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                Activity
-              </h1>
-
-              <p className="text-muted-foreground mt-1">
-                Recent actions performed by support staff.
-              </p>
-            </div>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  {activityLogs.map((log) => (
-                    <div
-                      key={log.id}
-                      className="flex items-center justify-between border-b pb-3 last:border-0"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                          <Activity className="h-4 w-4" />
-                        </div>
-
-                        <p className="text-sm font-medium">
-                          {log.action}
-                        </p>
-                      </div>
-
-                      <span className="text-xs text-muted-foreground">
-                        {log.time}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        );
+     
 
       case "Settings":
         return (

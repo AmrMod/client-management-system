@@ -13,11 +13,11 @@ const socket = io("http://localhost:3000", {
 });
 
 socket.on("connect", () => {
-    console.log("Socket connected:", socket.id);
+    // console.log("Socket connected:", socket.id);
 });
 
 socket.on("disconnect", () => {
-    console.log("Socket disconnected");
+    // console.log("Socket disconnected");
 });
 
 export default socket;

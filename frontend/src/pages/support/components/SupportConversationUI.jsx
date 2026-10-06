@@ -22,19 +22,12 @@ const SupportConversationUI = () => {
     // STATE
     // =========================
 
-    // const [conversations, setConversations] = useState([]);
     const [activeConversationId, setActiveConversationId] =
         useState(null);
 
     const [typedMsg, setTypedMsg] = useState("");
 
-    const [loading, setLoading] = useState(false);
-
-
-    // const [messagesLoading, setMessagesLoading] =
-    //     useState(false);
-
-    // const [error, setError] = useState("");
+    
 
        // =========================
     // STAFF CONVERSATIONS QUERY
@@ -79,15 +72,7 @@ const SupportConversationUI = () => {
 
 
 
-    // useEffect(() => {
-
-    //     socket.connect();
-
-    //     return () => {
-    //         socket.disconnect();
-    //     };
-
-    // }, []);
+    
 
     useEffect(() => {
 
@@ -95,7 +80,7 @@ const SupportConversationUI = () => {
             return;
         }
 
-        console.log("Joining conversation:", activeConversationId);
+        // console.log("Joining conversation:", activeConversationId);
 
 
         socket.emit(
@@ -141,42 +126,7 @@ const SupportConversationUI = () => {
 
     }, [queryClient]);
 
-    // =========================
-    // LOAD STAFF CONVERSATIONS
-    // =========================
-
-    // useEffect(() => {
-
-    //     const loadConversations = async () => {
-
-    //         try {
-
-    //             setLoading(true);
-    //             setError("");
-
-    //             const data =
-    //                 await getStaffConversations();
-
-    //             setConversations(data);
-
-    //             if (data.length > 0) {
-    //                 setActiveConversationId(data[0].id);
-    //             }
-
-    //         } catch (err) {
-
-    //             setError(err.message);
-
-    //         } finally {
-
-    //             setLoading(false);
-
-    //         }
-    //     };
-
-    //     loadConversations();
-
-    // }, []);
+    
 
 
     // =========================
@@ -190,54 +140,7 @@ const SupportConversationUI = () => {
         );
 
 
-    // =========================
-    // LOAD MESSAGES
-    // =========================
-
-    // useEffect(() => {
-
-    //     if (!activeConversationId) {
-    //         return;
-    //     }
-
-    //     const loadMessages = async () => {
-
-    //         try {
-
-    //             setMessagesLoading(true);
-    //             setError("");
-
-    //             const data =
-    //                 await getMessages(
-    //                     activeConversationId
-    //                 );
-
-    //             setConversations(prev =>
-    //                 prev.map(conversation =>
-    //                     conversation.id ===
-    //                     activeConversationId
-    //                         ? {
-    //                             ...conversation,
-    //                             messages: data
-    //                         }
-    //                         : conversation
-    //                 )
-    //             );
-
-    //         } catch (err) {
-
-    //             setError(err.message);
-
-    //         } finally {
-
-    //             setMessagesLoading(false);
-
-    //         }
-    //     };
-
-    //     loadMessages();
-
-    // }, [activeConversationId]);
+   
 
 
     // =========================
@@ -598,12 +501,7 @@ const SupportConversationUI = () => {
                                 className="flex-1"
                             />
 
-                            {/* <Button
-                                type="submit"
-                                disabled={!typedMsg.trim()}
-                            >
-                                Send
-                            </Button> */}
+                            
 
                             <Button
                                 type="submit"

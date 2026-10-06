@@ -21,7 +21,6 @@ import { getRecentRequests } from "@/api/requestapi";
 
 const DashboardHome = ({
     profileName,
-    requests,
     setActiveTab
 }) => {
 
@@ -52,7 +51,6 @@ const DashboardHome = ({
     if (isError) {
         return <div>Error fetching dashboard statistics: {error.message}</div>;
     }
-
 
     
 

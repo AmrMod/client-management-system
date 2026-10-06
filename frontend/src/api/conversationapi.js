@@ -1,5 +1,5 @@
 
-// src/api/conversationApi.js
+// src/api/conversationapi.js
 
 const API_BASE = 'http://localhost:3000';
 

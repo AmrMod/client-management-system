@@ -64,19 +64,6 @@ const ConversationUI = ({ supportUnits }) => {
         loadConversations();
     }, []);
 
-    // =========================
-// SOCKET CONNECTION
-// =========================
-
-// useEffect(() => {
-
-//     socket.connect();
-
-//     return () => {
-//         socket.disconnect();
-//     };
-
-// }, []);
 
 
 // =========================
@@ -89,10 +76,10 @@ useEffect(() => {
         return;
     }
 
-    console.log(
-        "Joining conversation:",
-        activeConversationId
-    );
+    // console.log(
+    //     "Joining conversation:",
+    //     activeConversationId
+    // );
 
     socket.emit(
         "join_conversation",

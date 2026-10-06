@@ -11,8 +11,7 @@ import {
 import {
     Users,
     Search,
-    Plus,
-    MoreHorizontal,
+    
 } from "lucide-react";
 
 import {
@@ -42,25 +41,7 @@ export default function Staff() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // useEffect(() => {
-    //     const fetchStaff = async () => {
-    //         try {
-    //             setLoading(true);
-    //             setError("");
 
-    //             const data = await getAllStaff(currentPage, limit);
-
-    //             setStaff(data.staffs);
-    //             setTotalPages(data.totalPages);
-    //         } catch (error) {
-    //             setError(error.message);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchStaff();
-    // }, [currentPage, limit]);
 
     useEffect(() => {
     const timer = setTimeout(() => {
@@ -100,11 +81,6 @@ export default function Staff() {
         fetchStaff();
     }, [currentPage, limit, debouncedSearch, sortBy, order]);
 
-    // const filteredStaff = staff.filter((member) =>
-    //     `${member.name} ${member.user?.email || ""} ${member.staffRole} ${member.supportUnit?.name || ""}`
-    //         .toLowerCase()
-    //         .includes(search.toLowerCase())
-    // );
 
     return (
         <div className="space-y-6 animate-in fade-in duration-300">

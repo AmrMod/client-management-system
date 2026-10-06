@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, getCurrentUser } from "../api/userapi";
+import { loginUser } from "../api/userapi";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,15 +39,7 @@ const handleSubmit = async (e) => {
         return;
     }
 
-    // if (!email.includes("@")) {
-    //     setError("Please enter a valid email address");
-    //     return;
-    // }
-
-    // if (password.length < 6) {
-    //     setError("Password must be at least 6 characters long");
-    //     return;
-    // }
+    
 
     setLoading(true);
 
