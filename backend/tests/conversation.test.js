@@ -1,9 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../../config/prisma");
 
 describe("POST /conversations/:id/messages", () => {
     test("should allow a STUDENT to create and send a message", async () => {

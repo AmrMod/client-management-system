@@ -620,11 +620,11 @@
 //   });
 
 //with bybrypt
-const { PrismaClient } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
 
-const prisma = new PrismaClient();
+const prisma = require("../config/prisma");
+
 
 async function main() {
   console.log("Clearing database...");

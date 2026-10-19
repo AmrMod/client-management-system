@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../../config/prisma");
 
 const getAllStaff = async (page, limit, search, sortBy, order) => {
     const skip = (page - 1) * limit;

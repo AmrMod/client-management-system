@@ -69,8 +69,6 @@ const NewRequest = ({
                 "Request submitted successfully. Our support team will review it shortly."
             );
 
-            
-
         } catch (error) {
             console.error("Failed to create request:", error);
 

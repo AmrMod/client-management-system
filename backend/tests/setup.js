@@ -2,10 +2,9 @@ require("dotenv").config({
     path: ".env.test",
 });
 
-const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
+const prisma = require("../../config/prisma");
 
-const prisma = new PrismaClient();
 
 beforeAll(async () => {
     const hashedPassword = await bcrypt.hash("TestPassword123", 10);

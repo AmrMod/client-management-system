@@ -28,7 +28,7 @@ const [error, setError] = useState("");
 const [loading, setLoading] = useState(false);
 
 const navigate = useNavigate();
-const {user, login } = useAuth();
+const { login } = useAuth();
 
 const handleSubmit = async (e) => {
     e.preventDefault();
