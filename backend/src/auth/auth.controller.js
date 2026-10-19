@@ -12,10 +12,17 @@ const login = async (req, res) => {
         });
 
 
+        // res.cookie("token", result.token, {
+        //     httpOnly: true,
+        //     secure: false, //https in production true
+        //     sameSite: "lax",
+        //     maxAge: 24 * 60 * 60 * 1000
+        // });
+
         res.cookie("token", result.token, {
             httpOnly: true,
-            secure: false, //https in production true
-            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
 
