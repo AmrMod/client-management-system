@@ -3,8 +3,7 @@ require("dotenv").config({
 });
 
 const bcrypt = require("bcrypt");
-const prisma = require("../../config/prisma");
-
+const prisma = require("../config/prisma");
 
 beforeAll(async () => {
     const hashedPassword = await bcrypt.hash("TestPassword123", 10);

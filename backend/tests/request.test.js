@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 
-const prisma = require("../../config/prisma");
+const prisma = require("../config/prisma");
 
 describe("POST /requests", () => {
     test("should reject unauthenticated request creation", async () => {

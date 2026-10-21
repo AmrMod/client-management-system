@@ -4,7 +4,7 @@
 const request = require("supertest");
 const app = require("../app");
 
-const prisma = require("../../config/prisma");
+const prisma = require("../config/prisma");
 
 describe("GET /dashboard/student", () => {
     test("should return accurate dashboard statistics for a STUDENT", async () => {
