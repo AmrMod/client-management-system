@@ -43,6 +43,7 @@ The system is designed around role-based access, authenticated API requests, rel
 - Support request statuses including `PENDING`, `IN_PROGRESS`, `RESOLVED`, and `REJECTED`.
 - Support priority levels including `LOW`, `MEDIUM`, and `HIGH`.
 - Attach files to requests where supported by the configured upload handling.
+- Download attached files for each request. 
 
 ### Support Team Workflows
 
