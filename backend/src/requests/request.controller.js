@@ -21,6 +21,8 @@ const createRequest = async (req, res) => {
 
         res.status(201).json(newRequest);
     } catch (error) {
+
+        console.error("Create request failed:", error);
         if (error.status) {
             return res.status(error.status).json({
                 error: error.message
