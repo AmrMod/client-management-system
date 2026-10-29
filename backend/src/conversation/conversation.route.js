@@ -15,7 +15,8 @@ const validate =
 
 const {
     createConversationSchema,
-    createMessageSchema
+    createMessageSchema,
+    startStaffConversationSchema
 } = require('./conversation.validation');
 
 
@@ -25,6 +26,14 @@ router.post(
     requireRole('STUDENT'),
     validate(createConversationSchema),
     conversationController.createConversation
+);
+
+router.post(
+    '/staff/start',
+    authenticate,
+    requireRole('STAFF'),
+    validate(startStaffConversationSchema),
+    conversationController.startStaffConversation
 );
 
 

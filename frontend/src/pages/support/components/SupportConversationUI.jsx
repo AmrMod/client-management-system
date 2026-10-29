@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button";
 import {
     getStaffConversations,
     getMessages,
-    createMessage
+    createMessage,
+    startStaffConversation,
 } from "@/api/conversationapi";
+
+import { getAllStudents } from "@/api/studentapi";
 
 import socket from "@/socket/socket";
 
@@ -28,6 +31,13 @@ const SupportConversationUI = () => {
     const [typedMsg, setTypedMsg] = useState("");
 
     
+    const [showNewConversation, setShowNewConversation] = useState(false);
+    const [studentSearch, setStudentSearch] = useState("");
+    const [selectedStudentId, setSelectedStudentId] = useState("");
+    const [openingMessage, setOpeningMessage] = useState("");
+
+
+    
 
        // =========================
     // STAFF CONVERSATIONS QUERY
@@ -43,6 +53,57 @@ const SupportConversationUI = () => {
     });
 
     
+
+    const {
+        data: studentsData,
+        isLoading: studentsLoading,
+        error: studentsError
+    } = useQuery({
+        queryKey: ["students", "conversation", studentSearch],
+        queryFn: () =>
+            getAllStudents(
+                1,
+                100,
+                studentSearch,
+                "name",
+                "asc"
+            ),
+        enabled: showNewConversation
+    });
+
+    const students = studentsData?.students ?? [];
+
+    
+    const {
+        mutate: startConversation,
+        isPending: startingConversation,
+        error: startConversationError
+    } = useMutation({
+        mutationFn: () =>
+            startStaffConversation(
+                Number(selectedStudentId),
+                openingMessage.trim()
+            ),
+
+        onSuccess: async (data) => {
+            const conversationId = data.conversation.id;
+
+            await queryClient.invalidateQueries({
+                queryKey: ["staff-conversations"]
+            });
+
+            setActiveConversationId(conversationId);
+            setShowNewConversation(false);
+            setStudentSearch("");
+            setSelectedStudentId("");
+            setOpeningMessage("");
+
+            await queryClient.invalidateQueries({
+                queryKey: ["messages", conversationId]
+            });
+        }
+    });
+
 
 
     // =========================
@@ -108,13 +169,30 @@ const SupportConversationUI = () => {
         //     )
         // );
 
+        // queryClient.setQueryData(
+        //     ["messages", message.conversationId],
+        //     (oldMessages = []) => [
+        //         ...oldMessages,
+        //         message
+        //     ]
+        // );
+
+        
         queryClient.setQueryData(
             ["messages", message.conversationId],
-            (oldMessages = []) => [
-                ...oldMessages,
-                message
-            ]
+            (oldMessages = []) => {
+                if (
+                    oldMessages.some(
+                        (existing) => existing.id === message.id
+                    )
+                ) {
+                    return oldMessages;
+                }
+
+                return [...oldMessages, message];
+            }
         );
+
 
     };
 
@@ -222,7 +300,7 @@ const SupportConversationUI = () => {
 
             <div className="lg:col-span-1 border-r border-border flex flex-col bg-muted/10">
 
-                <div className="p-4 border-b border-border">
+                {/* <div className="p-4 border-b border-border">
 
                     <h3 className="font-semibold text-foreground">
                         Conversations
@@ -235,7 +313,126 @@ const SupportConversationUI = () => {
                             : ""}
                     </p>
 
+                </div> */}
+
+                
+                <div className="p-4 border-b border-border">
+                    <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-semibold text-foreground">
+                            Conversations
+                        </h3>
+
+                        <Button
+                            type="button"
+                            size="sm"
+                            onClick={() =>
+                                setShowNewConversation((previous) => !previous)
+                            }
+                        >
+                            {showNewConversation ? "Cancel" : "+ New"}
+                        </Button>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground mt-1">
+                        {conversations.length} conversation
+                        {conversations.length !== 1 ? "s" : ""}
+                    </p>
+
+                    {showNewConversation && (
+                        <form
+                            className="mt-4 space-y-3"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+
+                                if (
+                                    selectedStudentId &&
+                                    openingMessage.trim()
+                                ) {
+                                    startConversation();
+                                }
+                            }}
+                        >
+                            <Input
+                                placeholder="Search by name or student ID"
+                                value={studentSearch}
+                                onChange={(e) => {
+                                    setStudentSearch(e.target.value);
+                                    setSelectedStudentId("");
+                                }}
+                            />
+
+                            <div>
+                                <label className="text-xs text-muted-foreground">
+                                    Select student
+                                </label>
+
+                                <select
+                                    value={selectedStudentId}
+                                    onChange={(e) =>
+                                        setSelectedStudentId(e.target.value)
+                                    }
+                                    disabled={studentsLoading || !!studentsError}
+                                    className="mt-1 w-full rounded-md border border-input bg-background p-2 text-sm"
+                                >
+                                    <option value="">
+                                        {studentsLoading
+                                            ? "Loading students..."
+                                            : "Choose a student"}
+                                    </option>
+
+                                    {students.map((student) => (
+                                        <option
+                                            key={student.id}
+                                            value={student.id}
+                                        >
+                                            {student.name} ({student.studentId})
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {studentsError && (
+                                    <p className="mt-1 text-xs text-destructive">
+                                        {studentsError.message ||
+                                            "Failed to load students."}
+                                    </p>
+                                )}
+                            </div>
+
+                            <textarea
+                                placeholder="Write your opening message..."
+                                value={openingMessage}
+                                onChange={(e) =>
+                                    setOpeningMessage(e.target.value)
+                                }
+                                rows={3}
+                                maxLength={5000}
+                                className="w-full resize-none rounded-md border border-input bg-background p-2 text-sm"
+                            />
+
+                            {startConversationError && (
+                                <p className="text-xs text-destructive">
+                                    {startConversationError.message ||
+                                        "Failed to start conversation."}
+                                </p>
+                            )}
+
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                disabled={
+                                    !selectedStudentId ||
+                                    !openingMessage.trim() ||
+                                    startingConversation
+                                }
+                            >
+                                {startingConversation
+                                    ? "Starting..."
+                                    : "Start Conversation"}
+                            </Button>
+                        </form>
+                    )}
                 </div>
+
 
 
                 <div className="flex-1 overflow-y-auto divide-y divide-border">

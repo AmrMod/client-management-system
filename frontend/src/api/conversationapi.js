@@ -35,6 +35,34 @@ export const createConversation = async (supportUnitId) => {
     }
 };
 
+// Start a conversation with a student
+export const startStaffConversation = async (
+    studentProfileId,
+    content
+) => {
+    const res = await fetch(`${API_BASE}/conversations/staff/start`, {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify({
+            studentProfileId,
+            content
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(
+            data.details?.[0]?.message ||
+            data.error ||
+            "Failed to start conversation"
+        );
+    }
+
+    return data;
+};
+
 
 // Get my conversations
 export const getMyConversations = async () => {

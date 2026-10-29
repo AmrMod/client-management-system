@@ -70,6 +70,92 @@ const createConversation = async (userId, supportUnitId) => {
     });
 };
 
+const startStaffConversation = async ({
+    userId,
+    studentProfileId,
+    content
+}) => {
+    const staff = await prisma.staffProfile.findUnique({
+        where: { userId },
+        select: {
+            id: true,
+            supportUnitId: true
+        }
+    });
+
+    if (!staff) {
+        const error = new Error('Staff profile not found');
+        error.status = 404;
+        throw error;
+    }
+
+    const student = await prisma.studentProfile.findUnique({
+        where: { id: studentProfileId },
+        select: { id: true }
+    });
+
+    if (!student) {
+        const error = new Error('Student not found');
+        error.status = 404;
+        throw error;
+    }
+
+    return prisma.$transaction(async (tx) => {
+        const conversation = await tx.conversation.upsert({
+            where: {
+                studentId_supportUnitId: {
+                    studentId: student.id,
+                    supportUnitId: staff.supportUnitId
+                }
+            },
+            create: {
+                studentId: student.id,
+                supportUnitId: staff.supportUnitId,
+                staffProfileId: staff.id
+            },
+            update: {},
+            select: {
+                id: true,
+                studentId: true,
+                supportUnitId: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+
+        const message = await tx.message.create({
+            data: {
+                conversationId: conversation.id,
+                senderId: staff.id,
+                senderType: 'STAFF',
+                staffProfileId: staff.id,
+                content
+            },
+            select: {
+                id: true,
+                conversationId: true,
+                senderId: true,
+                senderType: true,
+                content: true,
+                createdAt: true
+            }
+        });
+
+        await tx.conversation.update({
+            where: { id: conversation.id },
+            data: { updatedAt: new Date() }
+        });
+
+        return {
+            conversation,
+            message: {
+                ...message,
+                senderType: message.senderType.toLowerCase()
+            }
+        };
+    });
+};
+
 
 const getMyConversations = async (userId) => {
     const student = await prisma.studentProfile.findUnique({
@@ -433,6 +519,7 @@ const getMessages = async ({
 
 module.exports = {
     createConversation,
+    startStaffConversation,
     getMyConversations,
     getStaffConversations,
     getAllConversations,

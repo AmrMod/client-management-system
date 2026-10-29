@@ -33,6 +33,39 @@ const createConversation = async (req, res) => {
     }
 };
 
+const startStaffConversation = async (req, res) => {
+    try {
+        const { studentProfileId, content } = req.validated.body;
+
+        const result =
+            await conversationService.startStaffConversation({
+                userId: req.user.userId,
+                studentProfileId,
+                content
+            });
+
+        const io = getIO();
+
+        io.to(`conversation:${result.conversation.id}`)
+            .emit('new_message', result.message);
+
+        res.status(201).json(result);
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.status) {
+            return res.status(error.status).json({
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+};
+
 
 const getMyConversations = async (req, res) => {
     try {
@@ -189,6 +222,7 @@ const getMessages = async (req, res) => {
 
 module.exports = {
     createConversation,
+    startStaffConversation,
     getMyConversations,
     getStaffConversations,
     getAllConversations,

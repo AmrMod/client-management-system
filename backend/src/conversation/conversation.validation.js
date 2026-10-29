@@ -32,7 +32,22 @@ const createMessageSchema = z.object({
 
 });
 
+const startStaffConversationSchema = z.object({
+    body: z.object({
+        studentProfileId: z.coerce
+            .number()
+            .int()
+            .positive(),
+
+        content: z.string()
+            .trim()
+            .min(1, "Message cannot be empty")
+            .max(5000, "Message cannot exceed 5000 characters")
+    })
+});
+
 module.exports = {
     createConversationSchema,
-    createMessageSchema
+    createMessageSchema,
+    startStaffConversationSchema
 };
