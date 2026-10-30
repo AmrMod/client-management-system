@@ -658,6 +658,7 @@ const getSupportRequests = async ({
             select: {
                 id: true,
                 title: true,
+                description: true,
                 priority: true,
                 status: true,
                 createdAt: true,

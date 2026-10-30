@@ -567,6 +567,10 @@ const SupportRequests = () => {
                                     </TableHead>
 
                                     <TableHead>
+                                        Description
+                                    </TableHead>
+
+                                    <TableHead>
                                         Attachment
                                     </TableHead>
 
@@ -636,7 +640,7 @@ const SupportRequests = () => {
                                     <TableRow>
 
                                         <TableCell
-                                            colSpan={8}
+                                            colSpan={9}
                                             className="h-32 text-center"
                                         >
 
@@ -695,6 +699,15 @@ const SupportRequests = () => {
 
                                                 <p className="truncate font-medium">
                                                     {request.title}
+                                                </p>
+
+                                            </TableCell>
+
+
+                                            <TableCell className="max-w-[300px]">
+
+                                                <p className="truncate text-sm text-muted-foreground">
+                                                    {request.description || "No description"}
                                                 </p>
 
                                             </TableCell>
